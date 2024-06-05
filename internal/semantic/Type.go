@@ -5,6 +5,7 @@ type Type struct {
 	visibility Visibility
 	module     *Module
 	relations  map[string]*Relation
+	extensions []*ExtensionReference
 }
 
 func NewType(name Name, visiblity Visibility) *Type {
