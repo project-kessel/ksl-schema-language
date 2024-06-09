@@ -16,8 +16,8 @@ type Relation struct {
 	body       RelationExpression
 }
 
-func NewRelation(name string, visibility Visibility, body RelationExpression) (*Relation, error) {
-	r := &Relation{name: name, visibility: visibility, body: body}
+func NewRelation(name string, t *Type, visibility Visibility, body RelationExpression) (*Relation, error) {
+	r := &Relation{name: name, inType: t, visibility: visibility, body: body}
 
 	return r, nil
 }
@@ -28,6 +28,24 @@ func (r *Relation) SpiceDBName() string {
 
 func (r *Relation) VisibleTo(t *Type) bool {
 	return true
+}
+
+func (r *Relation) AddExtension(e *ExtensionReference) {
+	e.module = r.inType.module
+	e.onType = r.inType
+	e.relation = r
+
+	r.extensions = append(r.extensions, e)
+}
+
+func (r *Relation) ApplyExtensions() error {
+	for _, e := range r.extensions {
+		err := e.Apply()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (r *Relation) DirectTypeReferences() ([]*TypeReference, error) {

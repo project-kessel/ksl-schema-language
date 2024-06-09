@@ -1,33 +1,30 @@
 package semantic
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type extensionDescriptor struct {
 	moduleName    string
 	extensionName string //Might be changed to strings to force generated names to be materialized / might just be transparently materialized when evaluating an extension
 }
 
-func (d extensionDescriptor) Resolve(inType *Type) (*Extension, error) {
-	module := inType.module
-
+func (d extensionDescriptor) Resolve(frommodule *Module) (*Extension, error) {
+	inmodule := frommodule
 	if d.moduleName != "" {
 		var found bool
-		module, found = inType.module.schema.modules[d.moduleName]
+		inmodule, found = frommodule.schema.modules[d.moduleName]
 		if !found {
 			return nil, fmt.Errorf("Module %s, %w", d.moduleName, ErrSymbolNotFound)
 		}
 	}
 
-	resolvedExtension, found := module.extensions[d.extensionName]
+	resolvedExtension, found := inmodule.extensions[d.extensionName]
 	if !found {
 		return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.extensionName, ErrSymbolNotFound)
 	}
 
-	if module == inType.module {
-		if !resolvedExtension.visibility.ModuleVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.extensionName, ErrSymbolNotAccessible)
-		}
-	} else {
+	if inmodule != frommodule {
 		if !resolvedExtension.visibility.SchemaVisible {
 			return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.extensionName, ErrSymbolNotAccessible)
 		}
@@ -38,36 +35,34 @@ func (d extensionDescriptor) Resolve(inType *Type) (*Extension, error) {
 
 type ExtensionReference struct {
 	descriptor extensionDescriptor
-	parentType *Type
-	instance   *Extension
+	module     *Module
+	onType     *Type
+	relation   *Relation
+	params     map[string]string
 }
 
-func NewExtensionReference(parentType *Type, moduleName string, extensionName string) *ExtensionReference {
+func NewExtensionReference(moduleName string, extensionName string, params map[string]string) *ExtensionReference {
 	return &ExtensionReference{
-		parentType: parentType,
 		descriptor: extensionDescriptor{
 			moduleName:    moduleName,
 			extensionName: extensionName,
 		},
+		params: params,
 	}
 }
 
-func (r *ExtensionReference) IsResolved() bool {
-	return r.instance != nil
-}
-
-func (r *ExtensionReference) Extension() *Extension {
-	return r.instance
-}
-
-func (r *ExtensionReference) Resolve() error {
-	resolvedExtension, err := r.descriptor.Resolve(r.parentType)
+func (r *ExtensionReference) Apply() error {
+	e, err := r.descriptor.Resolve(r.module)
 	if err != nil {
 		return err
 	}
 
-	r.instance = resolvedExtension
-	return nil
+	params := make(map[string]string)
+	for key, value := range r.params {
+		params[key] = value
+	}
+
+	return e.Apply(r.module, r.onType, r.relation, params)
 }
 
 type typeDescriptor struct {
@@ -142,12 +137,12 @@ func (r *TypeReference) Resolve(fromType *Type) error {
 
 type relationDescriptor struct {
 	moduleName   string
-	typeName     Name
-	relationName Name
+	typeName     string
+	relationName string
 }
 
 func (d relationDescriptor) Resolve(inType *Type) (*Relation, error) {
-	resolvedTypeName := d.typeName.String()
+	resolvedTypeName := d.typeName
 
 	module := inType.module
 
@@ -174,7 +169,7 @@ func (d relationDescriptor) Resolve(inType *Type) (*Relation, error) {
 		}
 	}
 
-	resolvedRelationName := d.relationName.String()
+	resolvedRelationName := d.relationName
 
 	relation, found := resolvedType.relations[resolvedRelationName]
 	if !found {
@@ -203,7 +198,7 @@ type RelationReference struct {
 	instance   *Relation
 }
 
-func NewRelationReference(parentType *Type, moduleName string, typeName Name, relationName Name) *RelationReference {
+func NewRelationReference(parentType *Type, moduleName string, typeName string, relationName string) *RelationReference {
 	return &RelationReference{
 		parentType: parentType,
 		descriptor: relationDescriptor{

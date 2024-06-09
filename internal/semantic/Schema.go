@@ -25,6 +25,17 @@ func (s *Schema) AddModule(module *Module) error {
 	return nil
 }
 
+func (s *Schema) ApplyExtensions() error {
+	for _, m := range s.modules {
+		err := m.ApplyExtensions()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (s *Schema) ToZanzibar() ([]compiler.SchemaDefinition, error) {
 	namespaceNames := map[string]bool{} //Track names used for Zanzibar namespaces
 	elements := []compiler.SchemaDefinition{}

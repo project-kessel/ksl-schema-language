@@ -15,8 +15,8 @@ type Type struct {
 	extensions []*ExtensionReference
 }
 
-func NewType(name string, visiblity Visibility) *Type {
-	return &Type{name: name, visibility: visiblity, relations: map[string]*Relation{}, extensions: []*ExtensionReference{}}
+func NewType(name string, m *Module, visiblity Visibility) *Type {
+	return &Type{name: name, module: m, visibility: visiblity, relations: map[string]*Relation{}, extensions: []*ExtensionReference{}}
 }
 
 func (t *Type) AddRelation(r *Relation) error {
@@ -32,6 +32,18 @@ func (t *Type) AddRelation(r *Relation) error {
 
 func (t *Type) AddExtension(e *ExtensionReference) {
 	t.extensions = append(t.extensions, e)
+}
+
+func (t *Type) ApplyExtensions() error {
+	//Should handle extensions directly on the type
+	for _, r := range t.relations {
+		err := r.ApplyExtensions()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (t *Type) ToZanzibar() (*core.NamespaceDefinition, error) {

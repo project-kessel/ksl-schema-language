@@ -36,19 +36,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    "name":"active",
-                    "visibility":"public",
-                    "body": {
-                        "kind": "self",
-                        "cardinality": "AtMostOne",
-                        "type": {
-                            "module":"iam",
-                            "name":"user",
-                            "all": true
-                        }
-                    }
                 }
             ]
         }

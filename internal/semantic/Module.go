@@ -33,6 +33,18 @@ func NewModule(name string, imports []string) *Module {
 	return m
 }
 
+func (m *Module) ApplyExtensions() error {
+	//Should handle extensions directly on the module
+	for _, t := range m.types {
+		err := t.ApplyExtensions()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Module) AddType(t *Type) error {
 	if _, found := m.types[t.name]; found {
 		return fmt.Errorf("module %s, type %s: %w", m.name, t.name, ErrSymbolExists)

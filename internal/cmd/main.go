@@ -12,11 +12,13 @@ func main() {
 	rbac, err := intermediate.LoadFile("samples/rbac.json")
 	if err != nil {
 		fmt.Printf("Error opening file: %s\n", err)
+		return
 	}
 
 	inventory, err := intermediate.LoadFile("samples/inventory.json")
 	if err != nil {
 		fmt.Printf("Error opening file: %s\n", err)
+		return
 	}
 
 	schema := semantic.NewSchema()
@@ -28,6 +30,7 @@ func main() {
 	err = schema.AddModule(sm)
 	if err != nil {
 		fmt.Printf("Error adding module %s: %s", sm.Name(), err)
+		return
 	}
 
 	sm, err = inventory.ToSemantic()
@@ -38,11 +41,19 @@ func main() {
 	err = schema.AddModule(sm)
 	if err != nil {
 		fmt.Printf("Error adding module %s: %s", sm.Name(), err)
+		return
+	}
+
+	err = schema.ApplyExtensions()
+	if err != nil {
+		fmt.Printf("Error applying extensions: %s", err)
+		return
 	}
 
 	definitions, err := schema.ToZanzibar()
 	if err != nil {
 		fmt.Printf("Error generating Zanzibar model: %s", err)
+		return
 	}
 
 	source, _, err := generator.GenerateSchema(definitions)
