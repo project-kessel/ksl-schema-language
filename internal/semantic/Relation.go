@@ -30,8 +30,8 @@ func (r *Relation) VisibleTo(t *Type) bool {
 	return true
 }
 
-func (r *Relation) ReferencedTypes() ([]*Type, error) {
-	return r.body.ReferencedTypes(r)
+func (r *Relation) DirectTypeReferences() ([]*TypeReference, error) {
+	return r.body.DirectTypeReferences(r)
 }
 
 func (r *Relation) ToZanzibar() ([]*core.Relation, error) {
@@ -46,17 +46,33 @@ func (r *Relation) ToZanzibar() ([]*core.Relation, error) {
 	}
 	relations = append(relations, relation)
 
-	relationTypes, err := r.ReferencedTypes()
+	typeReferences, err := r.DirectTypeReferences()
 	if err != nil {
 		return relations, err
 	}
 
-	if len(relationTypes) > 0 {
-		types := []*core.AllowedRelation{}
-		for _, t := range relationTypes {
-			types = append(types, namespace.AllowedRelation(t.SpiceDBName(), compiler.Ellipsis))
+	if len(typeReferences) > 0 {
+		allowedRelations := []*core.AllowedRelation{}
+		for _, ref := range typeReferences {
+			if !ref.IsResolved() {
+				err := ref.Resolve(r.inType)
+				if err != nil {
+					return relations, err
+				}
+			}
+			if ref.all {
+				allowedRelations = append(allowedRelations, namespace.AllowedPublicNamespace(ref.instance.SpiceDBName()))
+			} else {
+				var subrelation string
+				if ref.subRelation != "" {
+					subrelation = ref.subRelation
+				} else {
+					subrelation = compiler.Ellipsis
+				}
+				allowedRelations = append(allowedRelations, namespace.AllowedRelation(ref.instance.SpiceDBName(), subrelation))
+			}
 		}
-		relations = append(relations, namespace.MustRelation(r.SpiceDBName(), nil, types...))
+		relations = append(relations, namespace.MustRelation(r.SpiceDBName(), nil, allowedRelations...))
 	}
 
 	return relations, nil
@@ -64,7 +80,7 @@ func (r *Relation) ToZanzibar() ([]*core.Relation, error) {
 
 type RelationExpression interface {
 	ToZanzibar(*Relation) (*core.SetOperation_Child, error)
-	ReferencedTypes(*Relation) ([]*Type, error)
+	DirectTypeReferences(*Relation) ([]*TypeReference, error)
 }
 
 type SelfRelationExpression struct {
@@ -92,24 +108,13 @@ func (e *SelfRelationExpression) ToZanzibar(r *Relation) (*core.SetOperation_Chi
 	return wrapper, nil
 }
 
-func (e *SelfRelationExpression) ReferencedTypes(r *Relation) ([]*Type, error) {
-	if !e.referencedType.IsResolved() {
-		err := e.referencedType.Resolve(r.inType)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return []*Type{e.referencedType.instance}, nil
+func (e *SelfRelationExpression) DirectTypeReferences(r *Relation) ([]*TypeReference, error) {
+	return []*TypeReference{e.referencedType}, nil
 }
 
 type ReferenceRelationExpression struct {
-	relation    string  //Relation name on the same type
-	subrelation *string //Optional relation on related objects
-	//Note: when using subrelations, we need to validate visiblity AND it's tricky because the actual types may be many
-	//Will need to recursively evaluate the body of `relation` for this type to find all SelfRelationExpressions
-	// ..and do the same for any ReferenceRelationExpressions encountered to get the set of all types.
-	//Then we can check if the named subrelation is accessible on all possible related types
-	//..May skip for now.
+	relation    string
+	subrelation *string
 }
 
 func NewReferenceRelationExpression(relation string, subrelation *string) *ReferenceRelationExpression {
@@ -124,23 +129,25 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 		return namespace.ComputedUserset(e.relation), nil
 	}
 
-	//Oh jeez. SpiceDB doesn't allow a permission on the left side of an arrow. Soooooooo, this doesn't work.
-	//Instead! Let's:
-	// Get a pointer to the relation
-	// Add a method to the relation that gets all the descendent selfrelationexpressions (specifically, the relations it added)
-	// For each of those such that they have the given relation and it's accessible, union them together
 	relation, ok := r.inType.relations[e.relation]
 	if !ok {
 		return nil, ErrSymbolNotFound
 	}
 
-	relationTypes, err := relation.ReferencedTypes()
+	relationTypes, err := relation.DirectTypeReferences()
 	if err != nil {
 		return nil, err
 	}
 
 	for _, t := range relationTypes {
-		subrelation, ok := t.relations[*e.subrelation]
+		if !t.IsResolved() {
+			err := t.Resolve(r.inType)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		subrelation, ok := t.instance.relations[*e.subrelation]
 		if !ok {
 			continue
 		}
@@ -152,8 +159,8 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 	return namespace.TupleToUserset(relation.SpiceDBName(), *e.subrelation), nil
 }
 
-func (e *ReferenceRelationExpression) ReferencedTypes(r *Relation) ([]*Type, error) {
-	return []*Type{}, nil
+func (e *ReferenceRelationExpression) DirectTypeReferences(r *Relation) ([]*TypeReference, error) {
+	return []*TypeReference{}, nil
 }
 
 type SetRelationExpression struct {
@@ -195,15 +202,15 @@ func (e *SetRelationExpression) ToZanzibar(r *Relation) (*core.SetOperation_Chil
 	return namespace.Rewrite(body), nil
 }
 
-func (e *SetRelationExpression) ReferencedTypes(r *Relation) ([]*Type, error) {
-	leftTypes, err := e.left.ReferencedTypes(r)
+func (e *SetRelationExpression) DirectTypeReferences(r *Relation) ([]*TypeReference, error) {
+	leftTypes, err := e.left.DirectTypeReferences(r)
 	if err != nil {
-		return []*Type{}, err
+		return []*TypeReference{}, err
 	}
 
-	rightTypes, err := e.right.ReferencedTypes(r)
+	rightTypes, err := e.right.DirectTypeReferences(r)
 	if err != nil {
-		return []*Type{}, err
+		return []*TypeReference{}, err
 	}
 
 	return append(leftTypes, rightTypes...), nil

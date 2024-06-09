@@ -105,16 +105,20 @@ func (d typeDescriptor) Resolve(inType *Type) (*Type, error) {
 }
 
 type TypeReference struct {
-	descriptor typeDescriptor
-	instance   *Type
+	descriptor  typeDescriptor
+	instance    *Type
+	subRelation string
+	all         bool
 }
 
-func NewTypeReference(moduleName string, typeName string) *TypeReference {
+func NewTypeReference(moduleName string, typeName string, subRelation string, all bool) *TypeReference {
 	return &TypeReference{
 		descriptor: typeDescriptor{
 			moduleName: moduleName,
 			typeName:   typeName,
 		},
+		subRelation: subRelation,
+		all:         all,
 	}
 }
 

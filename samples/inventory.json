@@ -13,7 +13,10 @@
                         "kind": "self",
                         "cardinality": "ExactlyOne",
                         "module":"iam",
-                        "type":"workspace"
+                        "type": {
+                            "module": "iam",
+                            "name":"workspace"
+                        }
                     }
                 },
                 {
@@ -33,6 +36,19 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name":"active",
+                    "visibility":"public",
+                    "body": {
+                        "kind": "self",
+                        "cardinality": "AtMostOne",
+                        "type": {
+                            "module":"iam",
+                            "name":"user",
+                            "all": true
+                        }
+                    }
                 }
             ]
         }

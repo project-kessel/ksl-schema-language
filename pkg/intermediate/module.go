@@ -29,8 +29,7 @@ type Relation struct {
 
 type RelationBody struct {
 	Kind        string        `json:"kind"`
-	Module      string        `json:"module,omitempty"`
-	Type        string        `json:"type,omitempty"`
+	Type        TypeReference `json:"type"`
 	Cardinality string        `json:"cardinality,omitempty"`
 	Relation    string        `json:"relation,omitempty"`
 	SubRelation string        `json:"sub_relation,omitempty"`
@@ -42,6 +41,13 @@ type ExtensionReference struct {
 	Module string            `json:"module,omitempty"`
 	Name   string            `json:"name"`
 	Params map[string]string `json:"params,omitempty"`
+}
+
+type TypeReference struct {
+	Module      string `json:"module,omitempty"`
+	Name        string `json:"name"`
+	SubRelation string `json:"sub_relation,omitempty"`
+	All         bool   `json:"all,omitempty"`
 }
 
 type ExtensionDefinition struct {
@@ -113,7 +119,7 @@ func (b *RelationBody) ToSemantic() (semantic.RelationExpression, error) {
 			return nil, err
 		}
 
-		return semantic.NewSelfRelationExpression(semantic.NewTypeReference(b.Module, b.Type), cardinality), nil
+		return semantic.NewSelfRelationExpression(semantic.NewTypeReference(b.Type.Module, b.Type.Name, b.Type.SubRelation, b.Type.All), cardinality), nil
 	case "reference":
 		return semantic.NewReferenceRelationExpression(b.Relation, nil), nil
 	case "nested_reference":

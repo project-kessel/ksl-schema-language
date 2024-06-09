@@ -1,239 +1,6 @@
 {
     "name":"iam",
-    "defined_extensions": [
-        {
-            "name":"workspace_permission",
-            "visibility":"public",
-            "params": ["full_name"],
-            "types": [
-                {
-                    "name": {
-                        "kind": "literal",
-                        "value": "role"
-                    },
-                    "relations": [
-                        {
-                            "name": {
-                                "kind": "param",
-                                "param": "full_name"
-                            },
-                            "visibility": "internal",
-                            "body": {
-                                "kind": "self",
-                                "cardinality": "AtMostOne",
-                                "type": "user"
-                            }
-                        },
-                        {
-                            "name": {
-                                "kind": "template",
-                                "segments": [
-                                    {
-                                        "kind": "param",
-                                        "param": "MODULE"
-                                    },
-                                    {
-                                        "kind": "literal",
-                                        "value": "all"
-                                    },
-                                    {
-                                        "kind": "literal",
-                                        "value": "all"
-                                    }
-                                ]
-                            },
-                            "visibility": "internal",
-                            "body": {
-                                "kind": "self",
-                                "cardinality": "AtMostOne",
-                                "type": "user"
-                            }
-                        },
-                        {
-                            "name": {
-                                "kind": "template",
-                                "segments": [
-                                    {
-                                        "kind": "param",
-                                        "param": "MODULE"
-                                    },
-                                    {
-                                        "kind": "param",
-                                        "param": "TYPE"
-                                    },
-                                    {
-                                        "kind": "literal",
-                                        "value": "all"
-                                    }
-                                ]
-                            },
-                            "visibility": "internal",
-                            "body": {
-                                "kind": "self",
-                                "cardinality": "AtMostOne",
-                                "type": "user"
-                            }
-                        },
-                        {
-                            "name": {
-                                "kind": "template",
-                                "segments": [
-                                    {
-                                        "kind": "param",
-                                        "param": "MODULE"
-                                    },
-                                    {
-                                        "kind": "literal",
-                                        "value": "all"
-                                    },
-                                    {
-                                        "kind": "param",
-                                        "param": "RELATION"
-                                    }
-                                ]
-                            },
-                            "visibility": "internal",
-                            "body": {
-                                "kind": "self",
-                                "cardinality": "AtMostOne",
-                                "type": "user"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": {
-                        "kind": "literal",
-                        "value": "role_binding"
-                    },
-                    "relations": [
-                        {
-                            "name": {
-                                "kind": "param",
-                                "param": "full_name"
-                            },
-                            "visibility": "internal",
-                            "body": {
-                                "kind": "intersect",
-                                "left": {
-                                    "kind": "reference",
-                                    "relation": {
-                                        "kind": "literal",
-                                        "value": "subject"
-                                    }
-                                },
-                                "right": {
-                                    "kind": "union",
-                                    "left":{
-                                        "kind": "nested_reference",
-                                        "relation": {
-                                            "kind": "literal",
-                                            "value": "granted"
-                                        },
-                                        "sub_relation": {
-                                            "kind": "param",
-                                            "param": "full_name"
-                                        }
-                                    },
-                                    "right":{
-                                        "kind": "union",
-                                        "left": {
-                                            "kind": "nested_reference",
-                                            "relation": {
-                                                "kind": "literal",
-                                                "value": "granted"
-                                            },
-                                            "sub_relation": {
-                                                "kind": "template",
-                                                "segments": [
-                                                    {
-                                                        "kind": "param",
-                                                        "param": "MODULE"
-                                                    },
-                                                    {
-                                                        "kind": "literal",
-                                                        "value": "all"
-                                                    },
-                                                    {
-                                                        "kind": "param",
-                                                        "param": "RELATION"
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "right":{
-                                            "kind": "nested_reference",
-                                            "relation": {
-                                                "kind": "literal",
-                                                "value": "granted"
-                                            },
-                                            "sub_relation": {
-                                                "kind": "template",
-                                                "segments": [
-                                                    {
-                                                        "kind": "param",
-                                                        "param": "MODULE"
-                                                    },
-                                                    {
-                                                        "kind": "literal",
-                                                        "value": "all"
-                                                    },
-                                                    {
-                                                        "kind": "literal",
-                                                        "param": "all"
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": {
-                        "kind": "literal",
-                        "value": "workspace"
-                    },
-                    "relations": [
-                        {
-                            "name": {
-                                "kind": "param",
-                                "param": "full_name"
-                            },
-                            "visibility": "public",
-                            "body": {
-                                "kind": "union",
-                                "left": {
-                                        "kind": "nested_reference",
-                                        "relation": {
-                                            "kind": "literal",
-                                            "value": "user_grant"
-                                        },
-                                        "sub_relation": {
-                                            "kind": "param",
-                                            "param": "full_name"
-                                        }
-                                    },
-                                "right": {
-                                    "kind": "nested_reference",
-                                    "relation": {
-                                        "kind": "literal",
-                                        "value": "parent"
-                                    },
-                                    "sub_relation": {
-                                        "kind": "param",
-                                        "param": "full_name"
-                                    }
-                                }
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
+    
     "types": [
         {
             "name": "user",
@@ -253,7 +20,9 @@
                     "body": {
                         "kind": "self",
                         "cardinality": "ExactlyOne",
-                        "type": "user"
+                        "type": {
+                            "name": "user"
+                        } 
                     }
                 },
                 {
@@ -262,7 +31,9 @@
                     "body": {
                         "kind": "self",
                         "cardinality": "AtLeastOne",
-                        "type": "role"
+                        "type": {
+                            "name": "role"
+                        }
                     }
                 }
             ]
@@ -277,7 +48,9 @@
                     "body": {
                         "kind": "self",
                         "cardinality": "AtMostOne",
-                        "type": "workspace"
+                        "type": {
+                            "name": "workspace"
+                        }
                     }
                 },
                 {
@@ -285,7 +58,9 @@
                     "visibility": "internal",
                     "body": {
                         "kind": "self",
-                        "type": "role_binding"
+                        "type": {
+                            "name": "role_binding"
+                        }
                     }
                 }
             ]
