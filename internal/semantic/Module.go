@@ -2,6 +2,8 @@ package semantic
 
 import (
 	"fmt"
+
+	core "github.com/authzed/spicedb/pkg/proto/core/v1"
 )
 
 type Module struct {
@@ -50,4 +52,19 @@ func (m *Module) AddExtension(e *Extension) error {
 	e.module = m
 
 	return nil
+}
+
+func (m *Module) ToZanzibar() ([]*core.NamespaceDefinition, error) {
+	namespaces := []*core.NamespaceDefinition{}
+
+	for _, t := range m.types {
+		namespace, err := t.ToZanzibar()
+		if err != nil {
+			return namespaces, err
+		}
+
+		namespaces = append(namespaces, namespace)
+	}
+
+	return namespaces, nil
 }
