@@ -23,8 +23,16 @@ var (
 type Cardinality int
 
 const (
-	ZeroOrOne Cardinality = iota
-	ExactlyOne
-	AtLeastOne
-	ZeroToMany
+	CardinalityAtMostOne Cardinality = iota
+	CardinalityExactlyOne
+	CardinalityAtLeastOne
+	CardinalityAny
+)
+
+type SetOperation int
+
+const (
+	SetOperationUnion SetOperation = iota
+	SetOperationIntersection
+	SetOperationExclusion
 )
