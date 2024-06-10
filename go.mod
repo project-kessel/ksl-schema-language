@@ -5,7 +5,8 @@ go 1.22.2
 require github.com/authzed/spicedb v1.33.0
 
 require (
-	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
+	github.com/antlr/antlr4/runtime/Go/antlr v1.4.10 // indirect
+	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/authzed/authzed-go v0.11.2-0.20240507202708-8b150c491e4a // indirect
 	github.com/authzed/cel-go v0.20.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect

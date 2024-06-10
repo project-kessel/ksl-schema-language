@@ -2,20 +2,22 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/authzed/spicedb/pkg/schemadsl/generator"
 	"project-kessel.org/ksl-schema-language/internal/semantic"
-	"project-kessel.org/ksl-schema-language/pkg/intermediate"
+	"project-kessel.org/ksl-schema-language/pkg/ksl"
 )
 
 func main() {
-	rbac, err := intermediate.LoadFile("samples/rbac.json")
+	rbac, err := ksl.Compile(open("samples/rbac.ksl"))
 	if err != nil {
 		fmt.Printf("Error opening file: %s\n", err)
 		return
 	}
 
-	inventory, err := intermediate.LoadFile("samples/inventory.json")
+	inventory, err := ksl.Compile(open("samples/inventory.ksl"))
 	if err != nil {
 		fmt.Printf("Error opening file: %s\n", err)
 		return
@@ -62,4 +64,13 @@ func main() {
 	}
 
 	fmt.Println(source)
+}
+
+func open(file string) io.Reader {
+	f, err := os.Open(file)
+	if err != nil {
+		panic(err)
+	}
+
+	return f
 }

@@ -1,0 +1,38 @@
+version 0.1
+module iam
+
+internal type user {
+
+}
+
+internal type role {
+
+}
+
+internal type role_binding {
+    relation subject: [ExactlyOne user]
+    relation role: [ExactlyOne role]
+}
+
+public type workspace {
+    relation parent: [AtMostOne workspace]
+    relation user_grant: [Any role_binding]
+}
+
+
+public extension workspace_permission(full_name) {
+    type role {
+        relation ${full_name}: [bool]
+        allow_duplicates relation `${MODULE}_all_all`: [bool]
+        allow_duplicates relation `${MODULE}_${TYPE}_all`: [bool]
+        allow_duplicates relation `${MODULE}_all_${RELATION}`: [bool]
+    }
+
+    type role_binding {
+        relation ${full_name}: subject and (granted.${full_name} or granted.`${MODULE}_all_all` or granted.`${MODULE}_${TYPE}_all` or granted.`${MODULE}_all_${RELATION}`)
+    }
+
+    type workspace {
+        public relation ${full_name}: user_grant.${full_name} or parent.${full_name}
+    }
+}
