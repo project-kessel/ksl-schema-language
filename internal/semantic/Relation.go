@@ -9,15 +9,16 @@ import (
 )
 
 type Relation struct {
-	name       string
-	visibility Visibility
-	inType     *Type
-	extensions []*ExtensionReference
-	body       RelationExpression
+	name          string
+	visibility    Visibility
+	inType        *Type
+	extensions    []*ExtensionReference
+	body          RelationExpression
+	generatedFrom *DynamicRelation
 }
 
-func NewRelation(name string, t *Type, visibility Visibility, body RelationExpression) (*Relation, error) {
-	r := &Relation{name: name, inType: t, visibility: visibility, body: body}
+func NewRelation(name string, t *Type, visibility Visibility, body RelationExpression, generatedFrom *DynamicRelation) (*Relation, error) {
+	r := &Relation{name: name, inType: t, visibility: visibility, body: body, generatedFrom: generatedFrom}
 
 	return r, nil
 }

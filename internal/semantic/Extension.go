@@ -35,6 +35,9 @@ func (e *Extension) Apply(fromModule *Module, fromType *Type, fromRelation *Rela
 			}
 		} else {
 			for _, relation := range generated.relations {
+				if _, ok := existing.relations[relation.name]; ok && relation.generatedFrom.IgnoreDuplicates {
+					continue
+				}
 				err = existing.AddRelation(relation)
 				if err != nil {
 					return err
@@ -70,9 +73,10 @@ func (dt *DynamicType) ToType(m *Module, params map[string]string) (*Type, error
 }
 
 type DynamicRelation struct {
-	Name       Name
-	Visibility Visibility
-	Body       DynamicRelationBody
+	Name             Name
+	Visibility       Visibility
+	IgnoreDuplicates bool
+	Body             DynamicRelationBody
 }
 
 func (dr *DynamicRelation) ToRelation(t *Type, params map[string]string) (*Relation, error) {
@@ -81,7 +85,7 @@ func (dr *DynamicRelation) ToRelation(t *Type, params map[string]string) (*Relat
 		return nil, err
 	}
 
-	return NewRelation(dr.Name.String(params), t, dr.Visibility, body)
+	return NewRelation(dr.Name.String(params), t, dr.Visibility, body, dr)
 }
 
 type DynamicRelationBody interface {

@@ -18,6 +18,7 @@
                                 "param": "full_name"
                             },
                             "visibility": "internal",
+                            "ignoreduplicates": true,
                             "body": {
                                 "kind": "self",
                                 "cardinality": "AtMostOne",
@@ -46,6 +47,7 @@
                                 ]
                             },
                             "visibility": "internal",
+                            "ignoreduplicates": true,
                             "body": {
                                 "kind": "self",
                                 "cardinality": "AtMostOne",
@@ -78,6 +80,7 @@
                                 ]
                             },
                             "visibility": "internal",
+                            "ignoreduplicates": true,
                             "body": {
                                 "kind": "self",
                                 "cardinality": "AtMostOne",
@@ -106,6 +109,7 @@
                                 ]
                             },
                             "visibility": "internal",
+                            "ignoreduplicates": true,
                             "body": {
                                 "kind": "self",
                                 "cardinality": "AtMostOne",

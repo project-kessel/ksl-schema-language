@@ -65,9 +65,10 @@ type DynamicType struct {
 }
 
 type DynamicRelation struct {
-	Name       *DynamicName        `json:"name"`
-	Visibility string              `json:"visibility"`
-	Body       DynamicRelationBody `json:"body"`
+	Name             *DynamicName        `json:"name"`
+	Visibility       string              `json:"visibility"`
+	IgnoreDuplicates bool                `json:"ignoreduplicates,omitempty"`
+	Body             DynamicRelationBody `json:"body"`
 }
 
 type DynamicRelationBody struct {
@@ -153,7 +154,7 @@ func (r *Relation) ToSemantic(t *semantic.Type) (*semantic.Relation, error) {
 		return nil, err
 	}
 
-	sr, err := semantic.NewRelation(r.Name, t, v, b)
+	sr, err := semantic.NewRelation(r.Name, t, v, b, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -277,7 +278,7 @@ func (dr *DynamicRelation) ToSemantic() (*semantic.DynamicRelation, error) {
 		return nil, err
 	}
 
-	return &semantic.DynamicRelation{Name: name, Visibility: visibility, Body: body}, nil
+	return &semantic.DynamicRelation{Name: name, Visibility: visibility, Body: body, IgnoreDuplicates: dr.IgnoreDuplicates}, nil
 }
 
 func (dr *DynamicRelationBody) ToSemantic() (semantic.DynamicRelationBody, error) {

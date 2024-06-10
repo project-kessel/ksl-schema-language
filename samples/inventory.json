@@ -36,6 +36,24 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name":"write",
+                    "visibility":"public",
+                    "body": {
+                        "kind": "nested_reference",
+                        "relation": "workspace",
+                        "sub_relation": "inventory_hosts_write"
+                    },
+                    "extensions": [
+                        {
+                            "module":"iam",
+                            "name":"workspace_permission",
+                            "params": {
+                                "full_name": "inventory_hosts_write"
+                            }
+                        }
+                    ]
                 }
             ]
         }
