@@ -16,7 +16,8 @@
             "type": "go",
             "request": "launch",
             "mode": "exec",
-            "program": "bin/cmd"
+            "program": "bin/ksl",
+            "args": ["-c", "demo/rbac.ksl"]
         }
     ]
 }

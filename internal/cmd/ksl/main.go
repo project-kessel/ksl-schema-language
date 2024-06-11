@@ -19,14 +19,13 @@ func main() {
 	toCompile := flag.String("c", "", "A KSL source file to be compiled to an intermediate representation")
 	output := flag.String("o", "", "The output file to write.")
 
+	flag.Parse()
 	if toCompile != nil && *toCompile == "" {
 		toCompile = nil
 	}
 	if output != nil && *output == "" {
 		output = nil
 	}
-
-	flag.Parse()
 
 	if toCompile != nil {
 		err := compileToIL(*toCompile, output)
