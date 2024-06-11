@@ -26,6 +26,12 @@ type kslListener interface {
 	// EnterTypeExpr is called when entering the typeExpr production.
 	EnterTypeExpr(c *TypeExprContext)
 
+	// EnterTypeReference is called when entering the typeReference production.
+	EnterTypeReference(c *TypeReferenceContext)
+
+	// EnterDynamicTypeReference is called when entering the dynamicTypeReference production.
+	EnterDynamicTypeReference(c *DynamicTypeReferenceContext)
+
 	// EnterExtensionParam is called when entering the extensionParam production.
 	EnterExtensionParam(c *ExtensionParamContext)
 
@@ -118,6 +124,12 @@ type kslListener interface {
 
 	// ExitTypeExpr is called when exiting the typeExpr production.
 	ExitTypeExpr(c *TypeExprContext)
+
+	// ExitTypeReference is called when exiting the typeReference production.
+	ExitTypeReference(c *TypeReferenceContext)
+
+	// ExitDynamicTypeReference is called when exiting the dynamicTypeReference production.
+	ExitDynamicTypeReference(c *DynamicTypeReferenceContext)
 
 	// ExitExtensionParam is called when exiting the extensionParam production.
 	ExitExtensionParam(c *ExtensionParamContext)

@@ -57,6 +57,18 @@ func (s *BasekslListener) EnterTypeExpr(ctx *TypeExprContext) {}
 // ExitTypeExpr is called when production typeExpr is exited.
 func (s *BasekslListener) ExitTypeExpr(ctx *TypeExprContext) {}
 
+// EnterTypeReference is called when production typeReference is entered.
+func (s *BasekslListener) EnterTypeReference(ctx *TypeReferenceContext) {}
+
+// ExitTypeReference is called when production typeReference is exited.
+func (s *BasekslListener) ExitTypeReference(ctx *TypeReferenceContext) {}
+
+// EnterDynamicTypeReference is called when production dynamicTypeReference is entered.
+func (s *BasekslListener) EnterDynamicTypeReference(ctx *DynamicTypeReferenceContext) {}
+
+// ExitDynamicTypeReference is called when production dynamicTypeReference is exited.
+func (s *BasekslListener) ExitDynamicTypeReference(ctx *DynamicTypeReferenceContext) {}
+
 // EnterExtensionParam is called when production extensionParam is entered.
 func (s *BasekslListener) EnterExtensionParam(ctx *ExtensionParamContext) {}
 

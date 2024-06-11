@@ -49,14 +49,16 @@ import_stmt: IMPORT NAME;
 declaration: typeExpr | extension;
 
 typeExpr: ACCESS? TYPE NAME LBRACE relation* RBRACE;
+typeReference: (moduleName=NAME RESOLVE)? typeName=NAME;
+dynamicTypeReference: (dynanicModuleName=NAME RESOLVE)? dynamicTypeName=NAME;
 
-extensionParam: NAME EXPAND STRING_DELIM ~STRING_DELIM STRING_DELIM;
+extensionParam: NAME EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
 extensionParams: extensionParam (ARG_DELIM extensionParam)*;
-extensionReference: EXTENSION_CALL (NAME RESOLVE)? NAME LPAREN extensionParams RPAREN;
+extensionReference: EXTENSION_CALL typeReference LPAREN extensionParams RPAREN;
 relation: extensionReference* ACCESS? RELATION NAME EXPAND relationBody;
-relationBody: LSQUARE CARDINALITY? NAME RSQARE #Self
+relationBody: LSQUARE CARDINALITY? typeReference RSQARE #Self
     | NAME #Reference
-    | NAME RESOLVE NAME #SubRelation
+    | relationName=NAME RESOLVE subrelationName=NAME #SubRelation
     | LPAREN relationBody RPAREN #Paren
     | relationBody AND relationBody #And
     | relationBody OR relationBody #OR
@@ -65,7 +67,7 @@ relationBody: LSQUARE CARDINALITY? NAME RSQARE #Self
 paramNames: NAME (ARG_DELIM NAME)?;
 extension: ACCESS? EXTENSION NAME LPAREN paramNames RPAREN LBRACE dynamicType+ RBRACE;
 
-dynamicType: TYPE dynamicName LBRACE dynamicRelation* RBRACE;
+dynamicType: ACCESS? TYPE dynamicName LBRACE dynamicRelation* RBRACE;
 
 dynamicRelation: ALLOW_DUPLICATES? ACCESS? RELATION dynamicName EXPAND dynamicBody;
 
@@ -73,7 +75,7 @@ dynamicName: NAME #Literal
     | VARREF LBRACE NAME RBRACE #Variable
     | TEMPLATE_DELIM dynamicName+ TEMPLATE_DELIM #Template;
 
-dynamicBody: LSQUARE CARDINALITY? dynamicName RSQARE #DynamicSelf
+dynamicBody: LSQUARE CARDINALITY? typeReference RSQARE #DynamicSelf
     | dynamicName #DynamicReference
     | dynamicName RESOLVE dynamicName #DynamicSubRelation
     | LPAREN dynamicBody RPAREN #DynamicParen

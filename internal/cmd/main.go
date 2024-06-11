@@ -11,13 +11,13 @@ import (
 )
 
 func main() {
-	rbac, err := ksl.Compile(open("samples/rbac.ksl"))
+	inventory, err := ksl.Compile(open("samples/inventory.ksl"))
 	if err != nil {
 		fmt.Printf("Error opening file: %s\n", err)
 		return
 	}
 
-	inventory, err := ksl.Compile(open("samples/inventory.ksl"))
+	rbac, err := ksl.Compile(open("samples/rbac.ksl"))
 	if err != nil {
 		fmt.Printf("Error opening file: %s\n", err)
 		return

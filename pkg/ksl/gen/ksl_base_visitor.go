@@ -32,6 +32,14 @@ func (v *BasekslVisitor) VisitTypeExpr(ctx *TypeExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BasekslVisitor) VisitTypeReference(ctx *TypeReferenceContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BasekslVisitor) VisitDynamicTypeReference(ctx *DynamicTypeReferenceContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BasekslVisitor) VisitExtensionParam(ctx *ExtensionParamContext) interface{} {
 	return v.VisitChildren(ctx)
 }

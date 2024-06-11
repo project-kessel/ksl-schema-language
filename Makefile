@@ -3,7 +3,7 @@ VERSION=$(shell git describe --tags --always)
 # build
 .PHONY: build
 build:
-	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./...
+	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -gcflags "all=-N -l" -o ./bin/ ./...
 
 # run all tests
 .PHONY: test
