@@ -27,7 +27,9 @@ func Compile(r io.Reader) (*intermediate.Module, error) {
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
 	interpreter := parser.NewkslParser(tokens)
 
-	_ = interpreter.File()
+	file := interpreter.File()
+	m := file.Module()
+	name := m.NAME().GetText()
 
-	return &intermediate.Module{}, nil
+	return &intermediate.Module{Name: name}, nil
 }
