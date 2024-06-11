@@ -11,3 +11,8 @@ test:
 	@echo ""
 	@echo "Running tests."
 	go test ./... -count=1
+
+# regenerate ANTLR code
+.PHONY: antlr
+antlr:
+	java -jar external/antlr-4.13.1-complete.jar  -o "$(realpath pkg/ksl/gen)" -visitor -lib "$(realpath pkg/ksl)" -Dlanguage=Go "$(realpath pkg/ksl/ksl.g4)"
