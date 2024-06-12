@@ -1,4 +1,4 @@
-// Code generated from /home/kooshy/Projects/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /home/wscalf/Projects/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -62,12 +62,6 @@ func (s *BasekslListener) EnterTypeReference(ctx *TypeReferenceContext) {}
 
 // ExitTypeReference is called when production typeReference is exited.
 func (s *BasekslListener) ExitTypeReference(ctx *TypeReferenceContext) {}
-
-// EnterDynamicTypeReference is called when production dynamicTypeReference is entered.
-func (s *BasekslListener) EnterDynamicTypeReference(ctx *DynamicTypeReferenceContext) {}
-
-// ExitDynamicTypeReference is called when production dynamicTypeReference is exited.
-func (s *BasekslListener) ExitDynamicTypeReference(ctx *DynamicTypeReferenceContext) {}
 
 // EnterExtensionParam is called when production extensionParam is entered.
 func (s *BasekslListener) EnterExtensionParam(ctx *ExtensionParamContext) {}

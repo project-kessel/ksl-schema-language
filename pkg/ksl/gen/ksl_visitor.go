@@ -1,4 +1,4 @@
-// Code generated from /home/kooshy/Projects/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /home/wscalf/Projects/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -28,9 +28,6 @@ type kslVisitor interface {
 
 	// Visit a parse tree produced by kslParser#typeReference.
 	VisitTypeReference(ctx *TypeReferenceContext) interface{}
-
-	// Visit a parse tree produced by kslParser#dynamicTypeReference.
-	VisitDynamicTypeReference(ctx *DynamicTypeReferenceContext) interface{}
 
 	// Visit a parse tree produced by kslParser#extensionParam.
 	VisitExtensionParam(ctx *ExtensionParamContext) interface{}

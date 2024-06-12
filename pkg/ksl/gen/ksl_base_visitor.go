@@ -1,4 +1,4 @@
-// Code generated from /home/kooshy/Projects/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /home/wscalf/Projects/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -33,10 +33,6 @@ func (v *BasekslVisitor) VisitTypeExpr(ctx *TypeExprContext) interface{} {
 }
 
 func (v *BasekslVisitor) VisitTypeReference(ctx *TypeReferenceContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BasekslVisitor) VisitDynamicTypeReference(ctx *DynamicTypeReferenceContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

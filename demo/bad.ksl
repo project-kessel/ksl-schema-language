@@ -1,0 +1,7 @@
+version 0.1
+module bad
+import iam
+
+public type Widget {
+    relation user_grant: [Any iam.role_binding]
+}

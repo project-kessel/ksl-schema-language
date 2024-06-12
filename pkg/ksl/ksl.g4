@@ -50,11 +50,10 @@ declaration: typeExpr | extension;
 
 typeExpr: ACCESS? TYPE NAME LBRACE relation* RBRACE;
 typeReference: (moduleName=NAME RESOLVE)? typeName=NAME;
-dynamicTypeReference: (dynanicModuleName=NAME RESOLVE)? dynamicTypeName=NAME;
 
 extensionParam: NAME EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
 extensionParams: extensionParam (ARG_DELIM extensionParam)*;
-extensionReference: EXTENSION_CALL typeReference LPAREN extensionParams RPAREN;
+extensionReference: EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN;
 relation: extensionReference* ACCESS? RELATION NAME EXPAND relationBody;
 relationBody: LSQUARE CARDINALITY? typeReference RSQARE #Self
     | NAME #Reference
@@ -65,7 +64,7 @@ relationBody: LSQUARE CARDINALITY? typeReference RSQARE #Self
     | relationBody UNLESS relationBody #Unless;
 
 paramNames: NAME (ARG_DELIM NAME)?;
-extension: ACCESS? EXTENSION NAME LPAREN paramNames RPAREN LBRACE dynamicType+ RBRACE;
+extension: ACCESS? EXTENSION NAME LPAREN paramNames? RPAREN LBRACE dynamicType+ RBRACE;
 
 dynamicType: ACCESS? TYPE dynamicName LBRACE dynamicRelation* RBRACE;
 

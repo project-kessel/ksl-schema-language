@@ -1,4 +1,4 @@
-// Code generated from /home/kooshy/Projects/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /home/wscalf/Projects/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -28,9 +28,6 @@ type kslListener interface {
 
 	// EnterTypeReference is called when entering the typeReference production.
 	EnterTypeReference(c *TypeReferenceContext)
-
-	// EnterDynamicTypeReference is called when entering the dynamicTypeReference production.
-	EnterDynamicTypeReference(c *DynamicTypeReferenceContext)
 
 	// EnterExtensionParam is called when entering the extensionParam production.
 	EnterExtensionParam(c *ExtensionParamContext)
@@ -127,9 +124,6 @@ type kslListener interface {
 
 	// ExitTypeReference is called when exiting the typeReference production.
 	ExitTypeReference(c *TypeReferenceContext)
-
-	// ExitDynamicTypeReference is called when exiting the dynamicTypeReference production.
-	ExitDynamicTypeReference(c *DynamicTypeReferenceContext)
 
 	// ExitExtensionParam is called when exiting the extensionParam production.
 	ExitExtensionParam(c *ExtensionParamContext)

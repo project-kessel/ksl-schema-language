@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -37,11 +38,15 @@ func main() {
 
 	err := build(flag.Args(), output)
 	if err != nil {
-		fmt.Printf("Error: %s", err.Error())
+		fmt.Printf("Error: %s\n", err.Error())
 	}
 }
 
 func build(sources []string, output *string) error {
+	if len(sources) == 0 {
+		return errors.New("no source files specified")
+	}
+
 	schema := semantic.NewSchema()
 
 	for _, source := range sources {

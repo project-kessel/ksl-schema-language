@@ -11,7 +11,7 @@ internal type role {
 
 internal type role_binding {
     relation subject: [ExactlyOne user]
-    relation granted: [ExactlyOne role]
+    relation granted: [AtLeastOne role]
 }
 
 public type workspace {
