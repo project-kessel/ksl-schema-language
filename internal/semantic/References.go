@@ -83,16 +83,16 @@ func (d typeDescriptor) Resolve(inType *Type) (*Type, error) {
 
 	resolvedType, found := module.types[d.typeName]
 	if !found {
-		return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.typeName, ErrSymbolNotFound)
+		return nil, fmt.Errorf("Type %s.%s: %w", module.name, d.typeName, ErrSymbolNotFound)
 	}
 
 	if module == inType.module {
 		if !resolvedType.visibility.ModuleVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.typeName, ErrSymbolNotAccessible)
+			return nil, fmt.Errorf("Type %s.%s: %w", module.name, d.typeName, ErrSymbolNotAccessible)
 		}
 	} else {
 		if !resolvedType.visibility.SchemaVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.typeName, ErrSymbolNotAccessible)
+			return nil, fmt.Errorf("Type %s.%s: %w", module.name, d.typeName, ErrSymbolNotAccessible)
 		}
 	}
 
