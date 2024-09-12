@@ -48,7 +48,7 @@ func (s *Schema) ToZanzibar() ([]compiler.SchemaDefinition, error) {
 
 		for _, namespace := range namespaces {
 			if namespaceNames[namespace.Name] {
-				return elements, fmt.Errorf("Zanzibar namespace %s: %w", namespace.Name, ErrSymbolExists)
+				return elements, fmt.Errorf("zanzibar namespace %s: %w", namespace.Name, ErrSymbolExists)
 			} else {
 				elements = append(elements, namespace)
 				namespaceNames[namespace.Name] = true

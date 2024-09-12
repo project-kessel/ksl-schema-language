@@ -24,7 +24,7 @@ func NewRelation(name string, t *Type, visibility Visibility, body RelationExpre
 }
 
 func (r *Relation) SpiceDBName() string {
-	return fmt.Sprintf("p_%s", r.name)
+	return fmt.Sprintf("t_%s", r.name)
 }
 
 func (r *Relation) VisibleTo(t *Type) bool {
@@ -103,22 +103,24 @@ type RelationExpression interface {
 }
 
 type SelfRelationExpression struct {
-	referencedType *TypeReference
-	cardinality    Cardinality
+	referencedTypes []*TypeReference
+	cardinality     Cardinality
 }
 
-func NewSelfRelationExpression(referencedType *TypeReference, cardinality Cardinality) *SelfRelationExpression {
+func NewSelfRelationExpression(referencedTypes []*TypeReference, cardinality Cardinality) *SelfRelationExpression {
 	return &SelfRelationExpression{
-		referencedType: referencedType,
-		cardinality:    cardinality,
+		referencedTypes: referencedTypes,
+		cardinality:     cardinality,
 	}
 }
 
 func (e *SelfRelationExpression) ToZanzibar(r *Relation) (*core.SetOperation_Child, error) {
-	if !e.referencedType.IsResolved() {
-		err := e.referencedType.Resolve(r.inType)
-		if err != nil {
-			return nil, err
+	for _, t := range e.referencedTypes {
+		if !t.IsResolved() {
+			err := t.Resolve(r.inType)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -128,7 +130,7 @@ func (e *SelfRelationExpression) ToZanzibar(r *Relation) (*core.SetOperation_Chi
 }
 
 func (e *SelfRelationExpression) DirectTypeReferences(r *Relation) ([]*TypeReference, error) {
-	return []*TypeReference{e.referencedType}, nil
+	return e.referencedTypes, nil
 }
 
 type ReferenceRelationExpression struct {

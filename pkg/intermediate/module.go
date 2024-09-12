@@ -29,13 +29,13 @@ type Relation struct {
 }
 
 type RelationBody struct {
-	Kind        string        `json:"kind"`
-	Type        TypeReference `json:"type"`
-	Cardinality string        `json:"cardinality,omitempty"`
-	Relation    string        `json:"relation,omitempty"`
-	SubRelation string        `json:"sub_relation,omitempty"`
-	Left        *RelationBody `json:"left,omitempty"`
-	Right       *RelationBody `json:"right,omitempty"`
+	Kind        string           `json:"kind"`
+	Types       []*TypeReference `json:"types"`
+	Cardinality string           `json:"cardinality,omitempty"`
+	Relation    string           `json:"relation,omitempty"`
+	SubRelation string           `json:"sub_relation,omitempty"`
+	Left        *RelationBody    `json:"left,omitempty"`
+	Right       *RelationBody    `json:"right,omitempty"`
 }
 
 type ExtensionReference struct {
@@ -73,7 +73,7 @@ type DynamicRelation struct {
 
 type DynamicRelationBody struct {
 	Kind        string               `json:"kind"`
-	Type        TypeReference        `json:"type"`
+	Types       []*TypeReference     `json:"types"`
 	Cardinality string               `json:"cardinality,omitempty"`
 	Relation    *DynamicName         `json:"relation,omitempty"`
 	SubRelation *DynamicName         `json:"sub_relation,omitempty"`
@@ -122,7 +122,12 @@ func (b *RelationBody) ToSemantic() (semantic.RelationExpression, error) {
 			return nil, err
 		}
 
-		return semantic.NewSelfRelationExpression(semantic.NewTypeReference(b.Type.Module, b.Type.Name, b.Type.SubRelation, b.Type.All), cardinality), nil
+		types := make([]*semantic.TypeReference, 0)
+		for _, t := range b.Types {
+			types = append(types, semantic.NewTypeReference(t.Module, t.Name, t.SubRelation, t.All))
+		}
+
+		return semantic.NewSelfRelationExpression(types, cardinality), nil
 	case "reference":
 		return semantic.NewReferenceRelationExpression(b.Relation, nil), nil
 	case "nested_reference":
@@ -289,7 +294,12 @@ func (dr *DynamicRelationBody) ToSemantic() (semantic.DynamicRelationBody, error
 			return nil, err
 		}
 
-		return semantic.NewSelfRelationExpression(semantic.NewTypeReference(dr.Type.Module, dr.Type.Name, dr.Type.SubRelation, dr.Type.All), cardinality), nil
+		types := make([]*semantic.TypeReference, 0)
+		for _, t := range dr.Types {
+			types = append(types, semantic.NewTypeReference(t.Module, t.Name, t.SubRelation, t.All))
+		}
+
+		return semantic.NewSelfRelationExpression(types, cardinality), nil
 	case "reference":
 		relation, err := dr.Relation.ToSemantic()
 		if err != nil {
