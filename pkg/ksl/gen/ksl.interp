@@ -3,7 +3,7 @@ null
 'version'
 null
 '.'
-'module'
+'namespace'
 null
 'public'
 'internal'
@@ -43,7 +43,7 @@ null
 VERSION
 VERSIONNUM
 RESOLVE
-MODULE
+NAMESPACE
 ACCESS
 PUBLIC
 INTERNAL
@@ -81,7 +81,7 @@ WS
 rule names:
 file
 version
-module
+namespace
 import_stmt
 declaration
 typeExpr

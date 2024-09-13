@@ -32,7 +32,7 @@ func (r *Relation) VisibleTo(t *Type) bool {
 }
 
 func (r *Relation) AddExtension(e *ExtensionReference) {
-	e.module = r.inType.module
+	e.namespace = r.inType.namespace
 	e.onType = r.inType
 	e.relation = r
 

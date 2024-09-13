@@ -4,7 +4,7 @@ grammar ksl;
 VERSION: 'version';
 VERSIONNUM: [0-9] RESOLVE [0-9]+;
 RESOLVE: '.';
-MODULE: 'module';
+NAMESPACE: 'namespace';
 ACCESS: PUBLIC | INTERNAL | PRIVATE;
 PUBLIC: 'public';
 INTERNAL: 'internal';
@@ -41,10 +41,10 @@ NAME: [a-zA-Z_][a-zA-Z_0-9]*;
 COMMENT: '//' ~[\r\n]* -> skip;
 WS: [ \r\n\t]+ -> skip;
 
-file: version module import_stmt* declaration+;
+file: version namespace import_stmt* declaration+;
 
 version: VERSION VERSIONNUM;
-module: MODULE NAME;
+namespace: NAMESPACE NAME;
 import_stmt: IMPORT NAME;
 declaration: typeExpr | extension;
 

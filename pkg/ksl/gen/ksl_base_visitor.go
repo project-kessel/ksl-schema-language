@@ -16,7 +16,7 @@ func (v *BasekslVisitor) VisitVersion(ctx *VersionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BasekslVisitor) VisitModule(ctx *ModuleContext) interface{} {
+func (v *BasekslVisitor) VisitNamespace(ctx *NamespaceContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

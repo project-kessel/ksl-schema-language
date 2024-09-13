@@ -1,12 +1,12 @@
 version 0.1
-module inventory
-import iam
+namespace inventory
+import rbac
 
 public type host {
-    private relation workspace: [ExactlyOne iam.workspace]
+    private relation workspace: [ExactlyOne rbac.workspace]
     
-    @iam.workspace_permission(full_name:'inventory_hosts_read')
+    @rbac.workspace_permission(full_name:'inventory_hosts_read')
     public relation read: workspace.inventory_hosts_read
-    @iam.workspace_permission(full_name:'inventory_hosts_write')
+    @rbac.workspace_permission(full_name:'inventory_hosts_write')
     public relation write: workspace.inventory_hosts_write
 }

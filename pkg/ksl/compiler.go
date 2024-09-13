@@ -10,14 +10,14 @@ import (
 )
 
 var (
-	BooleanType *intermediate.TypeReference = &intermediate.TypeReference{ //Module and Name should be customizable, maybe through the language, maybe through a compiler flag
-		Module: "rbac",
-		Name:   "user",
-		All:    true,
+	BooleanType *intermediate.TypeReference = &intermediate.TypeReference{ //Namespace and Name should be customizable, maybe through the language, maybe through a compiler flag
+		Namespace: "rbac",
+		Name:      "user",
+		All:       true,
 	}
 )
 
-func Compile(r io.Reader) (*intermediate.Module, error) {
+func Compile(r io.Reader) (*intermediate.Namespace, error) {
 	data, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
@@ -30,15 +30,15 @@ func Compile(r io.Reader) (*intermediate.Module, error) {
 
 	file := interpreter.File()
 	converter := &converter{}
-	return converter.fileToModule(file)
+	return converter.fileToNamespace(file)
 }
 
 type converter struct {
 	imports []string
 }
 
-func (c *converter) fileToModule(f parser.IFileContext) (*intermediate.Module, error) {
-	name := f.Module().NAME().GetText()
+func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namespace, error) {
+	name := f.Namespace().NAME().GetText()
 
 	imports := []string{}
 	for _, i := range f.AllImport_stmt() {
@@ -66,7 +66,7 @@ func (c *converter) fileToModule(f parser.IFileContext) (*intermediate.Module, e
 		}
 	}
 
-	return &intermediate.Module{Name: name, Imports: imports, Types: types, ExtensionDefinitions: extensions}, nil
+	return &intermediate.Namespace{Name: name, Imports: imports, Types: types, ExtensionDefinitions: extensions}, nil
 }
 
 func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
@@ -183,7 +183,7 @@ func (c *converter) extensionRefExprToExtensionRef(e parser.IExtensionReferenceC
 		}
 	}
 
-	return &intermediate.ExtensionReference{Module: typeRef.Module, Name: typeRef.Name, Params: params}
+	return &intermediate.ExtensionReference{Namespace: typeRef.Namespace, Name: typeRef.Name, Params: params}
 }
 
 func (c *converter) extensionExprToExtension(t parser.IExtensionContext) *intermediate.ExtensionDefinition {
@@ -329,27 +329,27 @@ func (c *converter) dynamicNameExprToDynamicName(n parser.IDynamicNameContext) *
 }
 
 func (c *converter) typeReferenceExprToTypeReference(t parser.ITypeReferenceContext) *intermediate.TypeReference {
-	var moduleName, typeName, subRelation string
+	var namespaceName, typeName, subRelation string
 
 	segments := t.AllNAME()
 	first := segments[0].GetText()
 	if slices.Contains(c.imports, first) {
-		moduleName = first
+		namespaceName = first
 		typeName = segments[1].GetText()
 		if len(segments) > 2 {
 			subRelation = segments[2].GetText()
 		}
 	} else {
-		moduleName = ""
+		namespaceName = ""
 		typeName = segments[0].GetText()
 		if len(segments) > 1 {
 			subRelation = segments[1].GetText()
 		}
 	}
 
-	if moduleName == "" && typeName == "bool" && subRelation == "" {
+	if namespaceName == "" && typeName == "bool" && subRelation == "" {
 		return BooleanType
 	}
 
-	return &intermediate.TypeReference{Module: moduleName, Name: typeName, SubRelation: subRelation}
+	return &intermediate.TypeReference{Namespace: namespaceName, Name: typeName, SubRelation: subRelation}
 }

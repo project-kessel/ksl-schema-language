@@ -7,27 +7,27 @@ import (
 )
 
 type Schema struct {
-	modules map[string]*Module
+	namespaces map[string]*Namespace
 }
 
 func NewSchema() *Schema {
-	return &Schema{modules: map[string]*Module{}}
+	return &Schema{namespaces: map[string]*Namespace{}}
 }
 
-func (s *Schema) AddModule(module *Module) error {
-	resolvedName := module.Name()
-	if _, found := s.modules[resolvedName]; found {
+func (s *Schema) AddNamespace(namespace *Namespace) error {
+	resolvedName := namespace.Name()
+	if _, found := s.namespaces[resolvedName]; found {
 		return fmt.Errorf("%s: %w", resolvedName, ErrSymbolExists)
 	}
 
-	s.modules[resolvedName] = module
-	module.schema = s
+	s.namespaces[resolvedName] = namespace
+	namespace.schema = s
 	return nil
 }
 
 func (s *Schema) ApplyExtensions() error {
-	for _, m := range s.modules {
-		err := m.ApplyExtensions()
+	for _, ns := range s.namespaces {
+		err := ns.ApplyExtensions()
 		if err != nil {
 			return err
 		}
@@ -40,18 +40,18 @@ func (s *Schema) ToZanzibar() ([]compiler.SchemaDefinition, error) {
 	namespaceNames := map[string]bool{} //Track names used for Zanzibar namespaces
 	elements := []compiler.SchemaDefinition{}
 
-	for _, module := range s.modules {
-		namespaces, err := module.ToZanzibar()
+	for _, ns := range s.namespaces {
+		namespaces, err := ns.ToZanzibar()
 		if err != nil {
 			return elements, err
 		}
 
-		for _, namespace := range namespaces {
-			if namespaceNames[namespace.Name] {
-				return elements, fmt.Errorf("zanzibar namespace %s: %w", namespace.Name, ErrSymbolExists)
+		for _, ns := range namespaces {
+			if namespaceNames[ns.Name] {
+				return elements, fmt.Errorf("zanzibar namespace %s: %w", ns.Name, ErrSymbolExists)
 			} else {
-				elements = append(elements, namespace)
-				namespaceNames[namespace.Name] = true
+				elements = append(elements, ns)
+				namespaceNames[ns.Name] = true
 			}
 		}
 	}

@@ -33,14 +33,14 @@ var KslParserStaticData struct {
 func kslParserInit() {
 	staticData := &KslParserStaticData
 	staticData.LiteralNames = []string{
-		"", "'version'", "", "'.'", "'module'", "", "'public'", "'internal'",
+		"", "'version'", "", "'.'", "'namespace'", "", "'public'", "'internal'",
 		"'private'", "'type'", "'relation'", "'import'", "'extension'", "",
 		"'AtMostOne'", "'ExactlyOne'", "'AtLeastOne'", "'Any'", "'as'", "'and'",
 		"'or'", "'unless'", "'allow_duplicates'", "':'", "'{'", "'}'", "'@'",
 		"'('", "')'", "'['", "']'", "'$'", "'`'", "'''", "','",
 	}
 	staticData.SymbolicNames = []string{
-		"", "VERSION", "VERSIONNUM", "RESOLVE", "MODULE", "ACCESS", "PUBLIC",
+		"", "VERSION", "VERSIONNUM", "RESOLVE", "NAMESPACE", "ACCESS", "PUBLIC",
 		"INTERNAL", "PRIVATE", "TYPE", "RELATION", "IMPORT", "EXTENSION", "CARDINALITY",
 		"ATMOSTONE", "EXACTLYONE", "ATLEASTONE", "ANY", "AS", "AND", "OR", "UNLESS",
 		"ALLOW_DUPLICATES", "EXPAND", "LBRACE", "RBRACE", "EXTENSION_CALL",
@@ -48,7 +48,7 @@ func kslParserInit() {
 		"STRING_DELIM", "ARG_DELIM", "NAME", "COMMENT", "WS",
 	}
 	staticData.RuleNames = []string{
-		"file", "version", "module", "import_stmt", "declaration", "typeExpr",
+		"file", "version", "namespace", "import_stmt", "declaration", "typeExpr",
 		"typeReference", "extensionParam", "extensionParams", "extensionReference",
 		"relation", "relationBody", "paramNames", "extension", "dynamicType",
 		"dynamicRelation", "dynamicName", "dynamicBody",
@@ -212,7 +212,7 @@ const (
 	kslParserVERSION          = 1
 	kslParserVERSIONNUM       = 2
 	kslParserRESOLVE          = 3
-	kslParserMODULE           = 4
+	kslParserNAMESPACE        = 4
 	kslParserACCESS           = 5
 	kslParserPUBLIC           = 6
 	kslParserINTERNAL         = 7
@@ -252,7 +252,7 @@ const (
 const (
 	kslParserRULE_file               = 0
 	kslParserRULE_version            = 1
-	kslParserRULE_module             = 2
+	kslParserRULE_namespace          = 2
 	kslParserRULE_import_stmt        = 3
 	kslParserRULE_declaration        = 4
 	kslParserRULE_typeExpr           = 5
@@ -279,7 +279,7 @@ type IFileContext interface {
 
 	// Getter signatures
 	Version() IVersionContext
-	Module() IModuleContext
+	Namespace() INamespaceContext
 	AllImport_stmt() []IImport_stmtContext
 	Import_stmt(i int) IImport_stmtContext
 	AllDeclaration() []IDeclarationContext
@@ -337,10 +337,10 @@ func (s *FileContext) Version() IVersionContext {
 	return t.(IVersionContext)
 }
 
-func (s *FileContext) Module() IModuleContext {
+func (s *FileContext) Namespace() INamespaceContext {
 	var t antlr.RuleContext
 	for _, ctx := range s.GetChildren() {
-		if _, ok := ctx.(IModuleContext); ok {
+		if _, ok := ctx.(INamespaceContext); ok {
 			t = ctx.(antlr.RuleContext)
 			break
 		}
@@ -350,7 +350,7 @@ func (s *FileContext) Module() IModuleContext {
 		return nil
 	}
 
-	return t.(IModuleContext)
+	return t.(INamespaceContext)
 }
 
 func (s *FileContext) AllImport_stmt() []IImport_stmtContext {
@@ -477,7 +477,7 @@ func (p *kslParser) File() (localctx IFileContext) {
 	}
 	{
 		p.SetState(37)
-		p.Module()
+		p.Namespace()
 	}
 	p.SetState(41)
 	p.GetErrorHandler().Sync(p)
@@ -652,98 +652,98 @@ errorExit:
 	goto errorExit // Trick to prevent compiler error if the label is not used
 }
 
-// IModuleContext is an interface to support dynamic dispatch.
-type IModuleContext interface {
+// INamespaceContext is an interface to support dynamic dispatch.
+type INamespaceContext interface {
 	antlr.ParserRuleContext
 
 	// GetParser returns the parser.
 	GetParser() antlr.Parser
 
 	// Getter signatures
-	MODULE() antlr.TerminalNode
+	NAMESPACE() antlr.TerminalNode
 	NAME() antlr.TerminalNode
 
-	// IsModuleContext differentiates from other interfaces.
-	IsModuleContext()
+	// IsNamespaceContext differentiates from other interfaces.
+	IsNamespaceContext()
 }
 
-type ModuleContext struct {
+type NamespaceContext struct {
 	antlr.BaseParserRuleContext
 	parser antlr.Parser
 }
 
-func NewEmptyModuleContext() *ModuleContext {
-	var p = new(ModuleContext)
+func NewEmptyNamespaceContext() *NamespaceContext {
+	var p = new(NamespaceContext)
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = kslParserRULE_module
+	p.RuleIndex = kslParserRULE_namespace
 	return p
 }
 
-func InitEmptyModuleContext(p *ModuleContext) {
+func InitEmptyNamespaceContext(p *NamespaceContext) {
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
-	p.RuleIndex = kslParserRULE_module
+	p.RuleIndex = kslParserRULE_namespace
 }
 
-func (*ModuleContext) IsModuleContext() {}
+func (*NamespaceContext) IsNamespaceContext() {}
 
-func NewModuleContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ModuleContext {
-	var p = new(ModuleContext)
+func NewNamespaceContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *NamespaceContext {
+	var p = new(NamespaceContext)
 
 	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
 
 	p.parser = parser
-	p.RuleIndex = kslParserRULE_module
+	p.RuleIndex = kslParserRULE_namespace
 
 	return p
 }
 
-func (s *ModuleContext) GetParser() antlr.Parser { return s.parser }
+func (s *NamespaceContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ModuleContext) MODULE() antlr.TerminalNode {
-	return s.GetToken(kslParserMODULE, 0)
+func (s *NamespaceContext) NAMESPACE() antlr.TerminalNode {
+	return s.GetToken(kslParserNAMESPACE, 0)
 }
 
-func (s *ModuleContext) NAME() antlr.TerminalNode {
+func (s *NamespaceContext) NAME() antlr.TerminalNode {
 	return s.GetToken(kslParserNAME, 0)
 }
 
-func (s *ModuleContext) GetRuleContext() antlr.RuleContext {
+func (s *NamespaceContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
 
-func (s *ModuleContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+func (s *NamespaceContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
 	return antlr.TreesStringTree(s, ruleNames, recog)
 }
 
-func (s *ModuleContext) EnterRule(listener antlr.ParseTreeListener) {
+func (s *NamespaceContext) EnterRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(kslListener); ok {
-		listenerT.EnterModule(s)
+		listenerT.EnterNamespace(s)
 	}
 }
 
-func (s *ModuleContext) ExitRule(listener antlr.ParseTreeListener) {
+func (s *NamespaceContext) ExitRule(listener antlr.ParseTreeListener) {
 	if listenerT, ok := listener.(kslListener); ok {
-		listenerT.ExitModule(s)
+		listenerT.ExitNamespace(s)
 	}
 }
 
-func (s *ModuleContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+func (s *NamespaceContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 	switch t := visitor.(type) {
 	case kslVisitor:
-		return t.VisitModule(s)
+		return t.VisitNamespace(s)
 
 	default:
 		return t.VisitChildren(s)
 	}
 }
 
-func (p *kslParser) Module() (localctx IModuleContext) {
-	localctx = NewModuleContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 4, kslParserRULE_module)
+func (p *kslParser) Namespace() (localctx INamespaceContext) {
+	localctx = NewNamespaceContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 4, kslParserRULE_namespace)
 	p.EnterOuterAlt(localctx, 1)
 	{
 		p.SetState(52)
-		p.Match(kslParserMODULE)
+		p.Match(kslParserNAMESPACE)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit

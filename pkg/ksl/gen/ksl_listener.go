@@ -14,8 +14,8 @@ type kslListener interface {
 	// EnterVersion is called when entering the version production.
 	EnterVersion(c *VersionContext)
 
-	// EnterModule is called when entering the module production.
-	EnterModule(c *ModuleContext)
+	// EnterNamespace is called when entering the namespace production.
+	EnterNamespace(c *NamespaceContext)
 
 	// EnterImport_stmt is called when entering the import_stmt production.
 	EnterImport_stmt(c *Import_stmtContext)
@@ -110,8 +110,8 @@ type kslListener interface {
 	// ExitVersion is called when exiting the version production.
 	ExitVersion(c *VersionContext)
 
-	// ExitModule is called when exiting the module production.
-	ExitModule(c *ModuleContext)
+	// ExitNamespace is called when exiting the namespace production.
+	ExitNamespace(c *NamespaceContext)
 
 	// ExitImport_stmt is called when exiting the import_stmt production.
 	ExitImport_stmt(c *Import_stmtContext)

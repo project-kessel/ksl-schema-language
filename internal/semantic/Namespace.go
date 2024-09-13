@@ -6,7 +6,7 @@ import (
 	core "github.com/authzed/spicedb/pkg/proto/core/v1"
 )
 
-type Module struct {
+type Namespace struct {
 	name       string
 	schema     *Schema
 	imports    map[string]string
@@ -19,12 +19,12 @@ type Import struct {
 	Alias string
 }
 
-func (m *Module) Name() string {
+func (m *Namespace) Name() string {
 	return m.name
 }
 
-func NewModule(name string, imports []string) *Module {
-	m := &Module{name: name, imports: map[string]string{}, types: map[string]*Type{}, extensions: map[string]*Extension{}}
+func NewNamespace(name string, imports []string) *Namespace {
+	m := &Namespace{name: name, imports: map[string]string{}, types: map[string]*Type{}, extensions: map[string]*Extension{}}
 
 	for _, i := range imports {
 		m.imports[i] = i
@@ -33,8 +33,8 @@ func NewModule(name string, imports []string) *Module {
 	return m
 }
 
-func (m *Module) ApplyExtensions() error {
-	//Should handle extensions directly on the module
+func (m *Namespace) ApplyExtensions() error {
+	//Should handle extensions directly on the namespace
 	for _, t := range m.types {
 		err := t.ApplyExtensions()
 		if err != nil {
@@ -45,28 +45,28 @@ func (m *Module) ApplyExtensions() error {
 	return nil
 }
 
-func (m *Module) AddType(t *Type) error {
-	if _, found := m.types[t.name]; found {
-		return fmt.Errorf("module %s, type %s: %w", m.name, t.name, ErrSymbolExists)
+func (ns *Namespace) AddType(t *Type) error {
+	if _, found := ns.types[t.name]; found {
+		return fmt.Errorf("namespace %s, type %s: %w", ns.name, t.name, ErrSymbolExists)
 	}
 
-	m.types[t.name] = t
-	t.module = m
+	ns.types[t.name] = t
+	t.namespace = ns
 	return nil
 }
 
-func (m *Module) AddExtension(e *Extension) error {
+func (m *Namespace) AddExtension(e *Extension) error {
 	if _, found := m.extensions[e.name]; found {
-		return fmt.Errorf("module %s, extension %s: %w", m.name, e.name, ErrSymbolExists)
+		return fmt.Errorf("namespace %s, extension %s: %w", m.name, e.name, ErrSymbolExists)
 	}
 
 	m.extensions[e.name] = e
-	e.module = m
+	e.namespace = m
 
 	return nil
 }
 
-func (m *Module) ToZanzibar() ([]*core.NamespaceDefinition, error) {
+func (m *Namespace) ToZanzibar() ([]*core.NamespaceDefinition, error) {
 	namespaces := []*core.NamespaceDefinition{}
 
 	for _, t := range m.types {

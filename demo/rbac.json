@@ -1,1 +1,384 @@
-{"name":"iam","types":[{"name":"user","visibility":"internal","relations":[]},{"name":"role","visibility":"internal","relations":[]},{"name":"role_binding","visibility":"internal","relations":[{"name":"subject","visibility":"public","body":{"kind":"self","type":{"name":"user"},"cardinality":"ExactlyOne"}},{"name":"granted","visibility":"public","body":{"kind":"self","type":{"name":"role"},"cardinality":"ExactlyOne"}}]},{"name":"workspace","visibility":"public","relations":[{"name":"parent","visibility":"public","body":{"kind":"self","type":{"name":"workspace"},"cardinality":"AtMostOne"},"extensions":[{"name":"madeup"}]},{"name":"user_grant","visibility":"public","body":{"kind":"self","type":{"name":"role_binding"},"cardinality":"Any"}}]}],"defined_extensions":[{"name":"workspace_permission","visibility":"public","params":["full_name"],"types":[{"name":{"kind":"literal","value":"role"},"visibility":"public","relations":[{"name":{"kind":"param","param":"full_name"},"visibility":"public","body":{"kind":"self","type":{"module":"iam","name":"user","all":true},"cardinality":"Any"}},{"name":{"kind":"template","segments":[{"kind":"param","param":"MODULE"},{"kind":"literal","value":"_all_all"}]},"visibility":"public","ignoreduplicates":true,"body":{"kind":"self","type":{"module":"iam","name":"user","all":true},"cardinality":"Any"}},{"name":{"kind":"template","segments":[{"kind":"param","param":"MODULE"},{"kind":"literal","value":"_"},{"kind":"param","param":"TYPE"},{"kind":"literal","value":"_all"}]},"visibility":"public","ignoreduplicates":true,"body":{"kind":"self","type":{"module":"iam","name":"user","all":true},"cardinality":"Any"}},{"name":{"kind":"template","segments":[{"kind":"param","param":"MODULE"},{"kind":"literal","value":"_all_"},{"kind":"param","param":"RELATION"}]},"visibility":"public","ignoreduplicates":true,"body":{"kind":"self","type":{"module":"iam","name":"user","all":true},"cardinality":"Any"}}]},{"name":{"kind":"literal","value":"role_binding"},"visibility":"public","relations":[{"name":{"kind":"param","param":"full_name"},"visibility":"public","body":{"kind":"intersect","type":{"name":""},"left":{"kind":"reference","type":{"name":""},"relation":{"kind":"literal","value":"subject"}},"right":{"kind":"union","type":{"name":""},"left":{"kind":"union","type":{"name":""},"left":{"kind":"union","type":{"name":""},"left":{"kind":"nested_reference","type":{"name":""},"relation":{"kind":"literal","value":"granted"},"sub_relation":{"kind":"param","param":"full_name"}},"right":{"kind":"nested_reference","type":{"name":""},"relation":{"kind":"literal","value":"granted"},"sub_relation":{"kind":"template","segments":[{"kind":"param","param":"MODULE"},{"kind":"literal","value":"_all_all"}]}}},"right":{"kind":"nested_reference","type":{"name":""},"relation":{"kind":"literal","value":"granted"},"sub_relation":{"kind":"template","segments":[{"kind":"param","param":"MODULE"},{"kind":"literal","value":"_"},{"kind":"param","param":"TYPE"},{"kind":"literal","value":"_all"}]}}},"right":{"kind":"nested_reference","type":{"name":""},"relation":{"kind":"literal","value":"granted"},"sub_relation":{"kind":"template","segments":[{"kind":"param","param":"MODULE"},{"kind":"literal","value":"_all_"},{"kind":"param","param":"RELATION"}]}}}}}]},{"name":{"kind":"literal","value":"workspace"},"visibility":"public","relations":[{"name":{"kind":"param","param":"full_name"},"visibility":"public","body":{"kind":"union","type":{"name":""},"left":{"kind":"nested_reference","type":{"name":""},"relation":{"kind":"literal","value":"user_grant"},"sub_relation":{"kind":"param","param":"full_name"}},"right":{"kind":"nested_reference","type":{"name":""},"relation":{"kind":"literal","value":"parent"},"sub_relation":{"kind":"param","param":"full_name"}}}}]}]}]}
+{
+    "name": "iam",
+    "types": [
+        {
+            "name": "user",
+            "visibility": "internal",
+            "relations": []
+        },
+        {
+            "name": "role",
+            "visibility": "internal",
+            "relations": []
+        },
+        {
+            "name": "role_binding",
+            "visibility": "internal",
+            "relations": [
+                {
+                    "name": "subject",
+                    "visibility": "public",
+                    "body": {
+                        "kind": "self",
+                        "types": [
+                            {
+                                "name": "user"
+                            }
+                        ],
+                        "cardinality": "ExactlyOne"
+                    }
+                },
+                {
+                    "name": "granted",
+                    "visibility": "public",
+                    "body": {
+                        "kind": "self",
+                        "types": [
+                            {
+                                "name": "role"
+                            }
+                        ],
+                        "cardinality": "AtLeastOne"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "workspace",
+            "visibility": "public",
+            "relations": [
+                {
+                    "name": "parent",
+                    "visibility": "public",
+                    "body": {
+                        "kind": "self",
+                        "types": [
+                            {
+                                "name": "workspace"
+                            }
+                        ],
+                        "cardinality": "AtMostOne"
+                    }
+                },
+                {
+                    "name": "user_grant",
+                    "visibility": "public",
+                    "body": {
+                        "kind": "self",
+                        "types": [
+                            {
+                                "name": "role_binding"
+                            }
+                        ],
+                        "cardinality": "Any"
+                    }
+                }
+            ]
+        }
+    ],
+    "defined_extensions": [
+        {
+            "name": "workspace_permission",
+            "visibility": "public",
+            "params": [
+                "full_name"
+            ],
+            "types": [
+                {
+                    "name": {
+                        "kind": "literal",
+                        "value": "role"
+                    },
+                    "visibility": "public",
+                    "relations": [
+                        {
+                            "name": {
+                                "kind": "param",
+                                "param": "full_name"
+                            },
+                            "visibility": "public",
+                            "body": {
+                                "kind": "self",
+                                "types": [
+                                    {
+                                        "namespace": "rbac",
+                                        "name": "user",
+                                        "all": true
+                                    }
+                                ],
+                                "cardinality": "Any"
+                            }
+                        },
+                        {
+                            "name": {
+                                "kind": "template",
+                                "segments": [
+                                    {
+                                        "kind": "param",
+                                        "param": "MODULE"
+                                    },
+                                    {
+                                        "kind": "literal",
+                                        "value": "_all_all"
+                                    }
+                                ]
+                            },
+                            "visibility": "public",
+                            "ignoreduplicates": true,
+                            "body": {
+                                "kind": "self",
+                                "types": [
+                                    {
+                                        "namespace": "rbac",
+                                        "name": "user",
+                                        "all": true
+                                    }
+                                ],
+                                "cardinality": "Any"
+                            }
+                        },
+                        {
+                            "name": {
+                                "kind": "template",
+                                "segments": [
+                                    {
+                                        "kind": "param",
+                                        "param": "MODULE"
+                                    },
+                                    {
+                                        "kind": "literal",
+                                        "value": "_"
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "param": "TYPE"
+                                    },
+                                    {
+                                        "kind": "literal",
+                                        "value": "_all"
+                                    }
+                                ]
+                            },
+                            "visibility": "public",
+                            "ignoreduplicates": true,
+                            "body": {
+                                "kind": "self",
+                                "types": [
+                                    {
+                                        "namespace": "rbac",
+                                        "name": "user",
+                                        "all": true
+                                    }
+                                ],
+                                "cardinality": "Any"
+                            }
+                        },
+                        {
+                            "name": {
+                                "kind": "template",
+                                "segments": [
+                                    {
+                                        "kind": "param",
+                                        "param": "MODULE"
+                                    },
+                                    {
+                                        "kind": "literal",
+                                        "value": "_all_"
+                                    },
+                                    {
+                                        "kind": "param",
+                                        "param": "RELATION"
+                                    }
+                                ]
+                            },
+                            "visibility": "public",
+                            "ignoreduplicates": true,
+                            "body": {
+                                "kind": "self",
+                                "types": [
+                                    {
+                                        "namespace": "rbac",
+                                        "name": "user",
+                                        "all": true
+                                    }
+                                ],
+                                "cardinality": "Any"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": {
+                        "kind": "literal",
+                        "value": "role_binding"
+                    },
+                    "visibility": "public",
+                    "relations": [
+                        {
+                            "name": {
+                                "kind": "param",
+                                "param": "full_name"
+                            },
+                            "visibility": "public",
+                            "body": {
+                                "kind": "intersect",
+                                "types": null,
+                                "left": {
+                                    "kind": "reference",
+                                    "types": null,
+                                    "relation": {
+                                        "kind": "literal",
+                                        "value": "subject"
+                                    }
+                                },
+                                "right": {
+                                    "kind": "union",
+                                    "types": null,
+                                    "left": {
+                                        "kind": "union",
+                                        "types": null,
+                                        "left": {
+                                            "kind": "union",
+                                            "types": null,
+                                            "left": {
+                                                "kind": "nested_reference",
+                                                "types": null,
+                                                "relation": {
+                                                    "kind": "literal",
+                                                    "value": "granted"
+                                                },
+                                                "sub_relation": {
+                                                    "kind": "param",
+                                                    "param": "full_name"
+                                                }
+                                            },
+                                            "right": {
+                                                "kind": "nested_reference",
+                                                "types": null,
+                                                "relation": {
+                                                    "kind": "literal",
+                                                    "value": "granted"
+                                                },
+                                                "sub_relation": {
+                                                    "kind": "template",
+                                                    "segments": [
+                                                        {
+                                                            "kind": "param",
+                                                            "param": "MODULE"
+                                                        },
+                                                        {
+                                                            "kind": "literal",
+                                                            "value": "_all_all"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "right": {
+                                            "kind": "nested_reference",
+                                            "types": null,
+                                            "relation": {
+                                                "kind": "literal",
+                                                "value": "granted"
+                                            },
+                                            "sub_relation": {
+                                                "kind": "template",
+                                                "segments": [
+                                                    {
+                                                        "kind": "param",
+                                                        "param": "MODULE"
+                                                    },
+                                                    {
+                                                        "kind": "literal",
+                                                        "value": "_"
+                                                    },
+                                                    {
+                                                        "kind": "param",
+                                                        "param": "TYPE"
+                                                    },
+                                                    {
+                                                        "kind": "literal",
+                                                        "value": "_all"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "right": {
+                                        "kind": "nested_reference",
+                                        "types": null,
+                                        "relation": {
+                                            "kind": "literal",
+                                            "value": "granted"
+                                        },
+                                        "sub_relation": {
+                                            "kind": "template",
+                                            "segments": [
+                                                {
+                                                    "kind": "param",
+                                                    "param": "MODULE"
+                                                },
+                                                {
+                                                    "kind": "literal",
+                                                    "value": "_all_"
+                                                },
+                                                {
+                                                    "kind": "param",
+                                                    "param": "RELATION"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": {
+                        "kind": "literal",
+                        "value": "workspace"
+                    },
+                    "visibility": "public",
+                    "relations": [
+                        {
+                            "name": {
+                                "kind": "param",
+                                "param": "full_name"
+                            },
+                            "visibility": "public",
+                            "body": {
+                                "kind": "union",
+                                "types": null,
+                                "left": {
+                                    "kind": "nested_reference",
+                                    "types": null,
+                                    "relation": {
+                                        "kind": "literal",
+                                        "value": "user_grant"
+                                    },
+                                    "sub_relation": {
+                                        "kind": "param",
+                                        "param": "full_name"
+                                    }
+                                },
+                                "right": {
+                                    "kind": "nested_reference",
+                                    "types": null,
+                                    "relation": {
+                                        "kind": "literal",
+                                        "value": "parent"
+                                    },
+                                    "sub_relation": {
+                                        "kind": "param",
+                                        "param": "full_name"
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

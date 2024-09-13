@@ -33,11 +33,11 @@ func (s *BasekslListener) EnterVersion(ctx *VersionContext) {}
 // ExitVersion is called when production version is exited.
 func (s *BasekslListener) ExitVersion(ctx *VersionContext) {}
 
-// EnterModule is called when production module is entered.
-func (s *BasekslListener) EnterModule(ctx *ModuleContext) {}
+// EnterNamespace is called when production namespace is entered.
+func (s *BasekslListener) EnterNamespace(ctx *NamespaceContext) {}
 
-// ExitModule is called when production module is exited.
-func (s *BasekslListener) ExitModule(ctx *ModuleContext) {}
+// ExitNamespace is called when production namespace is exited.
+func (s *BasekslListener) ExitNamespace(ctx *NamespaceContext) {}
 
 // EnterImport_stmt is called when production import_stmt is entered.
 func (s *BasekslListener) EnterImport_stmt(ctx *Import_stmtContext) {}
