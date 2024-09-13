@@ -2,6 +2,7 @@ package ksl
 
 import (
 	"io"
+	"slices"
 
 	"github.com/antlr4-go/antlr/v4"
 	"project-kessel.org/ksl-schema-language/pkg/intermediate"
@@ -10,7 +11,7 @@ import (
 
 var (
 	BooleanType *intermediate.TypeReference = &intermediate.TypeReference{ //Module and Name should be customizable, maybe through the language, maybe through a compiler flag
-		Module: "iam",
+		Module: "rbac",
 		Name:   "user",
 		All:    true,
 	}
@@ -28,10 +29,15 @@ func Compile(r io.Reader) (*intermediate.Module, error) {
 	interpreter := parser.NewkslParser(tokens)
 
 	file := interpreter.File()
-	return fileToModule(file)
+	converter := &converter{}
+	return converter.fileToModule(file)
 }
 
-func fileToModule(f parser.IFileContext) (*intermediate.Module, error) {
+type converter struct {
+	imports []string
+}
+
+func (c *converter) fileToModule(f parser.IFileContext) (*intermediate.Module, error) {
 	name := f.Module().NAME().GetText()
 
 	imports := []string{}
@@ -39,11 +45,13 @@ func fileToModule(f parser.IFileContext) (*intermediate.Module, error) {
 		imports = append(imports, i.NAME().GetText())
 	}
 
+	c.imports = imports
+
 	types := []*intermediate.Type{}
 	extensions := []*intermediate.ExtensionDefinition{}
 	for _, d := range f.AllDeclaration() {
 		if exp := d.TypeExpr(); exp != nil {
-			t, err := typeExprToType(exp)
+			t, err := c.typeExprToType(exp)
 			if err != nil {
 				return nil, err
 			}
@@ -52,7 +60,7 @@ func fileToModule(f parser.IFileContext) (*intermediate.Module, error) {
 		}
 
 		if exp := d.Extension(); exp != nil {
-			e := extensionExprToExtension(exp)
+			e := c.extensionExprToExtension(exp)
 
 			extensions = append(extensions, e)
 		}
@@ -61,7 +69,7 @@ func fileToModule(f parser.IFileContext) (*intermediate.Module, error) {
 	return &intermediate.Module{Name: name, Imports: imports, Types: types, ExtensionDefinitions: extensions}, nil
 }
 
-func typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
+func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
 	name := t.NAME().GetText()
 	access := "public"
 	if accessExpr := t.ACCESS(); accessExpr != nil {
@@ -70,7 +78,7 @@ func typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
 
 	relations := []*intermediate.Relation{}
 	for _, relationExpr := range t.AllRelation() {
-		relation, err := relationExprToRelation(relationExpr)
+		relation, err := c.relationExprToRelation(relationExpr)
 		if err != nil {
 			return nil, err
 		}
@@ -81,18 +89,18 @@ func typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
 	return &intermediate.Type{Name: name, Visibility: access, Relations: relations}, nil
 }
 
-func relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, error) {
+func (c *converter) relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, error) {
 	name := r.NAME().GetText()
 	access := "public"
 	if accessExpr := r.ACCESS(); accessExpr != nil {
 		access = accessExpr.GetText()
 	}
 
-	body := relationBodyExprToRelation(r.RelationBody())
+	body := c.relationBodyExprToRelation(r.RelationBody())
 
 	extensionRefs := []*intermediate.ExtensionReference{}
 	for _, extensionRefExpr := range r.AllExtensionReference() {
-		extensionRef := extensionRefExprToExtensionRef(extensionRefExpr)
+		extensionRef := c.extensionRefExprToExtensionRef(extensionRefExpr)
 
 		extensionRefs = append(extensionRefs, extensionRef)
 	}
@@ -100,18 +108,23 @@ func relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, 
 	return &intermediate.Relation{Name: name, Visibility: access, Body: body, Extensions: extensionRefs}, nil
 }
 
-func relationBodyExprToRelation(r parser.IRelationBodyContext) *intermediate.RelationBody {
+func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *intermediate.RelationBody {
 	switch body := r.(type) {
 	case *parser.SelfContext:
 		cardinality := "Any"
 		if c := body.CARDINALITY(); c != nil {
 			cardinality = c.GetText()
 		}
-		typeRef := typeReferenceExprToTypeReference(body.TypeReference())
+
+		typeRefs := make([]*intermediate.TypeReference, 0)
+		for _, t := range body.AllTypeReference() {
+			typeRefs = append(typeRefs, c.typeReferenceExprToTypeReference(t))
+		}
+
 		return &intermediate.RelationBody{
 			Kind:        "self",
 			Cardinality: cardinality,
-			Type:        *typeRef,
+			Types:       typeRefs,
 		}
 	case *parser.ReferenceContext:
 		relation := body.NAME().GetText()
@@ -128,26 +141,26 @@ func relationBodyExprToRelation(r parser.IRelationBodyContext) *intermediate.Rel
 			SubRelation: subrelation,
 		}
 	case *parser.ParenContext:
-		return relationBodyExprToRelation(body.RelationBody())
+		return c.relationBodyExprToRelation(body.RelationBody())
 	case *parser.AndContext:
-		left := relationBodyExprToRelation(body.RelationBody(0))
-		right := relationBodyExprToRelation(body.RelationBody(1))
+		left := c.relationBodyExprToRelation(body.RelationBody(0))
+		right := c.relationBodyExprToRelation(body.RelationBody(1))
 		return &intermediate.RelationBody{
 			Kind:  "intersect",
 			Left:  left,
 			Right: right,
 		}
 	case *parser.ORContext:
-		left := relationBodyExprToRelation(body.RelationBody(0))
-		right := relationBodyExprToRelation(body.RelationBody(1))
+		left := c.relationBodyExprToRelation(body.RelationBody(0))
+		right := c.relationBodyExprToRelation(body.RelationBody(1))
 		return &intermediate.RelationBody{
 			Kind:  "union",
 			Left:  left,
 			Right: right,
 		}
 	case *parser.UnlessContext:
-		left := relationBodyExprToRelation(body.RelationBody(0))
-		right := relationBodyExprToRelation(body.RelationBody(1))
+		left := c.relationBodyExprToRelation(body.RelationBody(0))
+		right := c.relationBodyExprToRelation(body.RelationBody(1))
 		return &intermediate.RelationBody{
 			Kind:  "except",
 			Left:  left,
@@ -157,8 +170,8 @@ func relationBodyExprToRelation(r parser.IRelationBodyContext) *intermediate.Rel
 	return nil
 }
 
-func extensionRefExprToExtensionRef(e parser.IExtensionReferenceContext) *intermediate.ExtensionReference {
-	typeRef := typeReferenceExprToTypeReference(e.TypeReference())
+func (c *converter) extensionRefExprToExtensionRef(e parser.IExtensionReferenceContext) *intermediate.ExtensionReference {
+	typeRef := c.typeReferenceExprToTypeReference(e.TypeReference())
 
 	params := map[string]string{}
 	if paramsExpr := e.ExtensionParams(); paramsExpr != nil {
@@ -173,7 +186,7 @@ func extensionRefExprToExtensionRef(e parser.IExtensionReferenceContext) *interm
 	return &intermediate.ExtensionReference{Module: typeRef.Module, Name: typeRef.Name, Params: params}
 }
 
-func extensionExprToExtension(t parser.IExtensionContext) *intermediate.ExtensionDefinition {
+func (c *converter) extensionExprToExtension(t parser.IExtensionContext) *intermediate.ExtensionDefinition {
 	name := t.NAME().GetText()
 	access := "public"
 	if accessExpr := t.ACCESS(); accessExpr != nil {
@@ -189,14 +202,14 @@ func extensionExprToExtension(t parser.IExtensionContext) *intermediate.Extensio
 
 	types := []*intermediate.DynamicType{}
 	for _, dynamicTypeExpr := range t.AllDynamicType() {
-		types = append(types, dynamicTypeExprToDynamicType(dynamicTypeExpr))
+		types = append(types, c.dynamicTypeExprToDynamicType(dynamicTypeExpr))
 	}
 
 	return &intermediate.ExtensionDefinition{Name: name, Visibility: access, Params: params, Types: types}
 }
 
-func dynamicTypeExprToDynamicType(t parser.IDynamicTypeContext) *intermediate.DynamicType {
-	name := dynamicNameExprToDynamicName(t.DynamicName())
+func (c *converter) dynamicTypeExprToDynamicType(t parser.IDynamicTypeContext) *intermediate.DynamicType {
+	name := c.dynamicNameExprToDynamicName(t.DynamicName())
 	access := "public"
 	if accessExpr := t.ACCESS(); accessExpr != nil {
 		access = accessExpr.GetText()
@@ -204,14 +217,14 @@ func dynamicTypeExprToDynamicType(t parser.IDynamicTypeContext) *intermediate.Dy
 
 	relations := []*intermediate.DynamicRelation{}
 	for _, relationExpr := range t.AllDynamicRelation() {
-		relations = append(relations, dynamicRelationExprToDynamicRelation(relationExpr))
+		relations = append(relations, c.dynamicRelationExprToDynamicRelation(relationExpr))
 	}
 
 	return &intermediate.DynamicType{Name: name, Visibility: access, Relations: relations}
 }
 
-func dynamicRelationExprToDynamicRelation(r parser.IDynamicRelationContext) *intermediate.DynamicRelation {
-	name := dynamicNameExprToDynamicName(r.DynamicName())
+func (c *converter) dynamicRelationExprToDynamicRelation(r parser.IDynamicRelationContext) *intermediate.DynamicRelation {
+	name := c.dynamicNameExprToDynamicName(r.DynamicName())
 	access := "public"
 	if accessExpr := r.ACCESS(); accessExpr != nil {
 		access = accessExpr.GetText()
@@ -222,26 +235,31 @@ func dynamicRelationExprToDynamicRelation(r parser.IDynamicRelationContext) *int
 		allowdups = true
 	}
 
-	body := dynamicRelationBodyExprToDynamicRelationBody(r.DynamicBody())
+	body := c.dynamicRelationBodyExprToDynamicRelationBody(r.DynamicBody())
 
 	return &intermediate.DynamicRelation{Name: name, Visibility: access, IgnoreDuplicates: allowdups, Body: *body}
 }
 
-func dynamicRelationBodyExprToDynamicRelationBody(b parser.IDynamicBodyContext) *intermediate.DynamicRelationBody {
+func (c *converter) dynamicRelationBodyExprToDynamicRelationBody(b parser.IDynamicBodyContext) *intermediate.DynamicRelationBody {
 	switch body := b.(type) {
 	case *parser.DynamicSelfContext:
 		cardinality := "Any"
 		if c := body.CARDINALITY(); c != nil {
 			cardinality = c.GetText()
 		}
-		typeRef := typeReferenceExprToTypeReference(body.TypeReference())
+
+		typeRefs := make([]*intermediate.TypeReference, 0)
+		for _, t := range body.AllTypeReference() {
+			typeRefs = append(typeRefs, c.typeReferenceExprToTypeReference(t))
+		}
+
 		return &intermediate.DynamicRelationBody{
 			Kind:        "self",
 			Cardinality: cardinality,
-			Type:        *typeRef,
+			Types:       typeRefs,
 		}
 	case *parser.DynamicReferenceContext:
-		relation := dynamicNameExprToDynamicName(body.DynamicName())
+		relation := c.dynamicNameExprToDynamicName(body.DynamicName())
 		return &intermediate.DynamicRelationBody{
 			Kind:     "reference",
 			Relation: relation,
@@ -251,30 +269,30 @@ func dynamicRelationBodyExprToDynamicRelationBody(b parser.IDynamicBodyContext) 
 		subrelation := body.DynamicName(1)
 		return &intermediate.DynamicRelationBody{
 			Kind:        "nested_reference",
-			Relation:    dynamicNameExprToDynamicName(relation),
-			SubRelation: dynamicNameExprToDynamicName(subrelation),
+			Relation:    c.dynamicNameExprToDynamicName(relation),
+			SubRelation: c.dynamicNameExprToDynamicName(subrelation),
 		}
 	case *parser.DynamicParenContext:
-		return dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody())
+		return c.dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody())
 	case *parser.DynamicAndContext:
-		left := dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(0))
-		right := dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(1))
+		left := c.dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(0))
+		right := c.dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(1))
 		return &intermediate.DynamicRelationBody{
 			Kind:  "intersect",
 			Left:  left,
 			Right: right,
 		}
 	case *parser.DynamicORContext:
-		left := dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(0))
-		right := dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(1))
+		left := c.dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(0))
+		right := c.dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(1))
 		return &intermediate.DynamicRelationBody{
 			Kind:  "union",
 			Left:  left,
 			Right: right,
 		}
 	case *parser.DynamicUnlessContext:
-		left := dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(0))
-		right := dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(1))
+		left := c.dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(0))
+		right := c.dynamicRelationBodyExprToDynamicRelationBody(body.DynamicBody(1))
 		return &intermediate.DynamicRelationBody{
 			Kind:  "except",
 			Left:  left,
@@ -284,7 +302,7 @@ func dynamicRelationBodyExprToDynamicRelationBody(b parser.IDynamicBodyContext) 
 	return nil
 }
 
-func dynamicNameExprToDynamicName(n parser.IDynamicNameContext) *intermediate.DynamicName {
+func (c *converter) dynamicNameExprToDynamicName(n parser.IDynamicNameContext) *intermediate.DynamicName {
 	switch body := n.(type) {
 	case *parser.LiteralContext:
 		return &intermediate.DynamicName{
@@ -299,7 +317,7 @@ func dynamicNameExprToDynamicName(n parser.IDynamicNameContext) *intermediate.Dy
 	case *parser.TemplateContext:
 		segments := []*intermediate.DynamicName{}
 		for _, segmentExpr := range body.AllDynamicName() {
-			segments = append(segments, dynamicNameExprToDynamicName(segmentExpr))
+			segments = append(segments, c.dynamicNameExprToDynamicName(segmentExpr))
 		}
 		return &intermediate.DynamicName{
 			Kind:     "template",
@@ -310,16 +328,28 @@ func dynamicNameExprToDynamicName(n parser.IDynamicNameContext) *intermediate.Dy
 	return nil
 }
 
-func typeReferenceExprToTypeReference(t parser.ITypeReferenceContext) *intermediate.TypeReference {
-	moduleName := ""
-	if m := t.GetModuleName(); m != nil {
-		moduleName = m.GetText()
+func (c *converter) typeReferenceExprToTypeReference(t parser.ITypeReferenceContext) *intermediate.TypeReference {
+	var moduleName, typeName, subRelation string
+
+	segments := t.AllNAME()
+	first := segments[0].GetText()
+	if slices.Contains(c.imports, first) {
+		moduleName = first
+		typeName = segments[1].GetText()
+		if len(segments) > 2 {
+			subRelation = segments[2].GetText()
+		}
+	} else {
+		moduleName = ""
+		typeName = segments[0].GetText()
+		if len(segments) > 1 {
+			subRelation = segments[1].GetText()
+		}
 	}
 
-	typeName := t.GetTypeName().GetText()
-	if moduleName == "" && typeName == "bool" {
+	if moduleName == "" && typeName == "bool" && subRelation == "" {
 		return BooleanType
 	}
 
-	return &intermediate.TypeReference{Module: moduleName, Name: typeName}
+	return &intermediate.TypeReference{Module: moduleName, Name: typeName, SubRelation: subRelation}
 }

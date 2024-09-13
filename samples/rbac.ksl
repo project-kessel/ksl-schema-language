@@ -1,5 +1,9 @@
 version 0.1
-module iam
+module rbac
+
+internal type group {
+    relation member: [Any user] or [Any group.member]
+}
 
 internal type user {
 
@@ -10,8 +14,8 @@ internal type role {
 }
 
 internal type role_binding {
-    relation subject: [ExactlyOne user]
-    relation granted: [ExactlyOne role]
+    relation subject: [Any user or group.member]
+    relation granted: [AtLeastOne role]
 }
 
 public type workspace {

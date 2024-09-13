@@ -17,7 +17,7 @@
             "request": "launch",
             "mode": "exec",
             "program": "bin/ksl",
-            "args": ["-c", "demo/rbac.ksl"]
+            "args": ["-o", "combined.zed", "samples/rbac.ksl", "samples/inventory.ksl"]
         }
     ]
 }

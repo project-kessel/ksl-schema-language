@@ -37,7 +37,7 @@ STRING_DELIM: '\'';
 ARG_DELIM: ',';
 
 // Tokens
-NAME: [a-zA-Z_]+;
+NAME: [a-zA-Z_][a-zA-Z_0-9]*;
 COMMENT: '//' ~[\r\n]* -> skip;
 WS: [ \r\n\t]+ -> skip;
 
@@ -49,13 +49,13 @@ import_stmt: IMPORT NAME;
 declaration: typeExpr | extension;
 
 typeExpr: ACCESS? TYPE NAME LBRACE relation* RBRACE;
-typeReference: (moduleName=NAME RESOLVE)? typeName=NAME;
+typeReference: NAME (RESOLVE NAME)*;
 
 extensionParam: NAME EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
 extensionParams: extensionParam (ARG_DELIM extensionParam)*;
 extensionReference: EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN;
 relation: extensionReference* ACCESS? RELATION NAME EXPAND relationBody;
-relationBody: LSQUARE CARDINALITY? typeReference RSQARE #Self
+relationBody: LSQUARE CARDINALITY? typeReference (OR typeReference)* RSQARE #Self
     | NAME #Reference
     | relationName=NAME RESOLVE subrelationName=NAME #SubRelation
     | LPAREN relationBody RPAREN #Paren
@@ -74,7 +74,7 @@ dynamicName: NAME #Literal
     | VARREF LBRACE NAME RBRACE #Variable
     | TEMPLATE_DELIM dynamicName+ TEMPLATE_DELIM #Template;
 
-dynamicBody: LSQUARE CARDINALITY? typeReference RSQARE #DynamicSelf
+dynamicBody: LSQUARE CARDINALITY? typeReference (OR typeReference)* RSQARE #DynamicSelf
     | dynamicName #DynamicReference
     | dynamicName RESOLVE dynamicName #DynamicSubRelation
     | LPAREN dynamicBody RPAREN #DynamicParen
