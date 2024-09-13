@@ -37,7 +37,7 @@ STRING_DELIM: '\'';
 ARG_DELIM: ',';
 
 // Tokens
-NAME: [a-zA-Z_]+;
+NAME: [a-zA-Z_][a-zA-Z_0-9]*;
 COMMENT: '//' ~[\r\n]* -> skip;
 WS: [ \r\n\t]+ -> skip;
 

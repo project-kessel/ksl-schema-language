@@ -152,7 +152,7 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 
 	relation, ok := r.inType.relations[e.relation]
 	if !ok {
-		return nil, ErrSymbolNotFound
+		return nil, fmt.Errorf("accessing relation %s in type %s: %w", e.relation, r.inType.name, ErrSymbolNotFound)
 	}
 
 	relationTypes, err := relation.DirectTypeReferences()
