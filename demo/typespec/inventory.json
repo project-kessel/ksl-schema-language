@@ -1,7 +1,7 @@
 {
   "name": "inventory",
   "imports": [
-    "iam"
+    "rbac"
   ],
   "types": [
     {
@@ -14,9 +14,9 @@
           "body": {
             "kind": "self",
             "cardinality": "ExactlyOne",
-            "module": "iam",
+            "namespace": "rbac",
             "type": {
-              "module": "iam",
+              "namespace": "rbac",
               "name": "workspace"
             }
           }
@@ -28,11 +28,11 @@
             "kind": "nested_reference",
             "relation": "workspace",
             "sub_relation": "inventory_hosts_read",
-            "module": ""
+            "namespace": ""
           },
           "extensions": [
             {
-              "module": "iam",
+              "namespace": "rbac",
               "name": "workspace_permission",
               "params": {
                 "full_name": "inventory_hosts_read"

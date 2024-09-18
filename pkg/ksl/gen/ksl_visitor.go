@@ -14,8 +14,8 @@ type kslVisitor interface {
 	// Visit a parse tree produced by kslParser#version.
 	VisitVersion(ctx *VersionContext) interface{}
 
-	// Visit a parse tree produced by kslParser#module.
-	VisitModule(ctx *ModuleContext) interface{}
+	// Visit a parse tree produced by kslParser#namespace.
+	VisitNamespace(ctx *NamespaceContext) interface{}
 
 	// Visit a parse tree produced by kslParser#import_stmt.
 	VisitImport_stmt(ctx *Import_stmtContext) interface{}

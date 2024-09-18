@@ -5,28 +5,28 @@ import (
 )
 
 type extensionDescriptor struct {
-	moduleName    string
+	namespaceName string
 	extensionName string //Might be changed to strings to force generated names to be materialized / might just be transparently materialized when evaluating an extension
 }
 
-func (d extensionDescriptor) Resolve(frommodule *Module) (*Extension, error) {
-	inmodule := frommodule
-	if d.moduleName != "" {
+func (d extensionDescriptor) Resolve(fromNS *Namespace) (*Extension, error) {
+	inNS := fromNS
+	if d.namespaceName != "" {
 		var found bool
-		inmodule, found = frommodule.schema.modules[d.moduleName]
+		inNS, found = fromNS.schema.namespaces[d.namespaceName]
 		if !found {
-			return nil, fmt.Errorf("Module %s, %w", d.moduleName, ErrSymbolNotFound)
+			return nil, fmt.Errorf("Namespace %s, %w", d.namespaceName, ErrSymbolNotFound)
 		}
 	}
 
-	resolvedExtension, found := inmodule.extensions[d.extensionName]
+	resolvedExtension, found := inNS.extensions[d.extensionName]
 	if !found {
-		return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.extensionName, ErrSymbolNotFound)
+		return nil, fmt.Errorf("Type %s.%s: %w", d.namespaceName, d.extensionName, ErrSymbolNotFound)
 	}
 
-	if inmodule != frommodule {
+	if inNS != fromNS {
 		if !resolvedExtension.visibility.SchemaVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, d.extensionName, ErrSymbolNotAccessible)
+			return nil, fmt.Errorf("Type %s.%s: %w", d.namespaceName, d.extensionName, ErrSymbolNotAccessible)
 		}
 	}
 
@@ -35,16 +35,16 @@ func (d extensionDescriptor) Resolve(frommodule *Module) (*Extension, error) {
 
 type ExtensionReference struct {
 	descriptor extensionDescriptor
-	module     *Module
+	namespace  *Namespace
 	onType     *Type
 	relation   *Relation
 	params     map[string]string
 }
 
-func NewExtensionReference(moduleName string, extensionName string, params map[string]string) *ExtensionReference {
+func NewExtensionReference(namespaceName string, extensionName string, params map[string]string) *ExtensionReference {
 	return &ExtensionReference{
 		descriptor: extensionDescriptor{
-			moduleName:    moduleName,
+			namespaceName: namespaceName,
 			extensionName: extensionName,
 		},
 		params: params,
@@ -52,7 +52,7 @@ func NewExtensionReference(moduleName string, extensionName string, params map[s
 }
 
 func (r *ExtensionReference) Apply() error {
-	e, err := r.descriptor.Resolve(r.module)
+	e, err := r.descriptor.Resolve(r.namespace)
 	if err != nil {
 		return err
 	}
@@ -62,37 +62,37 @@ func (r *ExtensionReference) Apply() error {
 		params[key] = value
 	}
 
-	return e.Apply(r.module, r.onType, r.relation, params)
+	return e.Apply(r.namespace, r.onType, r.relation, params)
 }
 
 type typeDescriptor struct {
-	moduleName string
-	typeName   string //Might be changed to strings to force generated names to be materialized / might just be transparently materialized when evaluating an extension
+	namespaceName string
+	typeName      string //Might be changed to strings to force generated names to be materialized / might just be transparently materialized when evaluating an extension
 }
 
 func (d typeDescriptor) Resolve(inType *Type) (*Type, error) {
-	module := inType.module
+	namespace := inType.namespace
 
-	if d.moduleName != "" {
+	if d.namespaceName != "" {
 		var found bool
-		module, found = inType.module.schema.modules[d.moduleName]
+		namespace, found = inType.namespace.schema.namespaces[d.namespaceName]
 		if !found {
-			return nil, fmt.Errorf("Module %s, %w", d.moduleName, ErrSymbolNotFound)
+			return nil, fmt.Errorf("Namespace %s, %w", d.namespaceName, ErrSymbolNotFound)
 		}
 	}
 
-	resolvedType, found := module.types[d.typeName]
+	resolvedType, found := namespace.types[d.typeName]
 	if !found {
-		return nil, fmt.Errorf("Type %s.%s: %w", module.name, d.typeName, ErrSymbolNotFound)
+		return nil, fmt.Errorf("Type %s.%s: %w", namespace.name, d.typeName, ErrSymbolNotFound)
 	}
 
-	if module == inType.module {
-		if !resolvedType.visibility.ModuleVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", module.name, d.typeName, ErrSymbolNotAccessible)
+	if namespace == inType.namespace {
+		if !resolvedType.visibility.NamespaceVisible {
+			return nil, fmt.Errorf("Type %s.%s: %w", namespace.name, d.typeName, ErrSymbolNotAccessible)
 		}
 	} else {
 		if !resolvedType.visibility.SchemaVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", module.name, d.typeName, ErrSymbolNotAccessible)
+			return nil, fmt.Errorf("Type %s.%s: %w", namespace.name, d.typeName, ErrSymbolNotAccessible)
 		}
 	}
 
@@ -106,11 +106,11 @@ type TypeReference struct {
 	all         bool
 }
 
-func NewTypeReference(moduleName string, typeName string, subRelation string, all bool) *TypeReference {
+func NewTypeReference(namespaceName string, typeName string, subRelation string, all bool) *TypeReference {
 	return &TypeReference{
 		descriptor: typeDescriptor{
-			moduleName: moduleName,
-			typeName:   typeName,
+			namespaceName: namespaceName,
+			typeName:      typeName,
 		},
 		subRelation: subRelation,
 		all:         all,
@@ -136,36 +136,36 @@ func (r *TypeReference) Resolve(fromType *Type) error {
 }
 
 type relationDescriptor struct {
-	moduleName   string
-	typeName     string
-	relationName string
+	namespaceName string
+	typeName      string
+	relationName  string
 }
 
 func (d relationDescriptor) Resolve(inType *Type) (*Relation, error) {
 	resolvedTypeName := d.typeName
 
-	module := inType.module
+	namespace := inType.namespace
 
-	if d.moduleName != "" {
+	if d.namespaceName != "" {
 		var found bool
-		module, found = inType.module.schema.modules[d.moduleName]
+		namespace, found = inType.namespace.schema.namespaces[d.namespaceName]
 		if !found {
-			return nil, fmt.Errorf("Module %s, %w", d.moduleName, ErrSymbolNotFound)
+			return nil, fmt.Errorf("Namespace %s, %w", d.namespaceName, ErrSymbolNotFound)
 		}
 	}
 
-	resolvedType, found := module.types[resolvedTypeName]
+	resolvedType, found := namespace.types[resolvedTypeName]
 	if !found {
-		return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, resolvedTypeName, ErrSymbolNotFound)
+		return nil, fmt.Errorf("Type %s.%s: %w", d.namespaceName, resolvedTypeName, ErrSymbolNotFound)
 	}
 
-	if module == inType.module {
-		if !resolvedType.visibility.ModuleVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, resolvedTypeName, ErrSymbolNotAccessible)
+	if namespace == inType.namespace {
+		if !resolvedType.visibility.NamespaceVisible {
+			return nil, fmt.Errorf("Type %s.%s: %w", d.namespaceName, resolvedTypeName, ErrSymbolNotAccessible)
 		}
 	} else {
 		if !resolvedType.visibility.SchemaVisible {
-			return nil, fmt.Errorf("Type %s.%s: %w", d.moduleName, resolvedTypeName, ErrSymbolNotAccessible)
+			return nil, fmt.Errorf("Type %s.%s: %w", d.namespaceName, resolvedTypeName, ErrSymbolNotAccessible)
 		}
 	}
 
@@ -173,19 +173,19 @@ func (d relationDescriptor) Resolve(inType *Type) (*Relation, error) {
 
 	relation, found := resolvedType.relations[resolvedRelationName]
 	if !found {
-		return nil, fmt.Errorf("Relation %s in type %s.%s: %w", resolvedRelationName, resolvedType.module.name, resolvedType.name, ErrSymbolNotFound)
+		return nil, fmt.Errorf("Relation %s in type %s.%s: %w", resolvedRelationName, resolvedType.namespace.name, resolvedType.name, ErrSymbolNotFound)
 	}
 
 	if resolvedType == inType {
 		//Same type, relations are always accessible
 		return relation, nil
-	} else if resolvedType.module == inType.module {
-		if !relation.visibility.ModuleVisible {
-			return nil, fmt.Errorf("Relation %s in type %s.%s: %w", resolvedRelationName, resolvedType.module.name, resolvedType.name, ErrSymbolNotAccessible)
+	} else if resolvedType.namespace == inType.namespace {
+		if !relation.visibility.NamespaceVisible {
+			return nil, fmt.Errorf("Relation %s in type %s.%s: %w", resolvedRelationName, resolvedType.namespace.name, resolvedType.name, ErrSymbolNotAccessible)
 		}
 	} else {
 		if !relation.visibility.SchemaVisible {
-			return nil, fmt.Errorf("Relation %s in type %s.%s: %w", resolvedRelationName, resolvedType.module.name, resolvedType.name, ErrSymbolNotAccessible)
+			return nil, fmt.Errorf("Relation %s in type %s.%s: %w", resolvedRelationName, resolvedType.namespace.name, resolvedType.name, ErrSymbolNotAccessible)
 		}
 	}
 
@@ -198,13 +198,13 @@ type RelationReference struct {
 	instance   *Relation
 }
 
-func NewRelationReference(parentType *Type, moduleName string, typeName string, relationName string) *RelationReference {
+func NewRelationReference(parentType *Type, namespaceName string, typeName string, relationName string) *RelationReference {
 	return &RelationReference{
 		parentType: parentType,
 		descriptor: relationDescriptor{
-			moduleName:   moduleName,
-			typeName:     typeName,
-			relationName: relationName,
+			namespaceName: namespaceName,
+			typeName:      typeName,
+			relationName:  relationName,
 		},
 	}
 }

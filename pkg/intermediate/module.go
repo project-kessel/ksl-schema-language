@@ -8,7 +8,7 @@ import (
 	"project-kessel.org/ksl-schema-language/internal/semantic"
 )
 
-type Module struct {
+type Namespace struct {
 	Name                 string                 `json:"name"`
 	Imports              []string               `json:"imports,omitempty"`
 	Types                []*Type                `json:"types"`
@@ -39,13 +39,13 @@ type RelationBody struct {
 }
 
 type ExtensionReference struct {
-	Module string            `json:"module,omitempty"`
-	Name   string            `json:"name"`
-	Params map[string]string `json:"params,omitempty"`
+	Namespace string            `json:"namespace,omitempty"`
+	Name      string            `json:"name"`
+	Params    map[string]string `json:"params,omitempty"`
 }
 
 type TypeReference struct {
-	Module      string `json:"module,omitempty"`
+	Namespace   string `json:"namespace,omitempty"`
 	Name        string `json:"name"`
 	SubRelation string `json:"sub_relation,omitempty"`
 	All         bool   `json:"all,omitempty"`
@@ -88,7 +88,7 @@ type DynamicName struct {
 	Segments []*DynamicName `json:"segments,omitempty"`
 }
 
-func LoadFile(filename string) (*Module, error) {
+func LoadFile(filename string) (*Namespace, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -97,21 +97,21 @@ func LoadFile(filename string) (*Module, error) {
 	return Load(file)
 }
 
-func Load(reader io.Reader) (*Module, error) {
-	module := &Module{}
+func Load(reader io.Reader) (*Namespace, error) {
+	namespace := &Namespace{}
 	data, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}
 
-	err = json.Unmarshal(data, module)
+	err = json.Unmarshal(data, namespace)
 
-	return module, err
+	return namespace, err
 }
 
-func Store(module *Module, writer io.Writer) error {
+func Store(namespace *Namespace, writer io.Writer) error {
 	encoder := json.NewEncoder(writer)
-	return encoder.Encode(module)
+	return encoder.Encode(namespace)
 }
 
 func (b *RelationBody) ToSemantic() (semantic.RelationExpression, error) {
@@ -124,7 +124,7 @@ func (b *RelationBody) ToSemantic() (semantic.RelationExpression, error) {
 
 		types := make([]*semantic.TypeReference, 0)
 		for _, t := range b.Types {
-			types = append(types, semantic.NewTypeReference(t.Module, t.Name, t.SubRelation, t.All))
+			types = append(types, semantic.NewTypeReference(t.Namespace, t.Name, t.SubRelation, t.All))
 		}
 
 		return semantic.NewSelfRelationExpression(types, cardinality), nil
@@ -171,7 +171,7 @@ func (r *Relation) ToSemantic(t *semantic.Type) (*semantic.Relation, error) {
 	return sr, nil
 }
 
-func (t *Type) ToSemantic(m *semantic.Module) (*semantic.Type, error) {
+func (t *Type) ToSemantic(m *semantic.Namespace) (*semantic.Type, error) {
 	v, err := toVisibility(t.Visibility)
 	if err != nil {
 		return nil, err
@@ -193,8 +193,8 @@ func (t *Type) ToSemantic(m *semantic.Module) (*semantic.Type, error) {
 	return st, nil
 }
 
-func (m *Module) ToSemantic() (*semantic.Module, error) {
-	sm := semantic.NewModule(m.Name, m.Imports)
+func (m *Namespace) ToSemantic() (*semantic.Namespace, error) {
+	sm := semantic.NewNamespace(m.Name, m.Imports)
 	for _, t := range m.Types {
 		st, err := t.ToSemantic(sm)
 		if err != nil {
@@ -222,7 +222,7 @@ func (m *Module) ToSemantic() (*semantic.Module, error) {
 }
 
 func (e *ExtensionReference) ToSemantic() *semantic.ExtensionReference {
-	return semantic.NewExtensionReference(e.Module, e.Name, e.Params)
+	return semantic.NewExtensionReference(e.Namespace, e.Name, e.Params)
 }
 
 func (e *ExtensionDefinition) ToSemantic() (*semantic.Extension, error) {
@@ -296,7 +296,7 @@ func (dr *DynamicRelationBody) ToSemantic() (semantic.DynamicRelationBody, error
 
 		types := make([]*semantic.TypeReference, 0)
 		for _, t := range dr.Types {
-			types = append(types, semantic.NewTypeReference(t.Module, t.Name, t.SubRelation, t.All))
+			types = append(types, semantic.NewTypeReference(t.Namespace, t.Name, t.SubRelation, t.All))
 		}
 
 		return semantic.NewSelfRelationExpression(types, cardinality), nil

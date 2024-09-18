@@ -4,15 +4,15 @@ type Extension struct {
 	name       string
 	visibility Visibility
 	types      []*DynamicType
-	module     *Module
+	namespace  *Namespace
 }
 
 func NewExtension(name string, visibility Visibility, types []*DynamicType) *Extension {
 	return &Extension{name: name, visibility: visibility, types: types}
 }
 
-func (e *Extension) Apply(fromModule *Module, fromType *Type, fromRelation *Relation, params map[string]string) error {
-	params["MODULE"] = fromModule.name
+func (e *Extension) Apply(fromNS *Namespace, fromType *Type, fromRelation *Relation, params map[string]string) error {
+	params["NAMESPACE"] = fromNS.name
 	if fromType != nil {
 		params["TYPE"] = fromType.name
 
@@ -22,14 +22,14 @@ func (e *Extension) Apply(fromModule *Module, fromType *Type, fromRelation *Rela
 	}
 
 	for _, t := range e.types {
-		generated, err := t.ToType(e.module, params)
+		generated, err := t.ToType(e.namespace, params)
 		if err != nil {
 			return err
 		}
 
-		existing, found := e.module.types[generated.name]
+		existing, found := e.namespace.types[generated.name]
 		if !found {
-			err = e.module.AddType(generated)
+			err = e.namespace.AddType(generated)
 			if err != nil {
 				return err
 			}
@@ -55,7 +55,7 @@ type DynamicType struct {
 	Relations  []*DynamicRelation
 }
 
-func (dt *DynamicType) ToType(m *Module, params map[string]string) (*Type, error) {
+func (dt *DynamicType) ToType(m *Namespace, params map[string]string) (*Type, error) {
 	t := NewType(dt.Name.String(params), m, dt.Visibility)
 
 	for _, dr := range dt.Relations {

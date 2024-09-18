@@ -1,0 +1,46 @@
+definition rbac/group {
+	permission member = t_member + t_member
+	relation t_member: rbac/user | rbac/group#member
+}
+
+definition rbac/user {}
+
+definition rbac/role {
+	permission inventory_hosts_read = t_inventory_hosts_read
+	relation t_inventory_hosts_read: rbac/user:*
+	permission _all_all = t__all_all
+	relation t__all_all: rbac/user:*
+	permission _host_all = t__host_all
+	relation t__host_all: rbac/user:*
+	permission _all_read = t__all_read
+	relation t__all_read: rbac/user:*
+	permission _all_write = t__all_write
+	relation t__all_write: rbac/user:*
+	permission inventory_hosts_write = t_inventory_hosts_write
+	relation t_inventory_hosts_write: rbac/user:*
+}
+
+definition rbac/role_binding {
+	permission subject = t_subject
+	relation t_subject: rbac/user | rbac/group#member
+	permission granted = t_granted
+	relation t_granted: rbac/role
+	permission inventory_hosts_read = (subject & t_granted->inventory_hosts_read + t_granted->_all_all + t_granted->_host_all + t_granted->_all_read)
+	permission inventory_hosts_write = (subject & t_granted->inventory_hosts_write + t_granted->_all_all + t_granted->_host_all + t_granted->_all_write)
+}
+
+definition rbac/workspace {
+	permission parent = t_parent
+	relation t_parent: rbac/workspace
+	permission user_grant = t_user_grant
+	relation t_user_grant: rbac/role_binding
+	permission inventory_hosts_read = t_user_grant->inventory_hosts_read + t_parent->inventory_hosts_read
+	permission inventory_hosts_write = t_user_grant->inventory_hosts_write + t_parent->inventory_hosts_write
+}
+
+definition inventory/host {
+	permission read = t_workspace->inventory_hosts_read
+	permission write = t_workspace->inventory_hosts_write
+	permission workspace = t_workspace
+	relation t_workspace: rbac/workspace
+}

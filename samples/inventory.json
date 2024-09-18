@@ -1,6 +1,6 @@
 {
     "name":"inventory",
-    "imports": ["iam"],
+    "imports": ["rbac"],
     "types": [
         {
             "name":"host",
@@ -12,9 +12,9 @@
                     "body": {
                         "kind": "self",
                         "cardinality": "ExactlyOne",
-                        "module":"iam",
+                        "module":"rbac",
                         "type": {
-                            "module": "iam",
+                            "module": "rbac",
                             "name":"workspace"
                         }
                     }
@@ -29,7 +29,7 @@
                     },
                     "extensions": [
                         {
-                            "module":"iam",
+                            "module":"rbac",
                             "name":"workspace_permission",
                             "params": {
                                 "full_name": "inventory_hosts_read"
@@ -47,7 +47,7 @@
                     },
                     "extensions": [
                         {
-                            "module":"iam",
+                            "module":"rbac",
                             "name":"workspace_permission",
                             "params": {
                                 "full_name": "inventory_hosts_write"

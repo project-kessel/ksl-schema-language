@@ -1,7 +1,7 @@
 version 0.1
-module bad
-import iam
+namespace bad
+import rbac
 
 public type Widget {
-    relation user_grant: [Any iam.role_binding]
+    relation user_grant: [Any rbac.role_binding]
 }

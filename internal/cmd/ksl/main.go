@@ -50,7 +50,7 @@ func build(sources []string, output *string) error {
 	schema := semantic.NewSchema()
 
 	for _, source := range sources {
-		var ir *intermediate.Module
+		var ir *intermediate.Namespace
 		var err error
 		switch filepath.Ext(source) {
 		case ".ksl":
@@ -65,12 +65,12 @@ func build(sources []string, output *string) error {
 			}
 		}
 
-		module, err := ir.ToSemantic()
+		namespace, err := ir.ToSemantic()
 		if err != nil {
 			return err
 		}
 
-		err = schema.AddModule(module)
+		err = schema.AddNamespace(namespace)
 		if err != nil {
 			return err
 		}

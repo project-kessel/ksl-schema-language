@@ -1,5 +1,5 @@
 version 0.1
-module iam
+namespace rbac
 
 internal type user {
 

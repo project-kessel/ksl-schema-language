@@ -10,13 +10,13 @@ import (
 type Type struct {
 	name       string
 	visibility Visibility
-	module     *Module
+	namespace  *Namespace
 	relations  map[string]*Relation
 	extensions []*ExtensionReference
 }
 
-func NewType(name string, m *Module, visiblity Visibility) *Type {
-	return &Type{name: name, module: m, visibility: visiblity, relations: map[string]*Relation{}, extensions: []*ExtensionReference{}}
+func NewType(name string, m *Namespace, visiblity Visibility) *Type {
+	return &Type{name: name, namespace: m, visibility: visiblity, relations: map[string]*Relation{}, extensions: []*ExtensionReference{}}
 }
 
 func (t *Type) AddRelation(r *Relation) error {
@@ -63,6 +63,6 @@ func (t *Type) ToZanzibar() (*core.NamespaceDefinition, error) {
 }
 
 func (t *Type) SpiceDBName() string {
-	//SpiceDB-specific - in our own Zanzibar model, we'd keep the module and type name separate until we reached the output formatter
-	return fmt.Sprintf("%s/%s", t.module.name, t.name)
+	//SpiceDB-specific - in our own Zanzibar model, we'd keep the namespace and type name separate until we reached the output formatter
+	return fmt.Sprintf("%s/%s", t.namespace.name, t.name)
 }
