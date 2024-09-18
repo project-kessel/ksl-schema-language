@@ -31,11 +31,19 @@ func (t *Type) AddRelation(r *Relation) error {
 }
 
 func (t *Type) AddExtension(e *ExtensionReference) {
+	e.namespace = t.namespace
+	e.onType = t
+
 	t.extensions = append(t.extensions, e)
 }
 
 func (t *Type) ApplyExtensions() error {
-	//Should handle extensions directly on the type
+	for _, e := range t.extensions {
+		if err := e.Apply(); err != nil {
+			return err
+		}
+	}
+
 	for _, r := range t.relations {
 		err := r.ApplyExtensions()
 		if err != nil {

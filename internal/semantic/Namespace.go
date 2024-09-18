@@ -7,11 +7,12 @@ import (
 )
 
 type Namespace struct {
-	name       string
-	schema     *Schema
-	imports    map[string]string
-	types      map[string]*Type
-	extensions map[string]*Extension
+	name          string
+	schema        *Schema
+	imports       map[string]string
+	types         map[string]*Type
+	extensions    map[string]*Extension
+	extensionRefs []*ExtensionReference
 }
 
 type Import struct {
@@ -34,7 +35,12 @@ func NewNamespace(name string, imports []string) *Namespace {
 }
 
 func (m *Namespace) ApplyExtensions() error {
-	//Should handle extensions directly on the namespace
+	for _, e := range m.extensionRefs {
+		if err := e.Apply(); err != nil {
+			return err
+		}
+	}
+
 	for _, t := range m.types {
 		err := t.ApplyExtensions()
 		if err != nil {
@@ -64,6 +70,11 @@ func (m *Namespace) AddExtension(e *Extension) error {
 	e.namespace = m
 
 	return nil
+}
+
+func (m *Namespace) AddExtensionReference(e *ExtensionReference) {
+	e.namespace = m
+	m.extensionRefs = append(m.extensionRefs, e)
 }
 
 func (m *Namespace) ToZanzibar() ([]*core.NamespaceDefinition, error) {

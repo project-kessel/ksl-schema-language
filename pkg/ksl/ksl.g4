@@ -35,6 +35,7 @@ VARREF: '$';
 TEMPLATE_DELIM: '`';
 STRING_DELIM: '\'';
 ARG_DELIM: ',';
+DECL_END: ';';
 
 // Tokens
 NAME: [a-zA-Z_][a-zA-Z_0-9]*;
@@ -46,9 +47,9 @@ file: version namespace import_stmt* declaration+;
 version: VERSION VERSIONNUM;
 namespace: NAMESPACE NAME;
 import_stmt: IMPORT NAME;
-declaration: typeExpr | extension;
+declaration: typeExpr DECL_END? | extension DECL_END? | extensionReference DECL_END;
 
-typeExpr: ACCESS? TYPE NAME LBRACE relation* RBRACE;
+typeExpr: extensionReference* ACCESS? TYPE NAME LBRACE relation* RBRACE;
 typeReference: NAME (RESOLVE NAME)*;
 
 extensionParam: NAME EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
