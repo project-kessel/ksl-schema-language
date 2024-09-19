@@ -11,9 +11,9 @@ import (
 	"flag"
 
 	"github.com/authzed/spicedb/pkg/schemadsl/generator"
-	"project-kessel.org/ksl-schema-language/internal/semantic"
-	"project-kessel.org/ksl-schema-language/pkg/intermediate"
-	"project-kessel.org/ksl-schema-language/pkg/ksl"
+	"github.com/project-kessel/ksl-schema-language/internal/semantic"
+	"github.com/project-kessel/ksl-schema-language/pkg/intermediate"
+	"github.com/project-kessel/ksl-schema-language/pkg/ksl"
 )
 
 func main() {

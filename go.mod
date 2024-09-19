@@ -1,12 +1,13 @@
-module project-kessel.org/ksl-schema-language
+module github.com/project-kessel/ksl-schema-language
 
 go 1.22.2
 
-require github.com/authzed/spicedb v1.33.0
+require (
+	github.com/antlr4-go/antlr/v4 v4.13.1
+	github.com/authzed/spicedb v1.33.0
+)
 
 require (
-	github.com/antlr/antlr4/runtime/Go/antlr v1.4.10 // indirect
-	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/authzed/authzed-go v0.11.2-0.20240507202708-8b150c491e4a // indirect
 	github.com/authzed/cel-go v0.20.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -15,10 +16,12 @@ require (
 	github.com/go-errors/errors v1.5.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
 	github.com/jzelinskie/stringz v0.0.3 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/planetscale/vtprotobuf v0.6.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
+	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/rs/zerolog v1.32.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect

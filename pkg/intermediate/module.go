@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"project-kessel.org/ksl-schema-language/internal/semantic"
+	"github.com/project-kessel/ksl-schema-language/internal/semantic"
 )
 
 type Namespace struct {

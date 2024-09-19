@@ -5,8 +5,8 @@ import (
 	"slices"
 
 	"github.com/antlr4-go/antlr/v4"
-	"project-kessel.org/ksl-schema-language/pkg/intermediate"
-	parser "project-kessel.org/ksl-schema-language/pkg/ksl/gen"
+	"github.com/project-kessel/ksl-schema-language/pkg/intermediate"
+	parser "github.com/project-kessel/ksl-schema-language/pkg/ksl/gen"
 )
 
 var (
