@@ -49,6 +49,8 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 
 	types := []*intermediate.Type{}
 	extensions := []*intermediate.ExtensionDefinition{}
+	extensionsRefs := []*intermediate.ExtensionReference{}
+
 	for _, d := range f.AllDeclaration() {
 		if exp := d.TypeExpr(); exp != nil {
 			t, err := c.typeExprToType(exp)
@@ -64,9 +66,15 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 
 			extensions = append(extensions, e)
 		}
+
+		if exp := d.ExtensionReference(); exp != nil {
+			e := c.extensionRefExprToExtensionRef(exp)
+
+			extensionsRefs = append(extensionsRefs, e)
+		}
 	}
 
-	return &intermediate.Namespace{Name: name, Imports: imports, Types: types, ExtensionDefinitions: extensions}, nil
+	return &intermediate.Namespace{Name: name, Imports: imports, Types: types, ExtensionDefinitions: extensions, ExtensionReferences: extensionsRefs}, nil
 }
 
 func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
@@ -74,6 +82,11 @@ func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Typ
 	access := "public"
 	if accessExpr := t.ACCESS(); accessExpr != nil {
 		access = accessExpr.GetText()
+	}
+
+	extensions := []*intermediate.ExtensionReference{}
+	for _, extensionExpr := range t.AllExtensionReference() {
+		extensions = append(extensions, c.extensionRefExprToExtensionRef(extensionExpr))
 	}
 
 	relations := []*intermediate.Relation{}
@@ -86,7 +99,7 @@ func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Typ
 		relations = append(relations, relation)
 	}
 
-	return &intermediate.Type{Name: name, Visibility: access, Relations: relations}, nil
+	return &intermediate.Type{Name: name, Visibility: access, Extensions: extensions, Relations: relations}, nil
 }
 
 func (c *converter) relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, error) {

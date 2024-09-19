@@ -11,14 +11,16 @@ import (
 type Namespace struct {
 	Name                 string                 `json:"name"`
 	Imports              []string               `json:"imports,omitempty"`
-	Types                []*Type                `json:"types"`
-	ExtensionDefinitions []*ExtensionDefinition `json:"defined_extensions"`
+	Types                []*Type                `json:"types,omitempty"`
+	ExtensionDefinitions []*ExtensionDefinition `json:"defined_extensions,omitempty"`
+	ExtensionReferences  []*ExtensionReference  `json:"extension_references,omitempty"`
 }
 
 type Type struct {
-	Name       string      `json:"name"`
-	Visibility string      `json:"visibility,omitempty"`
-	Relations  []*Relation `json:"relations"`
+	Name       string                `json:"name"`
+	Visibility string                `json:"visibility,omitempty"`
+	Extensions []*ExtensionReference `json:"extensions,omitempty"`
+	Relations  []*Relation           `json:"relations"`
 }
 
 type Relation struct {
@@ -179,6 +181,10 @@ func (t *Type) ToSemantic(m *semantic.Namespace) (*semantic.Type, error) {
 
 	st := semantic.NewType(t.Name, m, v)
 
+	for _, e := range t.Extensions {
+		st.AddExtension(e.ToSemantic())
+	}
+
 	for _, r := range t.Relations {
 		sr, err := r.ToSemantic(st)
 		if err != nil {
@@ -195,6 +201,11 @@ func (t *Type) ToSemantic(m *semantic.Namespace) (*semantic.Type, error) {
 
 func (m *Namespace) ToSemantic() (*semantic.Namespace, error) {
 	sm := semantic.NewNamespace(m.Name, m.Imports)
+
+	for _, e := range m.ExtensionReferences {
+		sm.AddExtensionReference(e.ToSemantic())
+	}
+
 	for _, t := range m.Types {
 		st, err := t.ToSemantic(sm)
 		if err != nil {

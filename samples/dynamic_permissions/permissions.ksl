@@ -1,0 +1,7 @@
+version 0.1
+namespace role_permissions
+
+import rbac
+
+@rbac.add_permission(workspace_perm: 'inventory_hosts_read');
+@rbac.add_permission(workspace_perm: 'inventory_hosts_write');

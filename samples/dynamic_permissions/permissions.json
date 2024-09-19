@@ -1,0 +1,22 @@
+{
+    "name": "role_permissions",
+    "imports": [
+        "rbac"
+    ],
+    "extension_references": [
+        {
+            "namespace": "rbac",
+            "name": "add_permission",
+            "params": {
+                "workspace_perm": "inventory_hosts_read"
+            }
+        },
+        {
+            "namespace": "rbac",
+            "name": "add_permission",
+            "params": {
+                "workspace_perm": "inventory_hosts_write"
+            }
+        }
+    ]
+}
