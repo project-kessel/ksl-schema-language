@@ -64,7 +64,7 @@ relationBody: LSQUARE CARDINALITY? typeReference (OR typeReference)* RSQARE #Sel
     | relationBody OR relationBody #OR
     | relationBody UNLESS relationBody #Unless;
 
-paramNames: NAME (ARG_DELIM NAME)?;
+paramNames: NAME (ARG_DELIM NAME)*;
 extension: ACCESS? EXTENSION NAME LPAREN paramNames? RPAREN LBRACE dynamicType+ RBRACE;
 
 dynamicType: ACCESS? TYPE dynamicName LBRACE dynamicRelation* RBRACE;
