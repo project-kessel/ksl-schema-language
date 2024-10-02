@@ -2,7 +2,7 @@ version 0.1
 namespace rbac
 
 // TODO: do we need to distinguish between service account and user principles as separate types?
-public type user {} //public for now since the [bool] type requires rbac/user to be accessible
+public type principal {} //public for now since the [bool] type requires rbac/user to be accessible
 
 // Other types for structuring access are marked internal but can be made public if services are intended to relate to them
 internal type realm {
