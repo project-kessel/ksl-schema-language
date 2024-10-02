@@ -12,7 +12,7 @@ import (
 var (
 	BooleanType *intermediate.TypeReference = &intermediate.TypeReference{ //Namespace and Name should be customizable, maybe through the language, maybe through a compiler flag
 		Namespace: "rbac",
-		Name:      "user",
+		Name:      "principal",
 		All:       true,
 	}
 )
