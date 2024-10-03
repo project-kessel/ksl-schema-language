@@ -32,6 +32,7 @@ func main() {
 		err := compileToIL(*toCompile, output)
 		if err != nil {
 			fmt.Printf("Failed to compile: " + err.Error())
+			os.Exit(1)
 		}
 		return
 	}
@@ -39,6 +40,7 @@ func main() {
 	err := build(flag.Args(), output)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
+		os.Exit(1)
 	}
 }
 
