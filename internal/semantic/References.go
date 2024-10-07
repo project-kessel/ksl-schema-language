@@ -13,13 +13,13 @@ func (d extensionDescriptor) Resolve(fromNS *Namespace) (*Extension, error) {
 	inNS := fromNS
 	if d.namespaceName != "" {
 		var found bool
-		inNS, found = fromNS.schema.namespaces[d.namespaceName]
+		inNS, found = fromNS.schema.namespaces.Get(d.namespaceName)
 		if !found {
 			return nil, fmt.Errorf("Namespace %s, %w", d.namespaceName, ErrSymbolNotFound)
 		}
 	}
 
-	resolvedExtension, found := inNS.extensions[d.extensionName]
+	resolvedExtension, found := inNS.extensions.Get(d.extensionName)
 	if !found {
 		return nil, fmt.Errorf("Type %s.%s: %w", d.namespaceName, d.extensionName, ErrSymbolNotFound)
 	}
@@ -75,13 +75,13 @@ func (d typeDescriptor) Resolve(inType *Type) (*Type, error) {
 
 	if d.namespaceName != "" {
 		var found bool
-		namespace, found = inType.namespace.schema.namespaces[d.namespaceName]
+		namespace, found = inType.namespace.schema.namespaces.Get(d.namespaceName)
 		if !found {
 			return nil, fmt.Errorf("Namespace %s, %w", d.namespaceName, ErrSymbolNotFound)
 		}
 	}
 
-	resolvedType, found := namespace.types[d.typeName]
+	resolvedType, found := namespace.types.Get(d.typeName)
 	if !found {
 		return nil, fmt.Errorf("Type %s.%s: %w", namespace.name, d.typeName, ErrSymbolNotFound)
 	}
@@ -148,13 +148,13 @@ func (d relationDescriptor) Resolve(inType *Type) (*Relation, error) {
 
 	if d.namespaceName != "" {
 		var found bool
-		namespace, found = inType.namespace.schema.namespaces[d.namespaceName]
+		namespace, found = inType.namespace.schema.namespaces.Get(d.namespaceName)
 		if !found {
 			return nil, fmt.Errorf("Namespace %s, %w", d.namespaceName, ErrSymbolNotFound)
 		}
 	}
 
-	resolvedType, found := namespace.types[resolvedTypeName]
+	resolvedType, found := namespace.types.Get(resolvedTypeName)
 	if !found {
 		return nil, fmt.Errorf("Type %s.%s: %w", d.namespaceName, resolvedTypeName, ErrSymbolNotFound)
 	}
@@ -171,7 +171,7 @@ func (d relationDescriptor) Resolve(inType *Type) (*Relation, error) {
 
 	resolvedRelationName := d.relationName
 
-	relation, found := resolvedType.relations[resolvedRelationName]
+	relation, found := resolvedType.relations.Get(resolvedRelationName)
 	if !found {
 		return nil, fmt.Errorf("Relation %s in type %s.%s: %w", resolvedRelationName, resolvedType.namespace.name, resolvedType.name, ErrSymbolNotFound)
 	}

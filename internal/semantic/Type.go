@@ -5,26 +5,27 @@ import (
 
 	"github.com/authzed/spicedb/pkg/namespace"
 	core "github.com/authzed/spicedb/pkg/proto/core/v1"
+	"github.com/project-kessel/ksl-schema-language/internal/util"
 )
 
 type Type struct {
 	name       string
 	visibility Visibility
 	namespace  *Namespace
-	relations  map[string]*Relation
+	relations  *util.OrderedMap[*Relation]
 	extensions []*ExtensionReference
 }
 
 func NewType(name string, m *Namespace, visiblity Visibility) *Type {
-	return &Type{name: name, namespace: m, visibility: visiblity, relations: map[string]*Relation{}, extensions: []*ExtensionReference{}}
+	return &Type{name: name, namespace: m, visibility: visiblity, relations: util.NewOrderedMap[*Relation](), extensions: []*ExtensionReference{}}
 }
 
 func (t *Type) AddRelation(r *Relation) error {
-	if _, found := t.relations[r.name]; found {
+	if _, found := t.relations.Get(r.name); found {
 		return fmt.Errorf("Type %s, relation %s: %w", t.name, r.name, ErrSymbolExists)
 	}
 
-	t.relations[r.name] = r
+	t.relations.Add(r.name, r)
 	r.inType = t
 
 	return nil
@@ -44,30 +45,26 @@ func (t *Type) ApplyExtensions() error {
 		}
 	}
 
-	for _, r := range t.relations {
-		err := r.ApplyExtensions()
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return t.relations.Iterate(func(s string, r *Relation) error {
+		return r.ApplyExtensions()
+	})
 }
 
 func (t *Type) ToZanzibar() (*core.NamespaceDefinition, error) {
 	namespace := namespace.Namespace(t.SpiceDBName()) //SpiceDB-specific
 
-	for _, relation := range t.relations {
-		rels, err := relation.ToZanzibar()
+	err := t.relations.Iterate(func(s string, r *Relation) error {
+		rels, err := r.ToZanzibar()
 
 		if err != nil {
-			return namespace, err
+			return err
 		}
 
 		namespace.Relation = append(namespace.Relation, rels...)
-	}
+		return nil
+	})
 
-	return namespace, nil
+	return namespace, err
 }
 
 func (t *Type) SpiceDBName() string {

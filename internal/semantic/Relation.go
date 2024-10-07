@@ -150,7 +150,7 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 		return namespace.ComputedUserset(e.relation), nil
 	}
 
-	relation, ok := r.inType.relations[e.relation]
+	relation, ok := r.inType.relations.Get(e.relation)
 	if !ok {
 		return nil, fmt.Errorf("accessing relation %s in type %s: %w", e.relation, r.inType.name, ErrSymbolNotFound)
 	}
@@ -168,7 +168,7 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 			}
 		}
 
-		subrelation, ok := t.instance.relations[*e.subrelation]
+		subrelation, ok := t.instance.relations.Get(*e.subrelation)
 		if !ok {
 			continue
 		}
