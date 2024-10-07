@@ -2,10 +2,10 @@ version 0.1
 namespace rbac
 
 internal type group {
-    relation member: [Any user] or [Any group.member]
+    relation member: [Any principal] or [Any group.member]
 }
 
-internal type user {
+internal type principal {
 
 }
 
@@ -14,7 +14,7 @@ internal type role {
 }
 
 internal type role_binding {
-    relation subject: [Any user or group.member]
+    relation subject: [Any principal or group.member]
     relation granted: [AtLeastOne role]
 }
 

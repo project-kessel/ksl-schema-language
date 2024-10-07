@@ -27,21 +27,21 @@ func (e *Extension) Apply(fromNS *Namespace, fromType *Type, fromRelation *Relat
 			return err
 		}
 
-		existing, found := e.namespace.types[generated.name]
+		existing, found := e.namespace.types.Get(generated.name)
 		if !found {
 			err = e.namespace.AddType(generated)
 			if err != nil {
 				return err
 			}
 		} else {
-			for _, relation := range generated.relations {
-				if _, ok := existing.relations[relation.name]; ok && relation.generatedFrom.IgnoreDuplicates {
-					continue
+			err = generated.relations.Iterate(func(s string, relation *Relation) error {
+				if _, ok := existing.relations.Get(relation.name); ok && relation.generatedFrom.IgnoreDuplicates {
+					return nil
 				}
-				err = existing.AddRelation(relation)
-				if err != nil {
-					return err
-				}
+				return existing.AddRelation(relation)
+			})
+			if err != nil {
+				return err
 			}
 		}
 	}
