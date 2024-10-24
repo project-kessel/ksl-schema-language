@@ -1,7 +1,7 @@
 version 0.1
 namespace rbac
 
-internal type user {
+internal type principal {
 
 }
 
@@ -10,7 +10,7 @@ internal type role {
 }
 
 internal type role_binding {
-    relation subject: [ExactlyOne user]
+    relation subject: [ExactlyOne principal]
     relation granted: [AtLeastOne role]
 }
 
