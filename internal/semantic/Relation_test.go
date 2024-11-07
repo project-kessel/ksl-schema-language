@@ -58,9 +58,3 @@ func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationIsNilAn
 	_, err = schema.ToZanzibar()
 	assert.Error(t, err)
 }
-
-/*
-public type test_type {
-	relation test_relation: [Any other]
-}
-*/

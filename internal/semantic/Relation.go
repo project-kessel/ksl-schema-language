@@ -236,10 +236,3 @@ func (e *SetRelationExpression) DirectTypeReferences(r *Relation) ([]*TypeRefere
 
 	return append(leftTypes, rightTypes...), nil
 }
-
-/*
-	type test_type {
-		relation bar: [Any group]
-		relation foo: bar
-	}
-*/
