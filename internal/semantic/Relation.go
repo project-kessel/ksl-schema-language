@@ -146,13 +146,13 @@ func NewReferenceRelationExpression(relation string, subrelation *string) *Refer
 }
 
 func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperation_Child, error) {
-	if e.subrelation == nil {
-		return namespace.ComputedUserset(e.relation), nil
-	}
-
 	relation, ok := r.inType.relations.Get(e.relation)
 	if !ok {
 		return nil, fmt.Errorf("accessing relation %s in type %s: %w", e.relation, r.inType.name, ErrSymbolNotFound)
+	}
+
+	if e.subrelation == nil {
+		return namespace.ComputedUserset(e.relation), nil
 	}
 
 	relationTypes, err := relation.DirectTypeReferences()
