@@ -21,7 +21,9 @@ func TestAssertSelfRelationExpressionToZanzibarSuccess(t *testing.T) {
 	schema.AddNamespace(namespace)
 	the_type.AddRelation(rel)
 
-	_, err = schema.ToZanzibar()
+	schemaDef, err := schema.ToZanzibar()
+	assert.Equal(t, the_type.namespace.name+"/"+the_type.name, schemaDef[0].GetName())
+	assert.Equal(t, other_type.namespace.name+"/"+other_type.name, schemaDef[1].GetName())
 	assert.NoError(t, err)
 }
 
@@ -29,7 +31,6 @@ func TestAssertSelfRelationExpressionToZanzibarTypeDoesNotExist(t *testing.T) {
 	schema := NewSchema()
 	namespace := NewNamespace("test_namespace", []string{})
 	the_type := NewType("test_type", namespace, VisibilityPublic)
-	//other_type := NewType("other_type", namespace, VisibilityPublic)
 
 	selfRelation := NewSelfRelationExpression([]*TypeReference{NewTypeReference(namespace.name, "other", "", false)}, CardinalityAny)
 
@@ -40,7 +41,7 @@ func TestAssertSelfRelationExpressionToZanzibarTypeDoesNotExist(t *testing.T) {
 	the_type.AddRelation(rel)
 
 	_, err = schema.ToZanzibar()
-	assert.Error(t, err)
+	assert.ErrorIs(t, err, ErrSymbolNotFound)
 }
 
 func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationIsNilAndRelationTypeDoesNotExist(t *testing.T) {
@@ -56,5 +57,5 @@ func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationIsNilAn
 	schema.AddNamespace(namespace)
 	the_type.AddRelation(rel)
 	_, err = schema.ToZanzibar()
-	assert.Error(t, err)
+	assert.ErrorIs(t, err, ErrSymbolNotFound)
 }
