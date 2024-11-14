@@ -84,3 +84,28 @@ func TestAssertReferenceRelationExpressionToZanzibarFailsIfSubRelationIsTypo(t *
 	_, err = schema.ToZanzibar()
 	assert.ErrorIs(t, err, ErrSymbolNotFound)
 }
+
+func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationIsValid(t *testing.T) {
+	schema := NewSchema()
+	namespace := NewNamespace("test_namespace", []string{})
+	principal := NewType("principal", namespace, VisibilityPublic)
+	group := NewType("group", namespace, VisibilityPublic)
+
+	principalTypeReference := NewTypeReference("", "principal", "", false)
+	groupTypeReference := NewTypeReference("", "group", "member", false)
+
+	typeReferences := []*TypeReference{principalTypeReference, groupTypeReference}
+
+	setrel := NewSelfRelationExpression(typeReferences, CardinalityAny)
+
+	rel, err := NewRelation("member", group, VisibilityPublic, setrel, nil)
+	assert.NoError(t, err)
+
+	group.AddRelation(rel)
+	namespace.AddType(principal)
+	namespace.AddType(group)
+	schema.AddNamespace(namespace)
+
+	_, err = schema.ToZanzibar()
+	assert.NoError(t, err)
+}
