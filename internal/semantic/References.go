@@ -131,6 +131,13 @@ func (r *TypeReference) Resolve(fromType *Type) error {
 		return err
 	}
 
+	if r.subRelation != "" {
+		_, ok := resolvedType.relations.Get(r.subRelation)
+		if !ok {
+			return fmt.Errorf("relation %s not found on type %s.%s %w", r.subRelation, resolvedType.namespace.name, resolvedType.name, ErrSymbolNotFound)
+		}
+	}
+
 	r.instance = resolvedType
 	return nil
 }
