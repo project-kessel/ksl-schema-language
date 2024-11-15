@@ -60,7 +60,7 @@ func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationIsNilAn
 	assert.ErrorIs(t, err, ErrSymbolNotFound)
 }
 
-func TestAssertReferenceRelationExpressionToZanzibarFailsIfSubRelationIsTypo(t *testing.T) {
+func TestAssertReferenceRelationExpressionToZanzibarFailsIfSelfRelationIsTypo(t *testing.T) {
 	schema := NewSchema()
 	namespace := NewNamespace("test_namespace", []string{})
 	principal := NewType("principal", namespace, VisibilityPublic)
@@ -85,7 +85,7 @@ func TestAssertReferenceRelationExpressionToZanzibarFailsIfSubRelationIsTypo(t *
 	assert.ErrorIs(t, err, ErrSymbolNotFound)
 }
 
-func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationIsValid(t *testing.T) {
+func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSelfRelationIsValid(t *testing.T) {
 	schema := NewSchema()
 	namespace := NewNamespace("test_namespace", []string{})
 	principal := NewType("principal", namespace, VisibilityPublic)
@@ -104,6 +104,78 @@ func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationIsValid
 	group.AddRelation(rel)
 	namespace.AddType(principal)
 	namespace.AddType(group)
+	schema.AddNamespace(namespace)
+
+	_, err = schema.ToZanzibar()
+	assert.NoError(t, err)
+}
+
+func TestAssertReferenceRelationExpressionToZanzibarFailsIfSubRelationTypo(t *testing.T) {
+	schema := NewSchema()
+	namespace := NewNamespace("test_namespace", []string{})
+	principal := NewType("principal", namespace, VisibilityPublic)
+	workspace := NewType("workspace", namespace, VisibilityPublic)
+
+	workspaceTypeReference := NewTypeReference("", "workspace", "", false)
+
+	parentTypeReferences := []*TypeReference{workspaceTypeReference}
+
+	parentRelationExpression := NewSelfRelationExpression(parentTypeReferences, CardinalityAtMostOne)
+
+	parentRelation, err := NewRelation("parent", workspace, VisibilityPublic, parentRelationExpression, nil)
+	assert.NoError(t, err)
+
+	ownerPrincipalTypeReference := NewTypeReference("", "principal", "", false)
+	ownerTypeReferences := []*TypeReference{ownerPrincipalTypeReference}
+	ownerPrincipalRelationExpression := NewSelfRelationExpression(ownerTypeReferences, CardinalityAny)
+
+	ownerTypo := "ownr"
+	ownerParentRelationExpression := NewReferenceRelationExpression("parent", &ownerTypo)
+
+	ownerRelationExpression := NewSetRelationExpression("union", ownerPrincipalRelationExpression, ownerParentRelationExpression)
+	ownerRelation, err := NewRelation("owner", workspace, VisibilityPublic, ownerRelationExpression, nil)
+	assert.NoError(t, err)
+
+	workspace.AddRelation(parentRelation)
+	workspace.AddRelation(ownerRelation)
+	namespace.AddType(principal)
+	namespace.AddType(workspace)
+	schema.AddNamespace(namespace)
+
+	_, err = schema.ToZanzibar()
+	assert.ErrorIs(t, err, ErrSymbolNotFound)
+}
+
+func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationOkay(t *testing.T) {
+	schema := NewSchema()
+	namespace := NewNamespace("test_namespace", []string{})
+	principal := NewType("principal", namespace, VisibilityPublic)
+	workspace := NewType("workspace", namespace, VisibilityPublic)
+
+	workspaceTypeReference := NewTypeReference("", "workspace", "", false)
+
+	parentTypeReferences := []*TypeReference{workspaceTypeReference}
+
+	parentRelationExpression := NewSelfRelationExpression(parentTypeReferences, CardinalityAtMostOne)
+
+	parentRelation, err := NewRelation("parent", workspace, VisibilityPublic, parentRelationExpression, nil)
+	assert.NoError(t, err)
+
+	ownerPrincipalTypeReference := NewTypeReference("", "principal", "", false)
+	ownerTypeReferences := []*TypeReference{ownerPrincipalTypeReference}
+	ownerPrincipalRelationExpression := NewSelfRelationExpression(ownerTypeReferences, CardinalityAny)
+
+	owner := "owner"
+	ownerParentRelationExpression := NewReferenceRelationExpression("parent", &owner)
+
+	ownerRelationExpression := NewSetRelationExpression("union", ownerPrincipalRelationExpression, ownerParentRelationExpression)
+	ownerRelation, err := NewRelation("owner", workspace, VisibilityPublic, ownerRelationExpression, nil)
+	assert.NoError(t, err)
+
+	workspace.AddRelation(parentRelation)
+	workspace.AddRelation(ownerRelation)
+	namespace.AddType(principal)
+	namespace.AddType(workspace)
 	schema.AddNamespace(namespace)
 
 	_, err = schema.ToZanzibar()

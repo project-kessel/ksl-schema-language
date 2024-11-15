@@ -170,7 +170,7 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 
 		subrelation, ok := t.instance.relations.Get(*e.subrelation)
 		if !ok {
-			continue
+			return nil, fmt.Errorf("relation %s not found on type %s.%s %w", *e.subrelation, e.relation, *e.subrelation, ErrSymbolNotFound)
 		}
 
 		if !subrelation.VisibleTo(r.inType) {
