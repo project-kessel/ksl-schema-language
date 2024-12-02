@@ -1,6 +1,7 @@
 package ksl
 
 import (
+	"fmt"
 	"io"
 	"slices"
 
@@ -17,6 +18,17 @@ var (
 	}
 )
 
+type CustomErrorListener struct {
+	*antlr.DefaultErrorListener
+	Errors []string
+}
+
+func (c *CustomErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{},
+	line, column int, msg string, e antlr.RecognitionException) {
+	errorMessage := fmt.Sprintf("line %d:%d %s", line, column, msg)
+	c.Errors = append(c.Errors, errorMessage)
+}
+
 func Compile(r io.Reader) (*intermediate.Namespace, error) {
 	data, err := io.ReadAll(r)
 	if err != nil {
@@ -28,7 +40,22 @@ func Compile(r io.Reader) (*intermediate.Namespace, error) {
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
 	interpreter := parser.NewkslParser(tokens)
 
+	errorListener := &CustomErrorListener{}
+	interpreter.RemoveErrorListeners()
+	interpreter.AddErrorListener(errorListener)
+
 	file := interpreter.File()
+
+	if len(errorListener.Errors) > 0 {
+		fmt.Println("Parsing errors detected:")
+		for _, err := range errorListener.Errors {
+			fmt.Println(err)
+			panic(err)
+		}
+	} else {
+		fmt.Println("Parsing completed successfully.")
+	}
+
 	converter := &converter{}
 	return converter.fileToNamespace(file)
 }
