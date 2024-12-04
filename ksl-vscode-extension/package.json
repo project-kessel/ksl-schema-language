@@ -1,0 +1,26 @@
+{
+    "name": "ksl-syntax",
+    "displayName": "KSL Syntax Highlighting",
+    "description": "Custom language syntax for KSL.",
+    "version": "0.0.1",
+    "publisher": "project-kessel",
+    "engines": {
+        "vscode": "^1.0.0"
+    },
+    "contributes": {
+        "languages": [
+            {
+                "id": "ksl",
+                "aliases": ["KSL", "ksl"],
+                "extensions": [".ksl"]
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ksl",
+                "scopeName": "source.ksl",
+                "path": "./ksl.tmLanguage.json"
+            }
+        ]
+    }
+}

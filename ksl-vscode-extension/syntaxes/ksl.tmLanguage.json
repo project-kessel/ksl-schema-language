@@ -1,0 +1,61 @@
+{
+    "scopeName": "source.ksl",
+    "name": "KSL",
+    "injectionSelector": "L:comment.line.double-slash",
+    "patterns": [
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#tokens"
+        },
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#todo-keyword"
+        }
+    ],
+    "repository": {
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.ksl",
+                    "match": "\\b(version|namespace|type|relation|import|extension|as|and|or|unless|allow_duplicates)\\b"
+                },
+                {
+                    "name": "keyword.access",
+                    "match": "\\b(public|internal|private)\\b"
+                },
+                {
+                    "name": "keyword.cardinality",
+                    "match": "\\b(AtMostOne|ExactlyOne|AtLeastOne|Any)\\b"
+                }
+            ]
+        },
+        "tokens": {
+            "patterns": [
+                {
+                    "name": "constant.numeric",
+                    "match": "\\b[0-9]+(\\.[0-9]+)*\\b"
+                }
+            ]
+        },
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.line.double-slash",
+                    "begin": "//",
+                    "end": "(?=\\n)"
+                }
+            ]
+        },
+        "todo-keyword": {
+            "match": "TODO",
+            "name": "keyword.todo"
+        }
+    },
+    "fileTypes": [
+        "ksl"
+    ]
+}
