@@ -19,7 +19,7 @@
             {
                 "language": "ksl",
                 "scopeName": "source.ksl",
-                "path": "./ksl.tmLanguage.json"
+                "path": "./syntaxes/ksl.tmLanguage.json"
             }
         ]
     }
