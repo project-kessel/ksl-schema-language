@@ -12,7 +12,8 @@
             {
                 "id": "ksl",
                 "aliases": ["KSL", "ksl"],
-                "extensions": [".ksl"]
+                "extensions": [".ksl"],
+                "configuration": "./language-configuration.json"
             }
         ],
         "grammars": [
