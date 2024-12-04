@@ -88,6 +88,14 @@
                     "match": "\\}"
                 },
                 {
+                    "name": "punctuation.definition.begin.bracket.round.ksl",
+                    "match": "\\("
+                },
+                {
+                    "name": "punctuation.definition.end.bracket.round.ksl",
+                    "match": "\\)"
+                },
+                {
                     "name": "punctuation.definition.variable.ksl",
                     "match": "\\$"
                 },
