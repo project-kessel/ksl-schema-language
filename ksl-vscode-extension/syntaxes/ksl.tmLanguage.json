@@ -81,15 +81,19 @@
             "patterns": [
                 {
                     "name": "punctuation.definition.begin.bracket.curly.ksl",
-                    "match": ""
+                    "match": "\\{"
                 },
                 {
                     "name": "punctuation.definition.end.bracket.curly.ksl",
-                    "match": ""
+                    "match": "\\}"
                 },
                 {
                     "name": "punctuation.definition.variable.ksl",
-                    "match": ""
+                    "match": "\\$"
+                },
+                {
+                    "name": "punctuation.other.colon.ksl",
+                    "match": ":"
                 }
             ]
         },
