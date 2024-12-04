@@ -65,7 +65,7 @@
             "patterns": [
                 {
                     "name": "entity.name.function.ksl",
-                    "match": "\\b(extension)\\b\\s*([a-zA-Z_][a-zA-Z0-9_]*)\\b\\("
+                    "match": ""
                 }
             ]
         },
@@ -73,7 +73,7 @@
             "patterns": [
                 {
                     "name": "variables.parameter.ksl",
-                    "match": "\\b(extension)\\b\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s+"
+                    "match": ""
                 }
             ]
         },
