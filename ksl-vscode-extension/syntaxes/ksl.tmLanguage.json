@@ -1,58 +1,118 @@
 {
     "scopeName": "source.ksl",
     "name": "KSL",
-    "injectionSelector": "L:comment.line.double-slash",
     "patterns": [
+        {
+            "include": "#storage"
+        },
         {
             "include": "#keywords"
         },
         {
-            "include": "#tokens"
+            "include": "#constants"
+        },
+        {
+            "include": "#entity"
+        },
+        {
+            "include": "#variables"
+        },
+        {
+            "include": "#punctuation"
         },
         {
             "include": "#comments"
-        },
-        {
-            "include": "#todo-keyword"
         }
     ],
     "repository": {
-        "keywords": {
+        "storage": {
             "patterns": [
                 {
-                    "name": "keyword.ksl",
-                    "match": "\\b(version|namespace|type|relation|import|extension|as|and|or|unless|allow_duplicates)\\b"
+                    "name": "storage.modifier.ksl",
+                    "match": "\\b(public|internal|private|allow_duplicates)\\b"
                 },
                 {
-                    "name": "keyword.access",
-                    "match": "\\b(public|internal|private)\\b"
-                },
-                {
-                    "name": "keyword.cardinality",
+                    "name": "storage.type.ksl",
                     "match": "\\b(AtMostOne|ExactlyOne|AtLeastOne|Any)\\b"
                 }
             ]
         },
-        "tokens": {
+        "keywords": {
             "patterns": [
                 {
-                    "name": "constant.numeric",
+                    "name": "keyword.other.ksl",
+                    "match": "\\b(version|namespace|type|relation|extension|as|and|or|unless)\\b"
+                },
+                {
+                    "name": "keyword.control.import.ksl",
+                    "match": "\\b(import)\\b"
+                }
+            ]
+        },
+        "constants": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.ksl",
                     "match": "\\b[0-9]+(\\.[0-9]+)*\\b"
+                },
+                {
+                    "name": "constant.language.ksl",
+                    "match": "\\b(bool)\\b"
+                }
+            ]
+        },
+        "entity": {
+            "patterns": [
+                {
+                    "name": "entity.name.function.ksl",
+                    "match": ""
+                }
+            ]
+        },
+        "variables": {
+            "patterns": [
+                {
+                    "name": "variables.parameter.ksl",
+                    "match": ""
+                }
+            ]
+        },
+        "punctuation": {
+            "patterns": [
+                {
+                    "name": "punctuation.definition.begin.bracket.curly.ksl",
+                    "match": "\\{"
+                },
+                {
+                    "name": "punctuation.definition.end.bracket.curly.ksl",
+                    "match": "\\}"
+                },
+                {
+                    "name": "punctuation.definition.begin.bracket.round.ksl",
+                    "match": "\\("
+                },
+                {
+                    "name": "punctuation.definition.end.bracket.round.ksl",
+                    "match": "\\)"
+                },
+                {
+                    "name": "punctuation.definition.variable.ksl",
+                    "match": "\\$"
+                },
+                {
+                    "name": "punctuation.other.colon.ksl",
+                    "match": ":"
                 }
             ]
         },
         "comments": {
             "patterns": [
                 {
-                    "name": "comment.line.double-slash",
+                    "name": "comment.line.double-slash.ksl",
                     "begin": "//",
                     "end": "(?=\\n)"
                 }
             ]
-        },
-        "todo-keyword": {
-            "match": "TODO",
-            "name": "keyword.todo"
         }
     },
     "fileTypes": [
