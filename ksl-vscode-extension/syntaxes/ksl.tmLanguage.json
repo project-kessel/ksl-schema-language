@@ -15,9 +15,6 @@
             "include": "#constants"
         },
         {
-            "include": "#variables"
-        },
-        {
             "include": "#punctuation"
         },
         {
@@ -121,12 +118,21 @@
                             "name": "entity.name.type.namespace.ksl"
                         }
                     }
+                },
+                {
+                    "match": "(@)(\\w+)\\.(\\w+)\\(",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.other.call.ksl"
+                        },
+                        "2": {
+                            "name": "variable.other.ksl"
+                        },
+                        "3": {
+                            "name": "entity.name.function.support.ksl"
+                        }
+                    }
                 }
-            ]
-        },
-        "variables": {
-            "patterns": [
-                {}
             ]
         },
         "punctuation": {
