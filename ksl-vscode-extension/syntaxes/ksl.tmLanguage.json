@@ -132,6 +132,20 @@
                             "name": "entity.name.function.support.ksl"
                         }
                     }
+                },
+                {
+                    "match": "\\b(public|private|internal)?\\b\\s*(\\btype\\b)\\s*(\\w+)",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.ksl"
+                        },
+                        "2": {
+                            "name": "keyword.type.ksl"
+                        },
+                        "3": {
+                            "name": "entity.name.type.ksl"
+                        }
+                    }
                 }
             ]
         },
