@@ -158,16 +158,49 @@
                     ]
                 },
                 {
+                    "begin": "'",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.ksl"
+                        }
+                    },
+                    "comment": "Regular strings",
+                    "end": "'",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.ksl"
+                        }
+                    },
+                    "name": "string.quoted.regular.ksl",
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
+                },
+                {
                     "name": "punctuation.definition.variable.ksl",
                     "match": "\\$"
+                },
+                {
+                    "name": "punctuation.other.period.ksl",
+                    "match": "\\."
+                },
+                {
+                    "name": "punctuation.other.comma.ksl",
+                    "match": "\\,"
                 },
                 {
                     "name": "punctuation.other.colon.ksl",
                     "match": ":"
                 },
                 {
-                    "name": "punctuation.other.dot.ksl",
-                    "match": "\\."
+                    "name": "punctuation.other.call.ksl",
+                    "match": "@"
+                },
+                {
+                    "name": "punctuation.other.terminator.ksl",
+                    "match": ";"
                 }
             ]
         },
