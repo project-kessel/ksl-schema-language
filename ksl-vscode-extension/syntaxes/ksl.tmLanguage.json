@@ -3,6 +3,9 @@
     "name": "KSL",
     "patterns": [
         {
+            "include": "#function_declaration"
+        },
+        {
             "include": "#storage"
         },
         {
@@ -25,6 +28,25 @@
         }
     ],
     "repository": {
+        "function_declaration": {
+            "patterns": [
+                {
+                    "name": "entity.function.ksl",
+                    "match": "\\b(public|private|internal)\\b\\s+(\\bextension\\b)\\s+(\\w+)",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.ksl"
+                        },
+                        "2": {
+                            "name": "keyword.extension.ksl"
+                        },
+                        "3": {
+                            "name": "entity.name.function.ksl"
+                        }
+                    }
+                }
+            ]
+        },
         "storage": {
             "patterns": [
                 {
@@ -41,7 +63,15 @@
             "patterns": [
                 {
                     "name": "keyword.other.ksl",
-                    "match": "\\b(version|namespace|type|relation|extension|as|and|or|unless)\\b"
+                    "match": "\\b(version|namespace|relation|as|and|or|unless)\\b"
+                },
+                {
+                    "name": "keyword.extension.ksl",
+                    "match": "\\bextension\\b"
+                },
+                {
+                    "name": "keyword.type.ksl",
+                    "match": "\\btype\\b"
                 },
                 {
                     "name": "keyword.control.import.ksl",
@@ -63,18 +93,12 @@
         },
         "entity": {
             "patterns": [
-                {
-                    "name": "entity.name.function.ksl",
-                    "match": ""
-                }
+                {}
             ]
         },
         "variables": {
             "patterns": [
-                {
-                    "name": "variables.parameter.ksl",
-                    "match": ""
-                }
+                {}
             ]
         },
         "punctuation": {
