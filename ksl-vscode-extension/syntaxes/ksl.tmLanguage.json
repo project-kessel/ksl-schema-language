@@ -80,20 +80,82 @@
         "punctuation": {
             "patterns": [
                 {
-                    "name": "punctuation.definition.begin.bracket.curly.ksl",
-                    "match": "\\{"
+                    "begin": "\\{",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.curly.ksl"
+                        }
+                    },
+                    "end": "\\}",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.curly.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
-                    "name": "punctuation.definition.end.bracket.curly.ksl",
-                    "match": "\\}"
+                    "begin": "\\(",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.round.ksl"
+                        }
+                    },
+                    "end": "\\)",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.round.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
-                    "name": "punctuation.definition.begin.bracket.round.ksl",
-                    "match": "\\("
+                    "begin": "\\[",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.square.ksl"
+                        }
+                    },
+                    "end": "\\]",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.square.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
-                    "name": "punctuation.definition.end.bracket.round.ksl",
-                    "match": "\\)"
+                    "begin": "`",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.ksl"
+                        }
+                    },
+                    "comment": "Templated strings",
+                    "end": "`",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.ksl"
+                        }
+                    },
+                    "name": "string.quoted.template.ksl",
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
                     "name": "punctuation.definition.variable.ksl",
@@ -102,6 +164,10 @@
                 {
                     "name": "punctuation.other.colon.ksl",
                     "match": ":"
+                },
+                {
+                    "name": "punctuation.other.dot.ksl",
+                    "match": "\\."
                 }
             ]
         },
