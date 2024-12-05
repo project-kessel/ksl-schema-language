@@ -80,28 +80,127 @@
         "punctuation": {
             "patterns": [
                 {
-                    "name": "punctuation.definition.begin.bracket.curly.ksl",
-                    "match": "\\{"
+                    "begin": "\\{",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.curly.ksl"
+                        }
+                    },
+                    "end": "\\}",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.curly.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
-                    "name": "punctuation.definition.end.bracket.curly.ksl",
-                    "match": "\\}"
+                    "begin": "\\(",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.round.ksl"
+                        }
+                    },
+                    "end": "\\)",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.round.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
-                    "name": "punctuation.definition.begin.bracket.round.ksl",
-                    "match": "\\("
+                    "begin": "\\[",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.square.ksl"
+                        }
+                    },
+                    "end": "\\]",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.square.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
-                    "name": "punctuation.definition.end.bracket.round.ksl",
-                    "match": "\\)"
+                    "begin": "`",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.ksl"
+                        }
+                    },
+                    "comment": "Templated strings",
+                    "end": "`",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.ksl"
+                        }
+                    },
+                    "name": "string.quoted.template.ksl",
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
+                },
+                {
+                    "begin": "'",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.ksl"
+                        }
+                    },
+                    "comment": "Regular strings",
+                    "end": "'",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.ksl"
+                        }
+                    },
+                    "name": "string.quoted.regular.ksl",
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
                 },
                 {
                     "name": "punctuation.definition.variable.ksl",
                     "match": "\\$"
                 },
                 {
+                    "name": "punctuation.other.period.ksl",
+                    "match": "\\."
+                },
+                {
+                    "name": "punctuation.other.comma.ksl",
+                    "match": "\\,"
+                },
+                {
                     "name": "punctuation.other.colon.ksl",
                     "match": ":"
+                },
+                {
+                    "name": "punctuation.other.call.ksl",
+                    "match": "@"
+                },
+                {
+                    "name": "punctuation.other.terminator.ksl",
+                    "match": ";"
                 }
             ]
         },
