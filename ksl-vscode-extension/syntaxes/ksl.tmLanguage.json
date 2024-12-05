@@ -97,6 +97,30 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "entity.import.ksl",
+                    "match": "(\\bimport\\b)\\s+(\\w+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.control.import.ksl"
+                        },
+                        "2": {
+                            "name": "entity.name.import.ksl"
+                        }
+                    }
+                },
+                {
+                    "name": "entity.namespace.ksl",
+                    "match": "(\\bnamespace\\b)\\s+(\\w+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.ksl"
+                        },
+                        "2": {
+                            "name": "entity.name.type.namespace.ksl"
+                        }
+                    }
                 }
             ]
         },
