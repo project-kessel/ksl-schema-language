@@ -3,7 +3,7 @@
     "name": "KSL",
     "patterns": [
         {
-            "include": "#function_declaration"
+            "include": "#entity"
         },
         {
             "include": "#storage"
@@ -13,9 +13,6 @@
         },
         {
             "include": "#constants"
-        },
-        {
-            "include": "#entity"
         },
         {
             "include": "#variables"
@@ -28,28 +25,6 @@
         }
     ],
     "repository": {
-        "function_declaration": {
-            "patterns": [
-                {
-                    "name": "entity.function.ksl",
-                    "match": "\\b(public|private|internal)\\b\\s+(\\bextension\\b)\\s+(\\w+)\\(([^)]*)\\)",
-                    "captures": {
-                        "1": {
-                            "name": "storage.modifier.ksl"
-                        },
-                        "2": {
-                            "name": "keyword.extension.ksl"
-                        },
-                        "3": {
-                            "name": "entity.name.function.ksl"
-                        },
-                        "4": {
-                            "name": "variable.parameter.ksl"
-                        }
-                    }
-                }
-            ]
-        },
         "storage": {
             "patterns": [
                 {
@@ -96,7 +71,33 @@
         },
         "entity": {
             "patterns": [
-                {}
+                {
+                    "name": "entity.function.ksl",
+                    "match": "\\b(public|private|internal)\\b\\s+(\\bextension\\b)\\s+(\\w+)\\(([^)]*)\\)",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.ksl"
+                        },
+                        "2": {
+                            "name": "keyword.extension.ksl"
+                        },
+                        "3": {
+                            "name": "entity.name.function.ksl"
+                        },
+                        "4": {
+                            "patterns": [
+                                {
+                                    "name": "variable.parameter.ksl",
+                                    "match": "\\w+"
+                                },
+                                {
+                                    "name": "punctuation.other.comma.ksl",
+                                    "match": "\\,"
+                                }
+                            ]
+                        }
+                    }
+                }
             ]
         },
         "variables": {
