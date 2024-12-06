@@ -2,6 +2,7 @@
     "name": "ksl-syntax",
     "displayName": "KSL Syntax Highlighting",
     "description": "Custom language syntax for KSL.",
+    "icon": "assets/ksl-icon.png",
     "version": "0.0.1",
     "publisher": "project-kessel",
     "engines": {
@@ -11,8 +12,13 @@
         "languages": [
             {
                 "id": "ksl",
-                "aliases": ["KSL", "ksl"],
-                "extensions": [".ksl"],
+                "aliases": [
+                    "KSL",
+                    "ksl"
+                ],
+                "extensions": [
+                    ".ksl"
+                ],
                 "configuration": "./language-configuration.json"
             }
         ],
