@@ -4,9 +4,21 @@
     "description": "Custom language syntax for KSL.",
     "version": "0.0.1",
     "publisher": "project-kessel",
+    "main": "./out/extension.js",
+    "activationEvents": [
+        "workspaceContains:**/*.ksl"
+    ],
     "engines": {
-        "vscode": "^1.0.0"
+        "vscode": "^1.55.0"
     },
+    "dependencies": {
+		"glob": "^11.0.0",
+		"vscode-languageclient": "^9.0.1"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.55.0",
+		"@vscode/test-electron": "^2.3.9"
+	},
     "contributes": {
         "languages": [
             {
