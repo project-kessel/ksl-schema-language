@@ -18,10 +18,16 @@ var (
 	handler protocol.Handler
 )
 
+type SourceFile struct {
+	Text string
+}
+
+var files = map[string]*SourceFile{}
+
 func main() {
 	// This increases logging verbosity (optional)
 	commonlog.Configure(1, nil)
-
+	_ = files
 	handler = protocol.Handler{
 		Initialize:             initialize,
 		Initialized:            initialized,

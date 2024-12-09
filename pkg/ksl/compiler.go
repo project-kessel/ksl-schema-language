@@ -70,8 +70,12 @@ func GetNextTokens(r io.Reader) ([]TokenCandidate, string, error) {
 	values := interpreter.LiteralNames
 	for _, interval := range expectedTokenIntervals.GetIntervals() {
 		for tokenType := interval.Start; tokenType < interval.Stop; tokenType++ {
+			var text string
 			name := names[tokenType]
-			text := values[tokenType]
+
+			if tokenType >= 0 && tokenType < len(values) {
+				text = values[tokenType]
+			}
 
 			candidate := TokenCandidate{Name: name}
 
@@ -112,14 +116,10 @@ func (l *autoCompleteErrorListener) SyntaxError(
 	parser := recognizer.(antlr.Parser)
 
 	if token.GetTokenType() == antlr.TokenEOF {
-		if _, ok := e.(*antlr.InputMisMatchException); ok {
-			l.expectedTokens = parser.GetExpectedTokens()
-			ctx := parser.GetParserRuleContext()
-			l.ruleAtEOF = parser.GetRuleNames()[ctx.GetRuleIndex()]
-			l.hasExpectedTokensAtEOF = true
-		} else {
-			l.hasOtherErrors = true
-		}
+		l.expectedTokens = parser.GetExpectedTokens()
+		ctx := parser.GetParserRuleContext()
+		l.ruleAtEOF = parser.GetRuleNames()[ctx.GetRuleIndex()]
+		l.hasExpectedTokensAtEOF = true
 	} else {
 		l.hasOtherErrors = true
 	}
