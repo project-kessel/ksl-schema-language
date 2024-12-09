@@ -57,6 +57,8 @@ func main() {
 func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
 	capabilities := handler.CreateServerCapabilities()
 
+	capabilities.CompletionProvider.TriggerCharacters = append(capabilities.CompletionProvider.TriggerCharacters, " ")
+
 	return protocol.InitializeResult{
 		Capabilities: capabilities,
 		ServerInfo: &protocol.InitializeResultServerInfo{
