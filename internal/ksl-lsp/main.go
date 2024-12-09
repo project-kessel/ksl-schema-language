@@ -63,5 +63,37 @@ func setTrace(context *glsp.Context, params *protocol.SetTraceParams) error {
 }
 
 func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionParams) (any, error) {
-	return nil, nil
+	completionItems := []protocol.CompletionItem{
+		keywordCompletion("version"),
+		keywordCompletion("namespace"),
+		keywordCompletion("public"),
+		keywordCompletion("internal"),
+		keywordCompletion("private"),
+		keywordCompletion("type"),
+		keywordCompletion("relation"),
+		keywordCompletion("import"),
+		keywordCompletion("extension"),
+		keywordCompletion("AtMostOne"),
+		keywordCompletion("ExactlyOne"),
+		keywordCompletion("AtLeastOne"),
+		keywordCompletion("Any"),
+		keywordCompletion("as"),
+		keywordCompletion("and"),
+		keywordCompletion("or"),
+		keywordCompletion("unless"),
+		keywordCompletion("ALLOW_DUPLICATES"),
+	}
+
+	return completionItems, nil
+}
+
+func keywordCompletion(name string) protocol.CompletionItem {
+	kind := protocol.CompletionItemKindKeyword
+	return protocol.CompletionItem{
+		Label:            name,
+		Kind:             &kind,
+		Detail:           &name,
+		InsertText:       &name,
+		CommitCharacters: []string{" "},
+	}
 }
