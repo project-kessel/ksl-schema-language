@@ -61,8 +61,10 @@ func GetNextTokens(r io.Reader) ([]TokenCandidate, string, error) {
 		expectedTokenIntervals = l.expectedTokens
 		activeRule = l.ruleAtEOF
 	} else {
-		expectedTokenIntervals = interpreter.GetExpectedTokens()
-		activeRule = interpreter.GetRuleNames()[interpreter.GetParserRuleContext().GetRuleIndex()]
+		//Do nothing for now- interacting with the parser at EOF causes a panic
+		//expectedTokenIntervals = interpreter.GetExpectedTokensWithinCurrentRule()
+		//activeRule = interpreter.GetRuleNames()[interpreter.GetParserRuleContext().GetRuleIndex()]
+		return nil, "", nil
 	}
 
 	expectedTokens := []TokenCandidate{}

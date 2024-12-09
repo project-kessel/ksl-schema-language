@@ -1,6 +1,10 @@
 package main
 
 import (
+	"strings"
+	"unicode"
+
+	"github.com/project-kessel/ksl-schema-language/pkg/ksl"
 	"github.com/tliron/commonlog"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
@@ -23,6 +27,12 @@ type SourceFile struct {
 }
 
 var files = map[string]*SourceFile{}
+
+func NewSourceFile(text string) *SourceFile {
+	return &SourceFile{
+		Text: text,
+	}
+}
 
 func main() {
 	// This increases logging verbosity (optional)
@@ -72,32 +82,47 @@ func setTrace(context *glsp.Context, params *protocol.SetTraceParams) error {
 }
 
 func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionParams) (any, error) {
-	completionItems := []protocol.CompletionItem{
-		keywordCompletion("version"),
-		keywordCompletion("namespace"),
-		keywordCompletion("public"),
-		keywordCompletion("internal"),
-		keywordCompletion("private"),
-		keywordCompletion("type"),
-		keywordCompletion("relation"),
-		keywordCompletion("import"),
-		keywordCompletion("extension"),
-		keywordCompletion("AtMostOne"),
-		keywordCompletion("ExactlyOne"),
-		keywordCompletion("AtLeastOne"),
-		keywordCompletion("Any"),
-		keywordCompletion("as"),
-		keywordCompletion("and"),
-		keywordCompletion("or"),
-		keywordCompletion("unless"),
-		keywordCompletion("ALLOW_DUPLICATES"),
+	file, ok := files[params.TextDocument.URI]
+	if !ok {
+		return nil, nil
+	}
+
+	index := params.Position.IndexIn(file.Text)
+	fragment := file.Text[:index]
+	fragment = strings.TrimRightFunc(fragment, unicode.IsLetter)
+	tokens, rule, err := ksl.GetNextTokens(strings.NewReader(fragment))
+	if err != nil {
+		return nil, err
+	}
+
+	completionItems := []protocol.CompletionItem{}
+
+	for _, token := range tokens {
+		if token.Literal != nil {
+			completionItems = append(completionItems, literalCompletion(*token.Literal))
+		} else {
+			switch token.Name {
+			case "ACCESS":
+				for _, kw := range []string{"public", "internal"} {
+					completionItems = append(completionItems, literalCompletion(kw))
+				}
+				if rule == "relation" {
+					completionItems = append(completionItems, literalCompletion("private"))
+				}
+			case "CARDINALITY":
+				for _, kw := range []string{"AtMostOne", "ExactlyOne", "AtLeastOne", "Any"} {
+					completionItems = append(completionItems, literalCompletion(kw))
+				}
+			}
+		}
 	}
 
 	return completionItems, nil
 }
 
-func keywordCompletion(name string) protocol.CompletionItem {
+func literalCompletion(name string) protocol.CompletionItem {
 	kind := protocol.CompletionItemKindKeyword
+
 	return protocol.CompletionItem{
 		Label:            name,
 		Kind:             &kind,
