@@ -34,6 +34,9 @@ func main() {
 		Shutdown:               shutdown,
 		SetTrace:               setTrace,
 		TextDocumentCompletion: textDocumentCompletion,
+		TextDocumentDidOpen:    textDocumentDidOpen,
+		TextDocumentDidChange:  textDocumentDidChange,
+		TextDocumentDidClose:   textDocumentDidClose,
 	}
 
 	server := server.NewServer(&handler, lsName, false)
@@ -102,4 +105,50 @@ func keywordCompletion(name string) protocol.CompletionItem {
 		InsertText:       &name,
 		CommitCharacters: []string{" "},
 	}
+}
+
+func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocumentParams) error {
+	uri := params.TextDocument.URI
+	sourceFile := SourceFile{
+		Text: params.TextDocument.Text,
+	}
+	files[uri] = &sourceFile
+	return nil
+}
+
+func textDocumentDidChange(context *glsp.Context, params *protocol.DidChangeTextDocumentParams) error {
+	sourceFile, ok := Get(params.TextDocument.URI)
+	if !ok {
+		return nil
+	}
+
+	sourceFile.ApplyChanges(params.ContentChanges)
+
+	return nil
+}
+
+func textDocumentDidClose(context *glsp.Context, params *protocol.DidCloseTextDocumentParams) error {
+	Close(params.TextDocument.URI)
+	return nil
+}
+
+func (s *SourceFile) ApplyChanges(changes []interface{}) {
+	for _, change := range changes {
+		switch c := change.(type) {
+		case protocol.TextDocumentContentChangeEvent:
+			startIndex, endIndex := c.Range.IndexesIn(s.Text)
+			s.Text = s.Text[:startIndex] + c.Text + s.Text[endIndex:]
+		case protocol.TextDocumentContentChangeEventWhole:
+			s.Text = c.Text
+		}
+	}
+}
+
+func Get(URI string) (*SourceFile, bool) {
+	f, ok := files[URI]
+	return f, ok
+}
+
+func Close(URI string) {
+	delete(files, URI)
 }
