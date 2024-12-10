@@ -1,6 +1,6 @@
 {
     "name": "ksl-syntax",
-    "displayName": "KSL Syntax Highlighting",
+    "displayName": "Language Support for KSL",
     "description": "Custom language syntax for KSL.",
     "icon": "assets/ksl-icon.png",
     "version": "0.0.1",
