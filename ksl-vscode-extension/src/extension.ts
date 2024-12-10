@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // This line of code will only be executed once when your extension is activated
     // TODO: Start server exe and communicate with it
-    let serverExe = 'ksl-lsp';
+    let serverExe = context.extensionPath + '/out/ksl-lsp';
     let ServerOptions: ServerOptions = {
         command: serverExe
     }

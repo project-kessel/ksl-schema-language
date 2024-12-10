@@ -1,13 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deactivate = exports.activate = void 0;
+exports.activate = activate;
+exports.deactivate = deactivate;
 const vscode = require("vscode");
 const node_1 = require("vscode-languageclient/node");
 let client;
 function activate(context) {
     // This line of code will only be executed once when your extension is activated
     // TODO: Start server exe and communicate with it
-    let serverExe = '/home/naughtix/Projects/ksl-schema-language/internal/ksl-lsp/ksl-lsp';
+    let serverExe = context.extensionPath + '/out/ksl-lsp';
     let ServerOptions = {
         command: serverExe
     };
@@ -28,7 +29,6 @@ function activate(context) {
     let t = client.start();
     t.then(_ => client.info("Connected!"), err => client.error(err));
 }
-exports.activate = activate;
 function deactivate() {
     if (!client) {
         vscode.window.showWarningMessage("No active language server to stop.");
@@ -37,5 +37,4 @@ function deactivate() {
     vscode.window.showInformationMessage("Stopping language server.");
     return client.stop();
 }
-exports.deactivate = deactivate;
 //# sourceMappingURL=extension.js.map
