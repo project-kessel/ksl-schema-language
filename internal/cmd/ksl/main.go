@@ -58,6 +58,9 @@ func build(sources []string, output *string) error {
 		case ".ksl":
 			ir, err = ksl.Compile(openRead(source))
 			if err != nil {
+				if errors.Is(err, ksl.ErrSyntaxError) {
+					return fmt.Errorf("%w:\nfile %s", err, source)
+				}
 				return err
 			}
 		case ".json":
