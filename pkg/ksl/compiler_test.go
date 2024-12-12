@@ -7,7 +7,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBad(t *testing.T) {
+func TestErrorsAreThrownWhenSyntaxIsIncorrect(t *testing.T) {
+	_, err := Compile(strings.NewReader(`
+version 
+namespace rbac
+
+public type  {}
+
+public type group {
+    relation member: [Any principal or group.membr]
+}`))
+
+	assert.ErrorIs(t, err, ErrSyntaxError)
+}
+
+func TestCompilerPassesWithCorrectlyFormattedFile(t *testing.T) {
 	ns, err := Compile(strings.NewReader(`
 version 0.1
 namespace rbac

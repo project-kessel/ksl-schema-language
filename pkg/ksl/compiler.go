@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"slices"
+	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/project-kessel/ksl-schema-language/pkg/intermediate"
@@ -47,13 +48,9 @@ func Compile(r io.Reader) (*intermediate.Namespace, error) {
 	file := interpreter.File()
 
 	if len(errorListener.Errors) > 0 {
-		fmt.Println("Parsing errors detected:")
-		for _, err := range errorListener.Errors {
-			fmt.Println(err)
-			panic(err)
-		}
-	} else {
-		fmt.Println("Parsing completed successfully.")
+		errs := strings.Join(errorListener.Errors, "\n")
+
+		return nil, fmt.Errorf("%w:\n%s", ErrSyntaxError, errs)
 	}
 
 	converter := &converter{}
