@@ -1,8 +1,10 @@
 package ksl
 
 import (
+	"fmt"
 	"io"
 	"slices"
+	"strings"
 
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/project-kessel/ksl-schema-language/pkg/intermediate"
@@ -17,6 +19,17 @@ var (
 	}
 )
 
+type CustomErrorListener struct {
+	*antlr.DefaultErrorListener
+	Errors []string
+}
+
+func (c *CustomErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{},
+	line, column int, msg string, e antlr.RecognitionException) {
+	errorMessage := fmt.Sprintf("line %d:%d %s", line, column, msg)
+	c.Errors = append(c.Errors, errorMessage)
+}
+
 func Compile(r io.Reader) (*intermediate.Namespace, error) {
 	data, err := io.ReadAll(r)
 	if err != nil {
@@ -28,7 +41,18 @@ func Compile(r io.Reader) (*intermediate.Namespace, error) {
 	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
 	interpreter := parser.NewkslParser(tokens)
 
+	errorListener := &CustomErrorListener{}
+	interpreter.RemoveErrorListeners()
+	interpreter.AddErrorListener(errorListener)
+
 	file := interpreter.File()
+
+	if len(errorListener.Errors) > 0 {
+		errs := strings.Join(errorListener.Errors, "\n")
+
+		return nil, fmt.Errorf("%w:\n%s", ErrSyntaxError, errs)
+	}
+
 	converter := &converter{}
 	return converter.fileToNamespace(file)
 }
