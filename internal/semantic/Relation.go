@@ -168,13 +168,53 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 			}
 		}
 
-		subrelation, ok := t.instance.relations.Get(*e.subrelation)
-		if !ok {
-			return nil, fmt.Errorf("relation %s not found on type %s.%s %w", *e.subrelation, e.relation, *e.subrelation, ErrSymbolNotFound)
+		var helperMethod func(tr *TypeReference) error
+
+		helperMethod = func(tr *TypeReference) error {
+
+			if tr.subRelation != "" {
+				newRelation, ok := tr.instance.relations.Get(tr.subRelation)
+				if !ok {
+					return fmt.Errorf("accessing relation %s in type %s: %w", e.relation, r.inType.name, ErrSymbolNotFound)
+				}
+
+				newRelationTypes, err := newRelation.DirectTypeReferences()
+				if err != nil {
+					return err
+				}
+
+				for _, nt := range newRelationTypes {
+					if !nt.IsResolved() {
+						err := nt.Resolve(r.inType)
+						if err != nil {
+							return err
+						}
+					}
+
+					err := helperMethod(nt)
+					if err != nil {
+						return err
+					} else {
+						return nil
+					}
+				}
+			}
+
+			subrelation, ok := tr.instance.relations.Get(*e.subrelation)
+			if !ok {
+				return fmt.Errorf("relation %s not found on type %s.%s %w", *e.subrelation, e.relation, *e.subrelation, ErrSymbolNotFound)
+			}
+
+			if !subrelation.VisibleTo(r.inType) {
+				return ErrSymbolNotAccessible
+			}
+
+			return nil
 		}
 
-		if !subrelation.VisibleTo(r.inType) {
-			return nil, ErrSymbolNotAccessible
+		err := helperMethod(t)
+		if err != nil {
+			return nil, err
 		}
 	}
 	return namespace.TupleToUserset(relation.SpiceDBName(), *e.subrelation), nil
