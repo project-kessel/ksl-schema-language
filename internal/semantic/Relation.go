@@ -168,8 +168,6 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 			}
 		}
 
-		// declare a set and then add to it as the helperMethod goes
-
 		var helperMethod func(tr *TypeReference) error
 
 		helperMethod = func(tr *TypeReference) error {
@@ -202,8 +200,6 @@ func (e *ReferenceRelationExpression) ToZanzibar(r *Relation) (*core.SetOperatio
 				}
 			}
 
-			// Check for crowsfoot relationship somehow
-			// This code is the base case
 			subrelation, ok := tr.instance.relations.Get(*e.subrelation)
 			if !ok {
 				return fmt.Errorf("relation %s not found on type %s.%s %w", *e.subrelation, e.relation, *e.subrelation, ErrSymbolNotFound)
