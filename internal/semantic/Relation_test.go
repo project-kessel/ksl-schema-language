@@ -181,3 +181,53 @@ func TestAssertReferenceRelationExpressionToZanzibarSucceedsIfSubRelationOkay(t 
 	_, err = schema.ToZanzibar()
 	assert.NoError(t, err)
 }
+
+func TestNestingError(t *testing.T) {
+	schema := NewSchema()
+	namespace := NewNamespace("test_namespace", []string{})
+	principal := NewType("principal", namespace, VisibilityPublic)
+	inner := NewType("inner", namespace, VisibilityPublic)
+	outer := NewType("outer", namespace, VisibilityPublic)
+	foo := NewType("foo", namespace, VisibilityPublic)
+
+	innerTypeReference := NewTypeReference("", "principal", "", false)
+
+	innerTypeReferences := []*TypeReference{innerTypeReference}
+
+	innerRelationExpression := NewSelfRelationExpression(innerTypeReferences, CardinalityAny)
+
+	enabledRelation, err := NewRelation("enabled", inner, VisibilityPublic, innerRelationExpression, nil)
+	assert.NoError(t, err)
+
+	outerTypeReference := NewTypeReference("", "inner", "", false)
+	outerTypeReferences := []*TypeReference{outerTypeReference}
+	outerRelationExpression := NewSelfRelationExpression(outerTypeReferences, CardinalityAny)
+
+	innerRelation, err := NewRelation("inner", outer, VisibilityPublic, outerRelationExpression, nil)
+	assert.NoError(t, err)
+
+	outerInnerTypeReference := NewTypeReference("", "outer", "inner", false)
+	outerInnerTypeReferences := []*TypeReference{outerInnerTypeReference}
+	outterInnerRelationExpression := NewSelfRelationExpression(outerInnerTypeReferences, CardinalityAny)
+
+	fooInnerRelation, err := NewRelation("inner", foo, VisibilityPublic, outterInnerRelationExpression, nil)
+	assert.NoError(t, err)
+
+	enabled := "enabled"
+	innerEnabledSubRelation := NewReferenceRelationExpression("inner", &enabled)
+	innerEnabledRelation, err := NewRelation("enabled", foo, VisibilityPublic, innerEnabledSubRelation, nil)
+	assert.NoError(t, err)
+
+	inner.AddRelation(enabledRelation)
+	outer.AddRelation(innerRelation)
+	foo.AddRelation(fooInnerRelation)
+	foo.AddRelation(innerEnabledRelation)
+	namespace.AddType(principal)
+	namespace.AddType(inner)
+	namespace.AddType(outer)
+	namespace.AddType(foo)
+	schema.AddNamespace(namespace)
+
+	_, err = schema.ToZanzibar()
+	assert.NoError(t, err)
+}
