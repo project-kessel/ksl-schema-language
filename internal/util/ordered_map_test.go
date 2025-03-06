@@ -11,11 +11,11 @@ import (
 func TestOrderedMapIteratesInInsertionOrder(t *testing.T) {
 	m := NewOrderedMap[int]()
 
-	m.Add("one", 1)
-	m.Add("two", 2)
-	m.Add("three", 3)
-	m.Add("four", 4)
-	m.Add("five", 5)
+	m.Add("2", 2)
+	m.Add("1", 1)
+	m.Add("4", 4)
+	m.Add("5", 5)
+	m.Add("3", 3)
 
 	actual := []int{}
 	err := m.Iterate(func(s string, i int) error {
@@ -53,9 +53,9 @@ func TestOrderedMapReturnsErrorFromIterate(t *testing.T) {
 
 func TestOrderedMapSerializationRoundTrip(t *testing.T) {
 	m := NewOrderedMap[int]()
-	m.Add("one", 1)
-	m.Add("two", 2)
-	m.Add("three", 3)
+	m.Add("1", 1)
+	m.Add("3", 3)
+	m.Add("2", 2)
 
 	holder := mapHolder{OM: m}
 	data, err := json.Marshal(holder)

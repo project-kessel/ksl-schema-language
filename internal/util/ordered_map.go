@@ -1,6 +1,9 @@
 package util
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"slices"
+)
 
 type OrderedMap[T any] struct {
 	names  []string
@@ -29,7 +32,11 @@ func (m *OrderedMap[T]) Get(name string) (T, bool) {
 }
 
 func (m *OrderedMap[T]) Iterate(f func(string, T) error) error {
-	for _, name := range m.names {
+	sorted_names := make([]string, len(m.names))
+	copy(sorted_names, m.names)
+	slices.Sort(sorted_names)
+
+	for _, name := range sorted_names {
 		value := m.values[name]
 
 		if err := f(name, value); err != nil {
