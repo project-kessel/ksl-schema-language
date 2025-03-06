@@ -22,8 +22,8 @@ func TestAssertSelfRelationExpressionToZanzibarSuccess(t *testing.T) {
 	the_type.AddRelation(rel)
 
 	schemaDef, err := schema.ToZanzibar()
-	assert.Equal(t, the_type.namespace.name+"/"+the_type.name, schemaDef[0].GetName())
-	assert.Equal(t, other_type.namespace.name+"/"+other_type.name, schemaDef[1].GetName())
+	assert.Equal(t, other_type.namespace.name+"/"+other_type.name, schemaDef[0].GetName())
+	assert.Equal(t, the_type.namespace.name+"/"+the_type.name, schemaDef[1].GetName())
 	assert.NoError(t, err)
 }
 
