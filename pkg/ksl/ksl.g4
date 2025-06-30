@@ -1,10 +1,8 @@
 grammar ksl;
 
 // Keywords
-VERSION: 'version';
 VERSIONNUM: [0-9] RESOLVE [0-9]+;
 RESOLVE: '.';
-NAMESPACE: 'namespace';
 ACCESS: PUBLIC | INTERNAL | PRIVATE;
 PUBLIC: 'public';
 INTERNAL: 'internal';
@@ -44,8 +42,8 @@ WS: [ \r\n\t]+ -> skip;
 
 file: version namespace import_stmt* declaration+;
 
-version: VERSION VERSIONNUM;
-namespace: NAMESPACE NAME;
+version: NAME VERSIONNUM;
+namespace: NAME NAME;
 import_stmt: IMPORT NAME;
 declaration: typeExpr DECL_END? | extension DECL_END? | extensionReference DECL_END;
 

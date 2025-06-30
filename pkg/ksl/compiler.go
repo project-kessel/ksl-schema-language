@@ -62,7 +62,21 @@ type converter struct {
 }
 
 func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namespace, error) {
-	name := f.Namespace().NAME().GetText()
+	// Get version
+	versionCtx := f.Version()
+	if versionCtx == nil {
+		return nil, fmt.Errorf("expected 'version' at start of file")
+	}
+
+	// Get namespace
+	namespaceCtx := f.Namespace()
+	if namespaceCtx == nil {
+		return nil, fmt.Errorf("expected 'namespace' after version")
+	}
+	name := "" // Get namespace's name
+	if namespaceCtx.NAME(1) != nil {
+		name = namespaceCtx.NAME(1).GetText()
+	}
 
 	imports := []string{}
 	for _, i := range f.AllImport_stmt() {
