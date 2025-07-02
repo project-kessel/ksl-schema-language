@@ -8,6 +8,10 @@ type BasekslVisitor struct {
 	*antlr.BaseParseTreeVisitor
 }
 
+func (v *BasekslVisitor) VisitName(ctx *NameContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BasekslVisitor) VisitFile(ctx *FileContext) interface{} {
 	return v.VisitChildren(ctx)
 }

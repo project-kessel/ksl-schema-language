@@ -8,6 +8,9 @@ import "github.com/antlr4-go/antlr/v4"
 type kslVisitor interface {
 	antlr.ParseTreeVisitor
 
+	// Visit a parse tree produced by kslParser#name.
+	VisitName(ctx *NameContext) interface{}
+
 	// Visit a parse tree produced by kslParser#file.
 	VisitFile(ctx *FileContext) interface{}
 

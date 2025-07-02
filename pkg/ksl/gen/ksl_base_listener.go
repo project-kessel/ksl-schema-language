@@ -21,6 +21,12 @@ func (s *BasekslListener) EnterEveryRule(ctx antlr.ParserRuleContext) {}
 // ExitEveryRule is called when any rule is exited.
 func (s *BasekslListener) ExitEveryRule(ctx antlr.ParserRuleContext) {}
 
+// EnterName is called when production name is entered.
+func (s *BasekslListener) EnterName(ctx *NameContext) {}
+
+// ExitName is called when production name is exited.
+func (s *BasekslListener) ExitName(ctx *NameContext) {}
+
 // EnterFile is called when production file is entered.
 func (s *BasekslListener) EnterFile(ctx *FileContext) {}
 
