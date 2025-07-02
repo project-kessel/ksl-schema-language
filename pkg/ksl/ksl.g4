@@ -1,5 +1,6 @@
 grammar ksl;
-
+KW_ESC: '#';
+FORCED_NAME: KW_ESC NAME;
 // Keywords
 VERSION: 'version';
 VERSIONNUM: [0-9] RESOLVE [0-9]+;
@@ -42,37 +43,38 @@ NAME: [a-zA-Z_][a-zA-Z_0-9]*;
 COMMENT: '//' ~[\r\n]* -> skip;
 WS: [ \r\n\t]+ -> skip;
 
+name: NAME | FORCED_NAME;
 file: version namespace import_stmt* declaration+;
 
 version: VERSION VERSIONNUM;
-namespace: NAMESPACE NAME;
-import_stmt: IMPORT NAME;
+namespace: NAMESPACE name;
+import_stmt: IMPORT name;
 declaration: typeExpr DECL_END? | extension DECL_END? | extensionReference DECL_END;
 
-typeExpr: extensionReference* ACCESS? TYPE NAME LBRACE relation* RBRACE;
-typeReference: NAME (RESOLVE NAME)*;
+typeExpr: extensionReference* ACCESS? TYPE name LBRACE relation* RBRACE;
+typeReference: name (RESOLVE name)*;
 
-extensionParam: NAME EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
+extensionParam: name EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
 extensionParams: extensionParam (ARG_DELIM extensionParam)*;
 extensionReference: EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN;
-relation: extensionReference* ACCESS? RELATION NAME EXPAND relationBody;
+relation: extensionReference* ACCESS? RELATION name EXPAND relationBody;
 relationBody: LSQUARE CARDINALITY? typeReference (OR typeReference)* RSQARE #Self
-    | NAME #Reference
-    | relationName=NAME RESOLVE subrelationName=NAME #SubRelation
+    | name #Reference
+    | relationName=name RESOLVE subrelationName=name #SubRelation
     | LPAREN relationBody RPAREN #Paren
     | relationBody AND relationBody #And
     | relationBody OR relationBody #OR
     | relationBody UNLESS relationBody #Unless;
 
-paramNames: NAME (ARG_DELIM NAME)*;
-extension: ACCESS? EXTENSION NAME LPAREN paramNames? RPAREN LBRACE dynamicType+ RBRACE;
+paramNames: name (ARG_DELIM name)*;
+extension: ACCESS? EXTENSION name LPAREN paramNames? RPAREN LBRACE dynamicType+ RBRACE;
 
 dynamicType: ACCESS? TYPE dynamicName LBRACE dynamicRelation* RBRACE;
 
 dynamicRelation: ALLOW_DUPLICATES? ACCESS? RELATION dynamicName EXPAND dynamicBody;
 
-dynamicName: NAME #Literal
-    | VARREF LBRACE NAME RBRACE #Variable
+dynamicName: name #Literal
+    | VARREF LBRACE name RBRACE #Variable
     | TEMPLATE_DELIM dynamicName+ TEMPLATE_DELIM #Template;
 
 dynamicBody: LSQUARE CARDINALITY? typeReference (OR typeReference)* RSQARE #DynamicSelf

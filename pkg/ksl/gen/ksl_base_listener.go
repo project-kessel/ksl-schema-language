@@ -1,4 +1,4 @@
-// Code generated from /home/wscalf/Projects/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/jmarcant/Documents/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -20,6 +20,12 @@ func (s *BasekslListener) EnterEveryRule(ctx antlr.ParserRuleContext) {}
 
 // ExitEveryRule is called when any rule is exited.
 func (s *BasekslListener) ExitEveryRule(ctx antlr.ParserRuleContext) {}
+
+// EnterName is called when production name is entered.
+func (s *BasekslListener) EnterName(ctx *NameContext) {}
+
+// ExitName is called when production name is exited.
+func (s *BasekslListener) ExitName(ctx *NameContext) {}
 
 // EnterFile is called when production file is entered.
 func (s *BasekslListener) EnterFile(ctx *FileContext) {}

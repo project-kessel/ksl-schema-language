@@ -1,4 +1,4 @@
-// Code generated from /home/wscalf/Projects/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/jmarcant/Documents/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -7,6 +7,9 @@ import "github.com/antlr4-go/antlr/v4"
 // kslListener is a complete listener for a parse tree produced by kslParser.
 type kslListener interface {
 	antlr.ParseTreeListener
+
+	// EnterName is called when entering the name production.
+	EnterName(c *NameContext)
 
 	// EnterFile is called when entering the file production.
 	EnterFile(c *FileContext)
@@ -103,6 +106,9 @@ type kslListener interface {
 
 	// EnterDynamicSubRelation is called when entering the DynamicSubRelation production.
 	EnterDynamicSubRelation(c *DynamicSubRelationContext)
+
+	// ExitName is called when exiting the name production.
+	ExitName(c *NameContext)
 
 	// ExitFile is called when exiting the file production.
 	ExitFile(c *FileContext)

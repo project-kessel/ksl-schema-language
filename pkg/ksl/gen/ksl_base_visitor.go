@@ -1,4 +1,4 @@
-// Code generated from /home/wscalf/Projects/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/jmarcant/Documents/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -6,6 +6,10 @@ import "github.com/antlr4-go/antlr/v4"
 
 type BasekslVisitor struct {
 	*antlr.BaseParseTreeVisitor
+}
+
+func (v *BasekslVisitor) VisitName(ctx *NameContext) interface{} {
+	return v.VisitChildren(ctx)
 }
 
 func (v *BasekslVisitor) VisitFile(ctx *FileContext) interface{} {

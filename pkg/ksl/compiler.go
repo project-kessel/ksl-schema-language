@@ -62,11 +62,11 @@ type converter struct {
 }
 
 func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namespace, error) {
-	name := f.Namespace().NAME().GetText()
+	name := getStrippedName(f.Namespace().Name())
 
 	imports := []string{}
 	for _, i := range f.AllImport_stmt() {
-		imports = append(imports, i.NAME().GetText())
+		imports = append(imports, getStrippedName(i.Name()))
 	}
 
 	c.imports = imports
@@ -102,7 +102,7 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 }
 
 func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
-	name := t.NAME().GetText()
+	name := getStrippedName(t.Name())
 	access := "public"
 	if accessExpr := t.ACCESS(); accessExpr != nil {
 		access = accessExpr.GetText()
@@ -127,7 +127,7 @@ func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Typ
 }
 
 func (c *converter) relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, error) {
-	name := r.NAME().GetText()
+	name := getStrippedName(r.Name())
 	access := "public"
 	if accessExpr := r.ACCESS(); accessExpr != nil {
 		access = accessExpr.GetText()
@@ -164,7 +164,7 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 			Types:       typeRefs,
 		}
 	case *parser.ReferenceContext:
-		relation := body.NAME().GetText()
+		relation := getStrippedName(body.Name())
 		return &intermediate.RelationBody{
 			Kind:     "reference",
 			Relation: relation,
@@ -213,7 +213,7 @@ func (c *converter) extensionRefExprToExtensionRef(e parser.IExtensionReferenceC
 	params := map[string]string{}
 	if paramsExpr := e.ExtensionParams(); paramsExpr != nil {
 		for _, paramExpr := range paramsExpr.AllExtensionParam() {
-			name := paramExpr.NAME().GetText()
+			name := getStrippedName(paramExpr.Name())
 			value := paramExpr.GetValue().GetText()
 
 			params[name] = value
@@ -224,7 +224,7 @@ func (c *converter) extensionRefExprToExtensionRef(e parser.IExtensionReferenceC
 }
 
 func (c *converter) extensionExprToExtension(t parser.IExtensionContext) *intermediate.ExtensionDefinition {
-	name := t.NAME().GetText()
+	name := getStrippedName(t.Name())
 	access := "public"
 	if accessExpr := t.ACCESS(); accessExpr != nil {
 		access = accessExpr.GetText()
@@ -232,8 +232,8 @@ func (c *converter) extensionExprToExtension(t parser.IExtensionContext) *interm
 
 	params := []string{}
 	if paramsExpr := t.ParamNames(); paramsExpr != nil {
-		for _, paramExpr := range paramsExpr.AllNAME() {
-			params = append(params, paramExpr.GetText())
+		for _, paramExpr := range paramsExpr.AllName() {
+			params = append(params, getStrippedName(paramExpr))
 		}
 	}
 
@@ -349,7 +349,7 @@ func (c *converter) dynamicNameExprToDynamicName(n parser.IDynamicNameContext) *
 	case *parser.VariableContext:
 		return &intermediate.DynamicName{
 			Kind:  "param",
-			Param: body.NAME().GetText(),
+			Param: getStrippedName(body.Name()),
 		}
 	case *parser.TemplateContext:
 		segments := []*intermediate.DynamicName{}
@@ -368,19 +368,19 @@ func (c *converter) dynamicNameExprToDynamicName(n parser.IDynamicNameContext) *
 func (c *converter) typeReferenceExprToTypeReference(t parser.ITypeReferenceContext) *intermediate.TypeReference {
 	var namespaceName, typeName, subRelation string
 
-	segments := t.AllNAME()
-	first := segments[0].GetText()
+	segments := t.AllName()
+	first := getStrippedName(segments[0])
 	if slices.Contains(c.imports, first) {
 		namespaceName = first
-		typeName = segments[1].GetText()
+		typeName = getStrippedName(segments[1])
 		if len(segments) > 2 {
-			subRelation = segments[2].GetText()
+			subRelation = getStrippedName(segments[2])
 		}
 	} else {
 		namespaceName = ""
-		typeName = segments[0].GetText()
+		typeName = getStrippedName(segments[0])
 		if len(segments) > 1 {
-			subRelation = segments[1].GetText()
+			subRelation = getStrippedName(segments[1])
 		}
 	}
 
@@ -389,4 +389,13 @@ func (c *converter) typeReferenceExprToTypeReference(t parser.ITypeReferenceCont
 	}
 
 	return &intermediate.TypeReference{Namespace: namespaceName, Name: typeName, SubRelation: subRelation}
+}
+
+func getStrippedName(n parser.INameContext) string {
+	if n.FORCED_NAME() != nil {
+		forcedName := n.FORCED_NAME().GetText()
+		return forcedName[1:]
+	}
+
+	return n.NAME().GetText()
 }
