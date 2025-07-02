@@ -23,12 +23,6 @@ public type workspace {
     relation user_grant: [Any role_binding]
 }
 
-public type lock {
-    relation version: [ExactlyOne lockversion]
-}
-
-public type lockversion {}
-
 public extension workspace_permission(full_name) {
     type role {
         relation ${full_name}: [bool]

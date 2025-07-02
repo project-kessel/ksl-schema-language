@@ -36,6 +36,20 @@ public type group {
 	assert.Equal(t, "rbac", ns.Name)
 }
 
+func TestCompilerErrorsWithIncorrectStartOfFile(t *testing.T) {
+	_, err := Compile(strings.NewReader(`
+versions 0.1
+namespaced rbac
+
+public type principal {}
+
+public type group {
+    relation member: [Any principal or group.membr]
+}`))
+
+	assert.Error(t, err)
+}
+
 func TestCompilerPassesWithVersionRelationship(t *testing.T) {
 	ns, err := Compile(strings.NewReader(`
 version 0.1
