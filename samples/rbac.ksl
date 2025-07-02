@@ -23,6 +23,7 @@ public type workspace {
     relation user_grant: [Any role_binding]
 }
 
+
 public extension workspace_permission(full_name) {
     type role {
         relation ${full_name}: [bool]
