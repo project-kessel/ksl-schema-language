@@ -1,0 +1,292 @@
+{
+    "scopeName": "source.ksl",
+    "name": "KSL",
+    "patterns": [
+        {
+            "include": "#entity"
+        },
+        {
+            "include": "#storage"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#constants"
+        },
+        {
+            "include": "#punctuation"
+        },
+        {
+            "include": "#comments"
+        }
+    ],
+    "repository": {
+        "storage": {
+            "patterns": [
+                {
+                    "name": "storage.modifier.ksl",
+                    "match": "\\b(public|internal|private|allow_duplicates)\\b"
+                },
+                {
+                    "name": "storage.type.ksl",
+                    "match": "\\b(AtMostOne|ExactlyOne|AtLeastOne|Any)\\b"
+                }
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.other.ksl",
+                    "match": "\\b(version|namespace|relation|as|and|or|unless)\\b"
+                },
+                {
+                    "name": "keyword.extension.ksl",
+                    "match": "\\bextension\\b"
+                },
+                {
+                    "name": "keyword.type.ksl",
+                    "match": "\\btype\\b"
+                },
+                {
+                    "name": "keyword.control.import.ksl",
+                    "match": "\\b(import)\\b"
+                }
+            ]
+        },
+        "constants": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.ksl",
+                    "match": "\\b[0-9]+(\\.[0-9]+)*\\b"
+                },
+                {
+                    "name": "constant.language.ksl",
+                    "match": "\\b(bool)\\b"
+                }
+            ]
+        },
+        "entity": {
+            "patterns": [
+                {
+                    "name": "entity.function.ksl",
+                    "match": "\\b(public|private|internal)\\b\\s+(\\bextension\\b)\\s+(\\w+)\\(([^)]*)\\)",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.ksl"
+                        },
+                        "2": {
+                            "name": "keyword.extension.ksl"
+                        },
+                        "3": {
+                            "name": "entity.name.function.ksl"
+                        },
+                        "4": {
+                            "patterns": [
+                                {
+                                    "name": "variable.parameter.ksl",
+                                    "match": "\\w+"
+                                },
+                                {
+                                    "name": "punctuation.other.comma.ksl",
+                                    "match": "\\,"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "entity.import.ksl",
+                    "match": "(\\bimport\\b)\\s+(\\w+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.control.import.ksl"
+                        },
+                        "2": {
+                            "name": "entity.name.import.ksl"
+                        }
+                    }
+                },
+                {
+                    "name": "entity.namespace.ksl",
+                    "match": "(\\bnamespace\\b)\\s+(\\w+)",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.other.ksl"
+                        },
+                        "2": {
+                            "name": "entity.name.type.namespace.ksl"
+                        }
+                    }
+                },
+                {
+                    "match": "(@)(\\w+)\\.(\\w+)\\(",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.other.call.ksl"
+                        },
+                        "2": {
+                            "name": "variable.other.ksl"
+                        },
+                        "3": {
+                            "name": "entity.name.function.support.ksl"
+                        }
+                    }
+                },
+                {
+                    "match": "\\b(public|private|internal)?\\b\\s*(\\btype\\b)\\s*(\\w+)",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.ksl"
+                        },
+                        "2": {
+                            "name": "keyword.type.ksl"
+                        },
+                        "3": {
+                            "name": "entity.name.type.ksl"
+                        }
+                    }
+                }
+            ]
+        },
+        "punctuation": {
+            "patterns": [
+                {
+                    "begin": "\\{",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.curly.ksl"
+                        }
+                    },
+                    "end": "\\}",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.curly.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
+                },
+                {
+                    "begin": "\\(",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.round.ksl"
+                        }
+                    },
+                    "end": "\\)",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.round.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
+                },
+                {
+                    "begin": "\\[",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.begin.bracket.square.ksl"
+                        }
+                    },
+                    "end": "\\]",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.end.bracket.square.ksl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
+                },
+                {
+                    "begin": "`",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.ksl"
+                        }
+                    },
+                    "comment": "Templated strings",
+                    "end": "`",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.ksl"
+                        }
+                    },
+                    "name": "string.quoted.template.ksl",
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
+                },
+                {
+                    "begin": "'",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.begin.ksl"
+                        }
+                    },
+                    "comment": "Regular strings",
+                    "end": "'",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.definition.string.end.ksl"
+                        }
+                    },
+                    "name": "string.quoted.regular.ksl",
+                    "patterns": [
+                        {
+                            "include": "$self"
+                        }
+                    ]
+                },
+                {
+                    "name": "punctuation.definition.variable.ksl",
+                    "match": "\\$"
+                },
+                {
+                    "name": "punctuation.other.period.ksl",
+                    "match": "\\."
+                },
+                {
+                    "name": "punctuation.other.comma.ksl",
+                    "match": "\\,"
+                },
+                {
+                    "name": "punctuation.other.colon.ksl",
+                    "match": ":"
+                },
+                {
+                    "name": "punctuation.other.call.ksl",
+                    "match": "@"
+                },
+                {
+                    "name": "punctuation.other.terminator.ksl",
+                    "match": ";"
+                }
+            ]
+        },
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.line.double-slash.ksl",
+                    "begin": "//",
+                    "end": "(?=\\n)"
+                }
+            ]
+        }
+    },
+    "fileTypes": [
+        "ksl"
+    ]
+}
