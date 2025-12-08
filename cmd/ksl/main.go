@@ -63,7 +63,7 @@ func build(sources []string, output *string) error {
 				}
 				return err
 			}
-		case ".json":
+		case ".yaml", ".yml":
 			ir, err = intermediate.Load(openRead(source))
 			if err != nil {
 				return err
@@ -115,7 +115,7 @@ func compileToIL(source string, output *string) error {
 
 	var file io.Writer
 	if output == nil {
-		file = openWrite(changeExtension(source, ".json"))
+		file = openWrite(changeExtension(source, ".yaml"))
 	} else {
 		file = openWrite(*output)
 	}

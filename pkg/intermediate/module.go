@@ -1,93 +1,94 @@
 package intermediate
 
 import (
-	"encoding/json"
 	"io"
 	"os"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/project-kessel/ksl-schema-language/internal/semantic"
 )
 
 type Namespace struct {
-	Name                 string                 `json:"name"`
-	Imports              []string               `json:"imports,omitempty"`
-	Types                []*Type                `json:"types,omitempty"`
-	ExtensionDefinitions []*ExtensionDefinition `json:"defined_extensions,omitempty"`
-	ExtensionReferences  []*ExtensionReference  `json:"extension_references,omitempty"`
+	Name                 string                 `yaml:"name"`
+	Imports              []string               `yaml:"imports,omitempty"`
+	Types                []*Type                `yaml:"types,omitempty"`
+	ExtensionDefinitions []*ExtensionDefinition `yaml:"defined_extensions,omitempty"`
+	ExtensionReferences  []*ExtensionReference  `yaml:"extension_references,omitempty"`
 }
 
 type Type struct {
-	Name       string                `json:"name"`
-	Visibility string                `json:"visibility,omitempty"`
-	Extensions []*ExtensionReference `json:"extensions,omitempty"`
-	Relations  []*Relation           `json:"relations"`
+	Name       string                `yaml:"name"`
+	Visibility string                `yaml:"visibility,omitempty"`
+	Extensions []*ExtensionReference `yaml:"extensions,omitempty"`
+	Relations  []*Relation           `yaml:"relations"`
 }
 
 type Relation struct {
-	Name       string                `json:"name"`
-	Visibility string                `json:"visibility,omitempty"`
-	Body       *RelationBody         `json:"body"`
-	Extensions []*ExtensionReference `json:"extensions,omitempty"`
+	Name       string                `yaml:"name"`
+	Visibility string                `yaml:"visibility,omitempty"`
+	Body       *RelationBody         `yaml:"body"`
+	Extensions []*ExtensionReference `yaml:"extensions,omitempty"`
 }
 
 type RelationBody struct {
-	Kind        string           `json:"kind"`
-	Types       []*TypeReference `json:"types"`
-	Cardinality string           `json:"cardinality,omitempty"`
-	Relation    string           `json:"relation,omitempty"`
-	SubRelation string           `json:"sub_relation,omitempty"`
-	Left        *RelationBody    `json:"left,omitempty"`
-	Right       *RelationBody    `json:"right,omitempty"`
+	Kind        string           `yaml:"kind"`
+	Types       []*TypeReference `yaml:"types"`
+	Cardinality string           `yaml:"cardinality,omitempty"`
+	Relation    string           `yaml:"relation,omitempty"`
+	SubRelation string           `yaml:"sub_relation,omitempty"`
+	Left        *RelationBody    `yaml:"left,omitempty"`
+	Right       *RelationBody    `yaml:"right,omitempty"`
 }
 
 type ExtensionReference struct {
-	Namespace string            `json:"namespace,omitempty"`
-	Name      string            `json:"name"`
-	Params    map[string]string `json:"params,omitempty"`
+	Namespace string            `yaml:"namespace,omitempty"`
+	Name      string            `yaml:"name"`
+	Params    map[string]string `yaml:"params,omitempty"`
 }
 
 type TypeReference struct {
-	Namespace   string `json:"namespace,omitempty"`
-	Name        string `json:"name"`
-	SubRelation string `json:"sub_relation,omitempty"`
-	All         bool   `json:"all,omitempty"`
+	Namespace   string `yaml:"namespace,omitempty"`
+	Name        string `yaml:"name"`
+	SubRelation string `yaml:"sub_relation,omitempty"`
+	All         bool   `yaml:"all,omitempty"`
 }
 
 type ExtensionDefinition struct {
-	Name       string         `json:"name"`
-	Visibility string         `json:"visibility,omitempty"`
-	Params     []string       `json:"params,omitempty"`
-	Types      []*DynamicType `json:"types"`
+	Name       string         `yaml:"name"`
+	Visibility string         `yaml:"visibility,omitempty"`
+	Params     []string       `yaml:"params,omitempty"`
+	Types      []*DynamicType `yaml:"types"`
 }
 
 type DynamicType struct {
-	Name       *DynamicName       `json:"name"`
-	Visibility string             `json:"visibility"`
-	Relations  []*DynamicRelation `json:"relations"`
+	Name       *DynamicName       `yaml:"name"`
+	Visibility string             `yaml:"visibility"`
+	Relations  []*DynamicRelation `yaml:"relations"`
 }
 
 type DynamicRelation struct {
-	Name             *DynamicName        `json:"name"`
-	Visibility       string              `json:"visibility"`
-	IgnoreDuplicates bool                `json:"ignoreduplicates,omitempty"`
-	Body             DynamicRelationBody `json:"body"`
+	Name             *DynamicName        `yaml:"name"`
+	Visibility       string              `yaml:"visibility"`
+	IgnoreDuplicates bool                `yaml:"ignoreduplicates,omitempty"`
+	Body             DynamicRelationBody `yaml:"body"`
 }
 
 type DynamicRelationBody struct {
-	Kind        string               `json:"kind"`
-	Types       []*TypeReference     `json:"types"`
-	Cardinality string               `json:"cardinality,omitempty"`
-	Relation    *DynamicName         `json:"relation,omitempty"`
-	SubRelation *DynamicName         `json:"sub_relation,omitempty"`
-	Left        *DynamicRelationBody `json:"left,omitempty"`
-	Right       *DynamicRelationBody `json:"right,omitempty"`
+	Kind        string               `yaml:"kind"`
+	Types       []*TypeReference     `yaml:"types"`
+	Cardinality string               `yaml:"cardinality,omitempty"`
+	Relation    *DynamicName         `yaml:"relation,omitempty"`
+	SubRelation *DynamicName         `yaml:"sub_relation,omitempty"`
+	Left        *DynamicRelationBody `yaml:"left,omitempty"`
+	Right       *DynamicRelationBody `yaml:"right,omitempty"`
 }
 
 type DynamicName struct {
-	Kind     string         `json:"kind"`
-	Param    string         `json:"param,omitempty"`
-	Value    string         `json:"value,omitempty"`
-	Segments []*DynamicName `json:"segments,omitempty"`
+	Kind     string         `yaml:"kind"`
+	Param    string         `yaml:"param,omitempty"`
+	Value    string         `yaml:"value,omitempty"`
+	Segments []*DynamicName `yaml:"segments,omitempty"`
 }
 
 func LoadFile(filename string) (*Namespace, error) {
@@ -106,13 +107,13 @@ func Load(reader io.Reader) (*Namespace, error) {
 		return nil, err
 	}
 
-	err = json.Unmarshal(data, namespace)
+	err = yaml.Unmarshal(data, namespace)
 
 	return namespace, err
 }
 
 func Store(namespace *Namespace, writer io.Writer) error {
-	encoder := json.NewEncoder(writer)
+	encoder := yaml.NewEncoder(writer)
 	return encoder.Encode(namespace)
 }
 
