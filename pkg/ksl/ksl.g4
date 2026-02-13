@@ -11,6 +11,7 @@ PUBLIC: 'public';
 INTERNAL: 'internal';
 PRIVATE: 'private';
 TYPE: 'type';
+EXTEND: 'extend';
 RELATION: 'relation';
 IMPORT: 'import';
 EXTENSION: 'extension';
@@ -28,6 +29,7 @@ EXPAND: ':';
 LBRACE: '{';
 RBRACE: '}';
 EXTENSION_CALL: '@';
+IN_REL_EXTENSION_CALL: 'with';
 LPAREN: '(';
 RPAREN: ')';
 LSQUARE: '[';
@@ -49,10 +51,12 @@ file: version namespace import_stmt* declaration+;
 version: VERSION VERSIONNUM;
 namespace: NAMESPACE name;
 import_stmt: IMPORT name;
-declaration: typeExpr DECL_END? | extension DECL_END? | extensionReference DECL_END;
+declaration: typeExpr DECL_END? | extendTypeExpr DECL_END? | extension DECL_END? | extensionReference DECL_END;
 
 typeExpr: extensionReference* ACCESS? TYPE name LBRACE relation* RBRACE;
 typeReference: name (RESOLVE name)*;
+
+extendTypeExpr: EXTEND TYPE name LBRACE relation* RBRACE;
 
 extensionParam: name EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
 extensionParams: extensionParam (ARG_DELIM extensionParam)*;
@@ -60,7 +64,9 @@ extensionReference: EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN;
 relation: extensionReference* ACCESS? RELATION name EXPAND relationBody;
 relationBody: LSQUARE CARDINALITY? typeReference (OR typeReference)* RSQARE #Self
     | name #Reference
+    | name IN_REL_EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN #ReferenceWithExtension
     | relationName=name RESOLVE subrelationName=name #SubRelation
+    | relationName=name RESOLVE subrelationName=name IN_REL_EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN #SubRelationWithExtension
     | LPAREN relationBody RPAREN #Paren
     | relationBody AND relationBody #And
     | relationBody OR relationBody #OR

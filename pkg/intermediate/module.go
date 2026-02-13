@@ -12,6 +12,7 @@ type Namespace struct {
 	Name                 string                 `json:"name"`
 	Imports              []string               `json:"imports,omitempty"`
 	Types                []*Type                `json:"types,omitempty"`
+	ExtendedTypes        []*ExtendedType        `json:"extendedTypes,omitempty"`
 	ExtensionDefinitions []*ExtensionDefinition `json:"defined_extensions,omitempty"`
 	ExtensionReferences  []*ExtensionReference  `json:"extension_references,omitempty"`
 }
@@ -23,6 +24,11 @@ type Type struct {
 	Relations  []*Relation           `json:"relations"`
 }
 
+type ExtendedType struct {
+	Name      string      `json:"name"`
+	Relations []*Relation `json:"relations"`
+}
+
 type Relation struct {
 	Name       string                `json:"name"`
 	Visibility string                `json:"visibility,omitempty"`
@@ -31,13 +37,14 @@ type Relation struct {
 }
 
 type RelationBody struct {
-	Kind        string           `json:"kind"`
-	Types       []*TypeReference `json:"types"`
-	Cardinality string           `json:"cardinality,omitempty"`
-	Relation    string           `json:"relation,omitempty"`
-	SubRelation string           `json:"sub_relation,omitempty"`
-	Left        *RelationBody    `json:"left,omitempty"`
-	Right       *RelationBody    `json:"right,omitempty"`
+	Kind               string              `json:"kind"`
+	Types              []*TypeReference    `json:"types"`
+	Cardinality        string              `json:"cardinality,omitempty"`
+	Relation           string              `json:"relation,omitempty"`
+	SubRelation        string              `json:"sub_relation,omitempty"`
+	Left               *RelationBody       `json:"left,omitempty"`
+	Right              *RelationBody       `json:"right,omitempty"`
+	ExtensionReference *ExtensionReference `json:"extension_references,omitempty"`
 }
 
 type ExtensionReference struct {

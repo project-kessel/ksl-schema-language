@@ -1,4 +1,4 @@
-// Code generated from /Users/jmarcant/Documents/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/mmclaugh/go/src/github.com/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -32,6 +32,9 @@ type kslListener interface {
 	// EnterTypeReference is called when entering the typeReference production.
 	EnterTypeReference(c *TypeReferenceContext)
 
+	// EnterExtendTypeExpr is called when entering the extendTypeExpr production.
+	EnterExtendTypeExpr(c *ExtendTypeExprContext)
+
 	// EnterExtensionParam is called when entering the extensionParam production.
 	EnterExtensionParam(c *ExtensionParamContext)
 
@@ -53,11 +56,17 @@ type kslListener interface {
 	// EnterAnd is called when entering the And production.
 	EnterAnd(c *AndContext)
 
+	// EnterSubRelationWithExtension is called when entering the SubRelationWithExtension production.
+	EnterSubRelationWithExtension(c *SubRelationWithExtensionContext)
+
 	// EnterSelf is called when entering the Self production.
 	EnterSelf(c *SelfContext)
 
 	// EnterSubRelation is called when entering the SubRelation production.
 	EnterSubRelation(c *SubRelationContext)
+
+	// EnterReferenceWithExtension is called when entering the ReferenceWithExtension production.
+	EnterReferenceWithExtension(c *ReferenceWithExtensionContext)
 
 	// EnterUnless is called when entering the Unless production.
 	EnterUnless(c *UnlessContext)
@@ -131,6 +140,9 @@ type kslListener interface {
 	// ExitTypeReference is called when exiting the typeReference production.
 	ExitTypeReference(c *TypeReferenceContext)
 
+	// ExitExtendTypeExpr is called when exiting the extendTypeExpr production.
+	ExitExtendTypeExpr(c *ExtendTypeExprContext)
+
 	// ExitExtensionParam is called when exiting the extensionParam production.
 	ExitExtensionParam(c *ExtensionParamContext)
 
@@ -152,11 +164,17 @@ type kslListener interface {
 	// ExitAnd is called when exiting the And production.
 	ExitAnd(c *AndContext)
 
+	// ExitSubRelationWithExtension is called when exiting the SubRelationWithExtension production.
+	ExitSubRelationWithExtension(c *SubRelationWithExtensionContext)
+
 	// ExitSelf is called when exiting the Self production.
 	ExitSelf(c *SelfContext)
 
 	// ExitSubRelation is called when exiting the SubRelation production.
 	ExitSubRelation(c *SubRelationContext)
+
+	// ExitReferenceWithExtension is called when exiting the ReferenceWithExtension production.
+	ExitReferenceWithExtension(c *ReferenceWithExtensionContext)
 
 	// ExitUnless is called when exiting the Unless production.
 	ExitUnless(c *UnlessContext)

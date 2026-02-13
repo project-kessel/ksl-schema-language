@@ -1,4 +1,4 @@
-// Code generated from /Users/jmarcant/Documents/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/mmclaugh/go/src/github.com/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -32,6 +32,9 @@ type kslVisitor interface {
 	// Visit a parse tree produced by kslParser#typeReference.
 	VisitTypeReference(ctx *TypeReferenceContext) interface{}
 
+	// Visit a parse tree produced by kslParser#extendTypeExpr.
+	VisitExtendTypeExpr(ctx *ExtendTypeExprContext) interface{}
+
 	// Visit a parse tree produced by kslParser#extensionParam.
 	VisitExtensionParam(ctx *ExtensionParamContext) interface{}
 
@@ -53,11 +56,17 @@ type kslVisitor interface {
 	// Visit a parse tree produced by kslParser#And.
 	VisitAnd(ctx *AndContext) interface{}
 
+	// Visit a parse tree produced by kslParser#SubRelationWithExtension.
+	VisitSubRelationWithExtension(ctx *SubRelationWithExtensionContext) interface{}
+
 	// Visit a parse tree produced by kslParser#Self.
 	VisitSelf(ctx *SelfContext) interface{}
 
 	// Visit a parse tree produced by kslParser#SubRelation.
 	VisitSubRelation(ctx *SubRelationContext) interface{}
+
+	// Visit a parse tree produced by kslParser#ReferenceWithExtension.
+	VisitReferenceWithExtension(ctx *ReferenceWithExtensionContext) interface{}
 
 	// Visit a parse tree produced by kslParser#Unless.
 	VisitUnless(ctx *UnlessContext) interface{}

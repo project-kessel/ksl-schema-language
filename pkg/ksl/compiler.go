@@ -72,6 +72,7 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 	c.imports = imports
 
 	types := []*intermediate.Type{}
+	extendedTypes := []*intermediate.ExtendedType{}
 	extensions := []*intermediate.ExtensionDefinition{}
 	extensionsRefs := []*intermediate.ExtensionReference{}
 
@@ -83,6 +84,17 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 			}
 
 			types = append(types, t)
+		}
+
+		if exp := d.ExtendTypeExpr(); exp != nil {
+			t, err := c.extendedTypeExprToExtendedType(exp)
+			if err != nil {
+				return nil, err
+			}
+
+			// need to allow for multiple extensions of same type in schema by merging relations
+			// rather than overwriting
+			extendedTypes = append(extendedTypes, t)
 		}
 
 		if exp := d.Extension(); exp != nil {
@@ -98,7 +110,30 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 		}
 	}
 
-	return &intermediate.Namespace{Name: name, Imports: imports, Types: types, ExtensionDefinitions: extensions, ExtensionReferences: extensionsRefs}, nil
+	// Add extensionRefs for any extensions specified on top level relation bodies
+	// nested 'with <extension>' not supported for now
+	// maybe a listener might be better hear, or just having an extension type that is
+	// based on relation instead of namespace
+	for _, t := range types {
+		extensionsRefs = appendRelationExtensionRefs(extensionsRefs, t.Relations, name)
+	}
+	for _, e := range extendedTypes {
+		extensionsRefs = appendRelationExtensionRefs(extensionsRefs, e.Relations, name)
+	}
+
+	return &intermediate.Namespace{Name: name, Imports: imports, Types: types, ExtendedTypes: extendedTypes, ExtensionDefinitions: extensions, ExtensionReferences: extensionsRefs}, nil
+}
+
+func appendRelationExtensionRefs(extensionRefs []*intermediate.ExtensionReference, relations []*intermediate.Relation, namespace string) []*intermediate.ExtensionReference {
+	for _, r := range relations {
+		if r.Body.ExtensionReference != nil {
+			ref := r.Body.ExtensionReference
+			ref.Namespace = namespace
+			extensionRefs = append(extensionRefs, ref)
+		}
+	}
+
+	return extensionRefs
 }
 
 func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Type, error) {
@@ -124,6 +159,22 @@ func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Typ
 	}
 
 	return &intermediate.Type{Name: name, Visibility: access, Extensions: extensions, Relations: relations}, nil
+}
+
+func (c *converter) extendedTypeExprToExtendedType(t parser.IExtendTypeExprContext) (*intermediate.ExtendedType, error) {
+	name := getStrippedName(t.Name())
+
+	relations := []*intermediate.Relation{}
+	for _, relationExpr := range t.AllRelation() {
+		relation, err := c.relationExprToRelation(relationExpr)
+		if err != nil {
+			return nil, err
+		}
+
+		relations = append(relations, relation)
+	}
+
+	return &intermediate.ExtendedType{Name: name, Relations: relations}, nil
 }
 
 func (c *converter) relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, error) {
@@ -169,6 +220,19 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 			Kind:     "reference",
 			Relation: relation,
 		}
+	case *parser.ReferenceWithExtensionContext:
+		relation := getStrippedName(body.Name())
+		relationExtensionParams := c.relationExtensionParamsToExtensionParams(body.ExtensionParams())
+		return &intermediate.RelationBody{
+			Kind:     "reference",
+			Relation: relation,
+			ExtensionReference: &intermediate.ExtensionReference{
+				// namespace is not available here, but we need to add extensions in
+				// namespace context anyway, so can add it there
+				Name:   body.TypeReference().GetText(),
+				Params: relationExtensionParams,
+			},
+		}
 	case *parser.SubRelationContext:
 		relation := body.GetRelationName().GetText()
 		subrelation := body.GetSubrelationName().GetText()
@@ -176,6 +240,21 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 			Kind:        "nested_reference",
 			Relation:    relation,
 			SubRelation: subrelation,
+		}
+	case *parser.SubRelationWithExtensionContext:
+		relation := body.GetRelationName().GetText()
+		subrelation := body.GetSubrelationName().GetText()
+		relationExtensionParams := c.relationExtensionParamsToExtensionParams(body.ExtensionParams())
+		return &intermediate.RelationBody{
+			Kind:        "reference",
+			Relation:    relation,
+			SubRelation: subrelation,
+			ExtensionReference: &intermediate.ExtensionReference{
+				// namespace is not available here, but we need to add extensions in
+				// namespace context anyway, so can add it there
+				Name:   body.TypeReference().GetText(),
+				Params: relationExtensionParams,
+			},
 		}
 	case *parser.ParenContext:
 		return c.relationBodyExprToRelation(body.RelationBody())
@@ -205,6 +284,17 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 		}
 	}
 	return nil
+}
+
+func (c *converter) relationExtensionParamsToExtensionParams(e parser.IExtensionParamsContext) map[string]string {
+	extParamsContexts := e.AllExtensionParam()
+	extensionParams := make(map[string]string, len(extParamsContexts))
+
+	for _, context := range extParamsContexts {
+		extensionParams[context.Name().GetText()] = context.GetValue().GetText()
+	}
+
+	return extensionParams
 }
 
 func (c *converter) extensionRefExprToExtensionRef(e parser.IExtensionReferenceContext) *intermediate.ExtensionReference {

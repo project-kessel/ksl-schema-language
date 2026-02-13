@@ -1,4 +1,4 @@
-// Code generated from /Users/jmarcant/Documents/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/mmclaugh/go/src/github.com/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -40,6 +40,10 @@ func (v *BasekslVisitor) VisitTypeReference(ctx *TypeReferenceContext) interface
 	return v.VisitChildren(ctx)
 }
 
+func (v *BasekslVisitor) VisitExtendTypeExpr(ctx *ExtendTypeExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BasekslVisitor) VisitExtensionParam(ctx *ExtensionParamContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -68,11 +72,19 @@ func (v *BasekslVisitor) VisitAnd(ctx *AndContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BasekslVisitor) VisitSubRelationWithExtension(ctx *SubRelationWithExtensionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BasekslVisitor) VisitSelf(ctx *SelfContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *BasekslVisitor) VisitSubRelation(ctx *SubRelationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BasekslVisitor) VisitReferenceWithExtension(ctx *ReferenceWithExtensionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

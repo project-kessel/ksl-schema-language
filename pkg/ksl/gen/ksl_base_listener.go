@@ -1,4 +1,4 @@
-// Code generated from /Users/jmarcant/Documents/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
+// Code generated from /Users/mmclaugh/go/src/github.com/project-kessel/ksl-schema-language/pkg/ksl/ksl.g4 by ANTLR 4.13.1. DO NOT EDIT.
 
 package parser // ksl
 
@@ -69,6 +69,12 @@ func (s *BasekslListener) EnterTypeReference(ctx *TypeReferenceContext) {}
 // ExitTypeReference is called when production typeReference is exited.
 func (s *BasekslListener) ExitTypeReference(ctx *TypeReferenceContext) {}
 
+// EnterExtendTypeExpr is called when production extendTypeExpr is entered.
+func (s *BasekslListener) EnterExtendTypeExpr(ctx *ExtendTypeExprContext) {}
+
+// ExitExtendTypeExpr is called when production extendTypeExpr is exited.
+func (s *BasekslListener) ExitExtendTypeExpr(ctx *ExtendTypeExprContext) {}
+
 // EnterExtensionParam is called when production extensionParam is entered.
 func (s *BasekslListener) EnterExtensionParam(ctx *ExtensionParamContext) {}
 
@@ -111,6 +117,12 @@ func (s *BasekslListener) EnterAnd(ctx *AndContext) {}
 // ExitAnd is called when production And is exited.
 func (s *BasekslListener) ExitAnd(ctx *AndContext) {}
 
+// EnterSubRelationWithExtension is called when production SubRelationWithExtension is entered.
+func (s *BasekslListener) EnterSubRelationWithExtension(ctx *SubRelationWithExtensionContext) {}
+
+// ExitSubRelationWithExtension is called when production SubRelationWithExtension is exited.
+func (s *BasekslListener) ExitSubRelationWithExtension(ctx *SubRelationWithExtensionContext) {}
+
 // EnterSelf is called when production Self is entered.
 func (s *BasekslListener) EnterSelf(ctx *SelfContext) {}
 
@@ -122,6 +134,12 @@ func (s *BasekslListener) EnterSubRelation(ctx *SubRelationContext) {}
 
 // ExitSubRelation is called when production SubRelation is exited.
 func (s *BasekslListener) ExitSubRelation(ctx *SubRelationContext) {}
+
+// EnterReferenceWithExtension is called when production ReferenceWithExtension is entered.
+func (s *BasekslListener) EnterReferenceWithExtension(ctx *ReferenceWithExtensionContext) {}
+
+// ExitReferenceWithExtension is called when production ReferenceWithExtension is exited.
+func (s *BasekslListener) ExitReferenceWithExtension(ctx *ReferenceWithExtensionContext) {}
 
 // EnterUnless is called when production Unless is entered.
 func (s *BasekslListener) EnterUnless(ctx *UnlessContext) {}
