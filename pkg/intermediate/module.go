@@ -44,7 +44,7 @@ type RelationBody struct {
 	SubRelation        string              `json:"sub_relation,omitempty"`
 	Left               *RelationBody       `json:"left,omitempty"`
 	Right              *RelationBody       `json:"right,omitempty"`
-	ExtensionReference *ExtensionReference `json:"extension_references,omitempty"`
+	ExtensionReference *ExtensionReference `json:"extension_reference,omitempty"`
 }
 
 type ExtensionReference struct {

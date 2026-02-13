@@ -1,0 +1,172 @@
+version 0.1
+namespace rbac
+
+// Placeholder permissions that are being deprecated
+@add_v1only_permission(perm:'config_manager_state_changes_read');
+@add_v1only_permission(perm:'config_manager_state_read');
+@add_v1only_permission(perm:'config_manager_state_write');
+
+public type principal {} //public for now since the [bool] type requires rbac/principal to be accessible
+
+// Other types for structuring access are marked internal but can be made public if services are intended to relate to them
+internal type platform {
+    relation binding: [Any role_binding]
+}
+
+internal type tenant {
+    relation platform: [ExactlyOne platform]
+    relation binding: [Any role_binding]
+}
+
+internal type group {
+    relation owner: [ExactlyOne tenant]
+    relation member: [Any principal or group.member]
+}
+
+internal type role {
+    private relation all_all_all: [bool]
+    private relation child: [Any role]
+}
+
+internal type role_binding { // TODO: revisit cardinality based on clamping decisions
+    relation subject: [Any principal or group.member]
+    relation role: [Any role]
+}
+
+public type workspace { //Workspace is public so services can place resources into workspaces
+    relation parent: [ExactlyOne workspace or tenant]
+    relation binding: [Any role_binding]
+
+
+    @add_v1_based_permission(app:'inventory', resource:'groups', verb:'read', v2_perm:'rbac_workspace_view')
+    relation view: rbac_workspace_view
+
+    @add_v1_based_permission(app:'inventory', resource:'groups', verb:'write', v2_perm:'rbac_workspace_create')
+    relation create: rbac_workspace_create
+
+    @add_v1_based_permission(app:'inventory', resource:'groups', verb:'write', v2_perm:'rbac_workspace_edit')
+    relation edit: rbac_workspace_edit
+
+    @add_v1_based_permission(app:'inventory', resource:'groups', verb:'write', v2_perm:'rbac_workspace_delete')
+    relation delete: rbac_workspace_delete
+
+    @add_v1_based_permission(app:'inventory', resource:'groups', verb:'write', v2_perm:'rbac_workspace_move')
+    relation move: rbac_workspace_move
+
+    @add_unified_permission(app:'rbac', resource:'workspaces', verb:'role_binding_view')
+    relation role_binding_view: rbac_workspaces_role_binding_view
+
+    @add_unified_permission(app:'rbac', resource:'workspaces', verb:'role_binding_grant')
+    relation role_binding_grant: rbac_workspaces_role_binding_grant
+
+    @add_unified_permission(app:'rbac', resource:'workspaces', verb:'role_binding_revoke')
+    relation role_binding_revoke: rbac_workspaces_role_binding_revoke
+}
+
+// Relation-applied version of the below extension, talking relation as v2_perm
+public extension inherited(app, resource, verb, relationRef) {
+    type role {
+        allow_duplicates private relation `${app}_all_all`: [bool]
+        allow_duplicates private relation `${app}_${resource}_all`: [bool]
+        allow_duplicates private relation `${app}_all_${verb}`: [bool]
+        allow_duplicates private relation `${app}_${resource}_${verb}`: [bool]
+
+        relation `${relationRef}`: `${app}_${resource}_${verb}` or `${app}_${resource}_all` or `${app}_all_${verb}` or `${app}_all_all` or all_all_all or child.`${relationRef}`
+    }
+
+    type role_binding {
+        relation `${relationRef}`: subject and role.`${relationRef}`
+    }
+
+    type platform {
+        relation `${relationRef}`: binding.`${relationRef}`
+    }
+
+    type tenant {
+        relation `${relationRef}`: binding.`${relationRef}` or platform.`${relationRef}`
+    }
+
+    type workspace {
+        relation `${relationRef}`: binding.`${relationRef}` or parent.`${relationRef}`
+    }
+}
+
+// Adds a permission that's checkable at the workspace but granted by assigning a different, V1 permission to the role
+public extension add_v1_based_permission(app, resource, verb, v2_perm) {
+    type role {
+        allow_duplicates private relation `${app}_all_all`: [bool]
+        allow_duplicates private relation `${app}_${resource}_all`: [bool]
+        allow_duplicates private relation `${app}_all_${verb}`: [bool]
+        allow_duplicates private relation `${app}_${resource}_${verb}`: [bool]
+
+        relation `${v2_perm}`: `${app}_${resource}_${verb}` or `${app}_${resource}_all` or `${app}_all_${verb}` or `${app}_all_all` or all_all_all or child.`${v2_perm}`
+    }
+
+    type role_binding {
+        relation `${v2_perm}`: subject and role.`${v2_perm}`
+    }
+
+    type platform {
+        relation `${v2_perm}`: binding.`${v2_perm}`
+    }
+
+    type tenant {
+        relation `${v2_perm}`: binding.`${v2_perm}` or platform.`${v2_perm}`
+    }
+
+    type workspace {
+        relation `${v2_perm}`: binding.`${v2_perm}` or parent.`${v2_perm}`
+    }
+}
+
+// Adds a permission that's only assignable to the role, for migration purposes
+public extension add_v1only_permission(perm) {
+    type role {
+        allow_duplicates private relation `${perm}`: [bool]
+    }
+}
+
+public extension add_contingent_permission(first, second, contingent) {
+    type platform {
+        relation `${contingent}`: `${first}` and `${second}`
+    }
+
+    type tenant {
+        relation `${contingent}`: `${first}` and `${second}`
+    }
+
+    type workspace {
+        relation `${contingent}`: `${first}` and `${second}`
+    }
+}
+
+// Adds a permission where V1 and V2 share the same name (app_resource_verb format)
+// Use this when the V1 permission name is identical to the desired V2 permission
+// This avoids conflicts that occur when templating identical permission names
+// The [bool] box expression makes the relation writable, allowing direct assignment
+// in addition to derivation from wildcards (app:resource:*, app:*:verb, app:*:*, *:*:*)
+public extension add_unified_permission(app, resource, verb) {
+    type role {
+        allow_duplicates private relation `${app}_all_all`: [bool]
+        allow_duplicates private relation `${app}_${resource}_all`: [bool]
+        allow_duplicates private relation `${app}_all_${verb}`: [bool]
+
+        relation `${app}_${resource}_${verb}`: [bool] or `${app}_${resource}_all` or `${app}_all_${verb}` or `${app}_all_all` or all_all_all or child.`${app}_${resource}_${verb}`
+    }
+
+    type role_binding {
+        relation `${app}_${resource}_${verb}`: subject and role.`${app}_${resource}_${verb}`
+    }
+
+    type platform {
+        relation `${app}_${resource}_${verb}`: binding.`${app}_${resource}_${verb}`
+    }
+
+    type tenant {
+        relation `${app}_${resource}_${verb}`: binding.`${app}_${resource}_${verb}` or platform.`${app}_${resource}_${verb}`
+    }
+
+    type workspace {
+        relation `${app}_${resource}_${verb}`: binding.`${app}_${resource}_${verb}` or parent.`${app}_${resource}_${verb}`
+    }
+}

@@ -115,20 +115,19 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 	// maybe a listener might be better hear, or just having an extension type that is
 	// based on relation instead of namespace
 	for _, t := range types {
-		extensionsRefs = appendRelationExtensionRefs(extensionsRefs, t.Relations, name)
+		extensionsRefs = appendRelationExtensionRefs(extensionsRefs, t.Relations)
 	}
 	for _, e := range extendedTypes {
-		extensionsRefs = appendRelationExtensionRefs(extensionsRefs, e.Relations, name)
+		extensionsRefs = appendRelationExtensionRefs(extensionsRefs, e.Relations)
 	}
 
 	return &intermediate.Namespace{Name: name, Imports: imports, Types: types, ExtendedTypes: extendedTypes, ExtensionDefinitions: extensions, ExtensionReferences: extensionsRefs}, nil
 }
 
-func appendRelationExtensionRefs(extensionRefs []*intermediate.ExtensionReference, relations []*intermediate.Relation, namespace string) []*intermediate.ExtensionReference {
+func appendRelationExtensionRefs(extensionRefs []*intermediate.ExtensionReference, relations []*intermediate.Relation) []*intermediate.ExtensionReference {
 	for _, r := range relations {
 		if r.Body.ExtensionReference != nil {
 			ref := r.Body.ExtensionReference
-			ref.Namespace = namespace
 			extensionRefs = append(extensionRefs, ref)
 		}
 	}
@@ -222,15 +221,26 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 		}
 	case *parser.ReferenceWithExtensionContext:
 		relation := getStrippedName(body.Name())
-		relationExtensionParams := c.relationExtensionParamsToExtensionParams(body.ExtensionParams())
+		relationExtensionParams := c.relationExtensionParamsToExtensionParams(relation, body.ExtensionParams())
+		// bad smell here: splitting requires knowledge of '.' in ksl.g4
+		// type reference should be broken out by parser, not here
+		typeRef := strings.Split(body.TypeReference().GetText(), ".")
+		var namespace string
+		var baseType string
+		if len(typeRef) != 2 {
+			namespace = ""
+			baseType = typeRef[0]
+		} else {
+			namespace = typeRef[0]
+			baseType = typeRef[1]
+		}
 		return &intermediate.RelationBody{
 			Kind:     "reference",
 			Relation: relation,
 			ExtensionReference: &intermediate.ExtensionReference{
-				// namespace is not available here, but we need to add extensions in
-				// namespace context anyway, so can add it there
-				Name:   body.TypeReference().GetText(),
-				Params: relationExtensionParams,
+				Namespace: namespace,
+				Name:      baseType,
+				Params:    relationExtensionParams,
 			},
 		}
 	case *parser.SubRelationContext:
@@ -244,7 +254,7 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 	case *parser.SubRelationWithExtensionContext:
 		relation := body.GetRelationName().GetText()
 		subrelation := body.GetSubrelationName().GetText()
-		relationExtensionParams := c.relationExtensionParamsToExtensionParams(body.ExtensionParams())
+		relationExtensionParams := c.relationExtensionParamsToExtensionParams(relation, body.ExtensionParams())
 		return &intermediate.RelationBody{
 			Kind:        "reference",
 			Relation:    relation,
@@ -286,12 +296,15 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 	return nil
 }
 
-func (c *converter) relationExtensionParamsToExtensionParams(e parser.IExtensionParamsContext) map[string]string {
-	extParamsContexts := e.AllExtensionParam()
-	extensionParams := make(map[string]string, len(extParamsContexts))
+func (c *converter) relationExtensionParamsToExtensionParams(rel string, e parser.IExtensionParamsContext) map[string]string {
+	extensionParams := make(map[string]string, len(e.AllExtensionParam())+1)
 
-	for _, context := range extParamsContexts {
-		extensionParams[context.Name().GetText()] = context.GetValue().GetText()
+	// relation is the first param in this model as a requirement of these kind of extensions
+	extensionParams["relationRef"] = rel
+
+	nonRelationParams := e.AllExtensionParam()
+	for _, param := range nonRelationParams {
+		extensionParams[param.Name().GetText()] = param.GetValue().GetText()
 	}
 
 	return extensionParams
