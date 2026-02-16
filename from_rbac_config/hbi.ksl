@@ -6,17 +6,13 @@ import rbac
 extend type workspace from rbac {
     relation staleness_staleness_view with rbac.inherited(app:'staleness', resource:'staleness', verb:'read')
     relation staleness_staleness_update with rbac.inherited(app:'staleness', resource:'staleness', verb:'write')
-    relation inventory_host_view with rbac.inherited(app:'inventory', resource:'hosts', verb:'read')
-    relation inventory_host_update with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
-    relation inventory_host_delete with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
-    relation inventory_host_move with rbac.inherited(app:'inventory', resource:'groups', verb:'write')
 }
 
 public type host {
     private relation workspace: [ExactlyOne rbac.workspace]
 
-    relation view: workspace.inventory_host_view
-    relation update: workspace.inventory_host_update
-    relation delete: workspace.inventory_host_delete
-    relation move: workspace.inventory_host_move
+    relation view: workspace.inventory_host_view with rbac.inherited(app:'inventory', resource:'hosts', verb:'read')
+    relation update: workspace.inventory_host_update with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
+    relation delete: workspace.inventory_host_delete with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
+    relation move: workspace.inventory_host_move with rbac.inherited(app:'inventory', resource:'groups', verb:'write')
 }

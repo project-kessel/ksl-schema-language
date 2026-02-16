@@ -297,16 +297,26 @@ func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *i
 	case *parser.SubRelationWithExtensionContext:
 		relation := body.GetRelationName().GetText()
 		subrelation := body.GetSubrelationName().GetText()
-		relationExtensionParams := c.relationExtensionParamsToExtensionParams(relation, body.ExtensionParams())
+		relationExtensionParams := c.relationExtensionParamsToExtensionParams(subrelation, body.ExtensionParams())
+		// type reference should be broken out by parser, not here
+		typeRef := strings.Split(body.TypeReference().GetText(), ".")
+		var namespace string
+		var baseType string
+		if len(typeRef) != 2 {
+			namespace = ""
+			baseType = typeRef[0]
+		} else {
+			namespace = typeRef[0]
+			baseType = typeRef[1]
+		}
 		return &intermediate.RelationBody{
-			Kind:        "reference",
+			Kind:        "nested_reference",
 			Relation:    relation,
 			SubRelation: subrelation,
 			ExtensionReference: &intermediate.ExtensionReference{
-				// namespace is not available here, but we need to add extensions in
-				// namespace context anyway, so can add it there
-				Name:   body.TypeReference().GetText(),
-				Params: relationExtensionParams,
+				Namespace: namespace,
+				Name:      baseType,
+				Params:    relationExtensionParams,
 			},
 		}
 	case *parser.ParenContext:
