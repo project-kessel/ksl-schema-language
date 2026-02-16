@@ -69,6 +69,12 @@ func (s *BasekslListener) EnterTypeReference(ctx *TypeReferenceContext) {}
 // ExitTypeReference is called when production typeReference is exited.
 func (s *BasekslListener) ExitTypeReference(ctx *TypeReferenceContext) {}
 
+// EnterNamespaceExtendExpr is called when production namespaceExtendExpr is entered.
+func (s *BasekslListener) EnterNamespaceExtendExpr(ctx *NamespaceExtendExprContext) {}
+
+// ExitNamespaceExtendExpr is called when production namespaceExtendExpr is exited.
+func (s *BasekslListener) ExitNamespaceExtendExpr(ctx *NamespaceExtendExprContext) {}
+
 // EnterExtendTypeExpr is called when production extendTypeExpr is entered.
 func (s *BasekslListener) EnterExtendTypeExpr(ctx *ExtendTypeExprContext) {}
 

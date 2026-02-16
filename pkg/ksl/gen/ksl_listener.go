@@ -32,6 +32,9 @@ type kslListener interface {
 	// EnterTypeReference is called when entering the typeReference production.
 	EnterTypeReference(c *TypeReferenceContext)
 
+	// EnterNamespaceExtendExpr is called when entering the namespaceExtendExpr production.
+	EnterNamespaceExtendExpr(c *NamespaceExtendExprContext)
+
 	// EnterExtendTypeExpr is called when entering the extendTypeExpr production.
 	EnterExtendTypeExpr(c *ExtendTypeExprContext)
 
@@ -142,6 +145,9 @@ type kslListener interface {
 
 	// ExitTypeReference is called when exiting the typeReference production.
 	ExitTypeReference(c *TypeReferenceContext)
+
+	// ExitNamespaceExtendExpr is called when exiting the namespaceExtendExpr production.
+	ExitNamespaceExtendExpr(c *NamespaceExtendExprContext)
 
 	// ExitExtendTypeExpr is called when exiting the extendTypeExpr production.
 	ExitExtendTypeExpr(c *ExtendTypeExprContext)

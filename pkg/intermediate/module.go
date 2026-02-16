@@ -25,6 +25,7 @@ type Type struct {
 }
 
 type ExtendedType struct {
+	Namespace string      `json:"namespace"`
 	Name      string      `json:"name"`
 	Relations []*Relation `json:"relations"`
 }

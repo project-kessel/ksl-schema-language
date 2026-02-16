@@ -169,6 +169,11 @@ func (c *converter) typeExprToType(t parser.ITypeExprContext) (*intermediate.Typ
 func (c *converter) extendedTypeExprToExtendedType(t parser.IExtendTypeExprContext) (*intermediate.ExtendedType, error) {
 	name := getStrippedName(t.Name())
 
+	namespace := ""
+	if t.NamespaceExtendExpr() != nil {
+		namespace = t.NamespaceExtendExpr().Name().GetText()
+	}
+
 	relations := []*intermediate.Relation{}
 	for _, relationExpr := range t.AllRelation() {
 		relation, err := c.relationExprToRelation(relationExpr)
@@ -179,7 +184,7 @@ func (c *converter) extendedTypeExprToExtendedType(t parser.IExtendTypeExprConte
 		relations = append(relations, relation)
 	}
 
-	return &intermediate.ExtendedType{Name: name, Relations: relations}, nil
+	return &intermediate.ExtendedType{Namespace: namespace, Name: name, Relations: relations}, nil
 }
 
 func (c *converter) relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, error) {

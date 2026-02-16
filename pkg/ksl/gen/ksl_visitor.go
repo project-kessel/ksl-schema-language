@@ -32,6 +32,9 @@ type kslVisitor interface {
 	// Visit a parse tree produced by kslParser#typeReference.
 	VisitTypeReference(ctx *TypeReferenceContext) interface{}
 
+	// Visit a parse tree produced by kslParser#namespaceExtendExpr.
+	VisitNamespaceExtendExpr(ctx *NamespaceExtendExprContext) interface{}
+
 	// Visit a parse tree produced by kslParser#extendTypeExpr.
 	VisitExtendTypeExpr(ctx *ExtendTypeExprContext) interface{}
 

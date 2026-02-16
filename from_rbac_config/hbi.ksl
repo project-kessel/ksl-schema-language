@@ -3,7 +3,7 @@ namespace hbi
 
 import rbac
 
-extend type workspace {
+extend type workspace from rbac {
     relation staleness_staleness_view with rbac.inherited(app:'staleness', resource:'staleness', verb:'read')
     relation staleness_staleness_update with rbac.inherited(app:'staleness', resource:'staleness', verb:'write')
     relation inventory_host_view with rbac.inherited(app:'inventory', resource:'hosts', verb:'read')

@@ -12,6 +12,7 @@ INTERNAL: 'internal';
 PRIVATE: 'private';
 TYPE: 'type';
 EXTEND: 'extend';
+FROM: 'from';
 RELATION: 'relation';
 IMPORT: 'import';
 EXTENSION: 'extension';
@@ -56,7 +57,8 @@ declaration: typeExpr DECL_END? | extendTypeExpr DECL_END? | extension DECL_END?
 typeExpr: extensionReference* ACCESS? TYPE name LBRACE relation* RBRACE;
 typeReference: name (RESOLVE name)*;
 
-extendTypeExpr: EXTEND TYPE name LBRACE relation* RBRACE;
+namespaceExtendExpr: FROM name;
+extendTypeExpr: EXTEND TYPE name (namespaceExtendExpr)? LBRACE relation* RBRACE;
 
 extensionParam: name EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
 extensionParams: extensionParam (ARG_DELIM extensionParam)*;

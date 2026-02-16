@@ -40,6 +40,10 @@ func (v *BasekslVisitor) VisitTypeReference(ctx *TypeReferenceContext) interface
 	return v.VisitChildren(ctx)
 }
 
+func (v *BasekslVisitor) VisitNamespaceExtendExpr(ctx *NamespaceExtendExprContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BasekslVisitor) VisitExtendTypeExpr(ctx *ExtendTypeExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }

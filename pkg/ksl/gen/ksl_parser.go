@@ -34,181 +34,186 @@ func kslParserInit() {
 	staticData := &KslParserStaticData
 	staticData.LiteralNames = []string{
 		"", "'#'", "", "'version'", "", "'.'", "'namespace'", "", "'public'",
-		"'internal'", "'private'", "'type'", "'extend'", "'relation'", "'import'",
-		"'extension'", "", "'AtMostOne'", "'ExactlyOne'", "'AtLeastOne'", "'Any'",
-		"'as'", "'and'", "'or'", "'unless'", "'allow_duplicates'", "':'", "'{'",
-		"'}'", "'@'", "'with'", "'('", "')'", "'['", "']'", "'$'", "'`'", "'''",
-		"','", "';'",
+		"'internal'", "'private'", "'type'", "'extend'", "'from'", "'relation'",
+		"'import'", "'extension'", "", "'AtMostOne'", "'ExactlyOne'", "'AtLeastOne'",
+		"'Any'", "'as'", "'and'", "'or'", "'unless'", "'allow_duplicates'",
+		"':'", "'{'", "'}'", "'@'", "'with'", "'('", "')'", "'['", "']'", "'$'",
+		"'`'", "'''", "','", "';'",
 	}
 	staticData.SymbolicNames = []string{
 		"", "KW_ESC", "FORCED_NAME", "VERSION", "VERSIONNUM", "RESOLVE", "NAMESPACE",
-		"ACCESS", "PUBLIC", "INTERNAL", "PRIVATE", "TYPE", "EXTEND", "RELATION",
-		"IMPORT", "EXTENSION", "CARDINALITY", "ATMOSTONE", "EXACTLYONE", "ATLEASTONE",
-		"ANY", "AS", "AND", "OR", "UNLESS", "ALLOW_DUPLICATES", "EXPAND", "LBRACE",
-		"RBRACE", "EXTENSION_CALL", "IN_REL_EXTENSION_CALL", "LPAREN", "RPAREN",
-		"LSQUARE", "RSQARE", "VARREF", "TEMPLATE_DELIM", "STRING_DELIM", "ARG_DELIM",
-		"DECL_END", "NAME", "COMMENT", "WS",
+		"ACCESS", "PUBLIC", "INTERNAL", "PRIVATE", "TYPE", "EXTEND", "FROM",
+		"RELATION", "IMPORT", "EXTENSION", "CARDINALITY", "ATMOSTONE", "EXACTLYONE",
+		"ATLEASTONE", "ANY", "AS", "AND", "OR", "UNLESS", "ALLOW_DUPLICATES",
+		"EXPAND", "LBRACE", "RBRACE", "EXTENSION_CALL", "IN_REL_EXTENSION_CALL",
+		"LPAREN", "RPAREN", "LSQUARE", "RSQARE", "VARREF", "TEMPLATE_DELIM",
+		"STRING_DELIM", "ARG_DELIM", "DECL_END", "NAME", "COMMENT", "WS",
 	}
 	staticData.RuleNames = []string{
 		"name", "file", "version", "namespace", "import_stmt", "declaration",
-		"typeExpr", "typeReference", "extendTypeExpr", "extensionParam", "extensionParams",
-		"extensionReference", "relation", "relationBody", "paramNames", "extension",
-		"dynamicType", "dynamicRelation", "dynamicName", "dynamicBody",
+		"typeExpr", "typeReference", "namespaceExtendExpr", "extendTypeExpr",
+		"extensionParam", "extensionParams", "extensionReference", "relation",
+		"relationBody", "paramNames", "extension", "dynamicType", "dynamicRelation",
+		"dynamicName", "dynamicBody",
 	}
 	staticData.PredictionContextCache = antlr.NewPredictionContextCache()
 	staticData.serializedATN = []int32{
-		4, 1, 42, 340, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
+		4, 1, 43, 348, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7,
 		4, 2, 5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7,
 		10, 2, 11, 7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 7, 15,
-		2, 16, 7, 16, 2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 1, 0, 1, 0, 1,
-		1, 1, 1, 1, 1, 5, 1, 46, 8, 1, 10, 1, 12, 1, 49, 9, 1, 1, 1, 4, 1, 52,
-		8, 1, 11, 1, 12, 1, 53, 1, 2, 1, 2, 1, 2, 1, 3, 1, 3, 1, 3, 1, 4, 1, 4,
-		1, 4, 1, 5, 1, 5, 3, 5, 67, 8, 5, 1, 5, 1, 5, 3, 5, 71, 8, 5, 1, 5, 1,
-		5, 3, 5, 75, 8, 5, 1, 5, 1, 5, 1, 5, 3, 5, 80, 8, 5, 1, 6, 5, 6, 83, 8,
-		6, 10, 6, 12, 6, 86, 9, 6, 1, 6, 3, 6, 89, 8, 6, 1, 6, 1, 6, 1, 6, 1, 6,
-		5, 6, 95, 8, 6, 10, 6, 12, 6, 98, 9, 6, 1, 6, 1, 6, 1, 7, 1, 7, 1, 7, 5,
-		7, 105, 8, 7, 10, 7, 12, 7, 108, 9, 7, 1, 8, 1, 8, 1, 8, 1, 8, 1, 8, 5,
-		8, 115, 8, 8, 10, 8, 12, 8, 118, 9, 8, 1, 8, 1, 8, 1, 9, 1, 9, 1, 9, 1,
-		9, 1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 5, 10, 131, 8, 10, 10, 10, 12, 10,
-		134, 9, 10, 1, 11, 1, 11, 1, 11, 1, 11, 3, 11, 140, 8, 11, 1, 11, 1, 11,
-		1, 12, 5, 12, 145, 8, 12, 10, 12, 12, 12, 148, 9, 12, 1, 12, 3, 12, 151,
-		8, 12, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 3, 12, 159, 8, 12, 1,
-		12, 1, 12, 1, 12, 1, 12, 1, 12, 1, 12, 3, 12, 167, 8, 12, 1, 12, 1, 12,
-		3, 12, 171, 8, 12, 1, 13, 1, 13, 1, 13, 3, 13, 176, 8, 13, 1, 13, 1, 13,
-		1, 13, 5, 13, 181, 8, 13, 10, 13, 12, 13, 184, 9, 13, 1, 13, 1, 13, 1,
-		13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 3, 13, 194, 8, 13, 1, 13, 1, 13,
-		1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1,
-		13, 3, 13, 209, 8, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 3, 13,
-		217, 8, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 1,
-		13, 5, 13, 228, 8, 13, 10, 13, 12, 13, 231, 9, 13, 1, 14, 1, 14, 1, 14,
-		5, 14, 236, 8, 14, 10, 14, 12, 14, 239, 9, 14, 1, 15, 3, 15, 242, 8, 15,
-		1, 15, 1, 15, 1, 15, 1, 15, 3, 15, 248, 8, 15, 1, 15, 1, 15, 1, 15, 4,
-		15, 253, 8, 15, 11, 15, 12, 15, 254, 1, 15, 1, 15, 1, 16, 3, 16, 260, 8,
-		16, 1, 16, 1, 16, 1, 16, 1, 16, 5, 16, 266, 8, 16, 10, 16, 12, 16, 269,
-		9, 16, 1, 16, 1, 16, 1, 17, 3, 17, 274, 8, 17, 1, 17, 3, 17, 277, 8, 17,
-		1, 17, 1, 17, 1, 17, 1, 17, 1, 17, 1, 18, 1, 18, 1, 18, 1, 18, 1, 18, 1,
-		18, 1, 18, 1, 18, 4, 18, 292, 8, 18, 11, 18, 12, 18, 293, 1, 18, 1, 18,
-		3, 18, 298, 8, 18, 1, 19, 1, 19, 1, 19, 3, 19, 303, 8, 19, 1, 19, 1, 19,
-		1, 19, 5, 19, 308, 8, 19, 10, 19, 12, 19, 311, 9, 19, 1, 19, 1, 19, 1,
-		19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 3, 19, 324,
-		8, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 5,
-		19, 335, 8, 19, 10, 19, 12, 19, 338, 9, 19, 1, 19, 0, 2, 26, 38, 20, 0,
-		2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38,
-		0, 2, 2, 0, 2, 2, 40, 40, 1, 0, 37, 37, 370, 0, 40, 1, 0, 0, 0, 2, 42,
-		1, 0, 0, 0, 4, 55, 1, 0, 0, 0, 6, 58, 1, 0, 0, 0, 8, 61, 1, 0, 0, 0, 10,
-		79, 1, 0, 0, 0, 12, 84, 1, 0, 0, 0, 14, 101, 1, 0, 0, 0, 16, 109, 1, 0,
-		0, 0, 18, 121, 1, 0, 0, 0, 20, 127, 1, 0, 0, 0, 22, 135, 1, 0, 0, 0, 24,
-		170, 1, 0, 0, 0, 26, 216, 1, 0, 0, 0, 28, 232, 1, 0, 0, 0, 30, 241, 1,
-		0, 0, 0, 32, 259, 1, 0, 0, 0, 34, 273, 1, 0, 0, 0, 36, 297, 1, 0, 0, 0,
-		38, 323, 1, 0, 0, 0, 40, 41, 7, 0, 0, 0, 41, 1, 1, 0, 0, 0, 42, 43, 3,
-		4, 2, 0, 43, 47, 3, 6, 3, 0, 44, 46, 3, 8, 4, 0, 45, 44, 1, 0, 0, 0, 46,
-		49, 1, 0, 0, 0, 47, 45, 1, 0, 0, 0, 47, 48, 1, 0, 0, 0, 48, 51, 1, 0, 0,
-		0, 49, 47, 1, 0, 0, 0, 50, 52, 3, 10, 5, 0, 51, 50, 1, 0, 0, 0, 52, 53,
-		1, 0, 0, 0, 53, 51, 1, 0, 0, 0, 53, 54, 1, 0, 0, 0, 54, 3, 1, 0, 0, 0,
-		55, 56, 5, 3, 0, 0, 56, 57, 5, 4, 0, 0, 57, 5, 1, 0, 0, 0, 58, 59, 5, 6,
-		0, 0, 59, 60, 3, 0, 0, 0, 60, 7, 1, 0, 0, 0, 61, 62, 5, 14, 0, 0, 62, 63,
-		3, 0, 0, 0, 63, 9, 1, 0, 0, 0, 64, 66, 3, 12, 6, 0, 65, 67, 5, 39, 0, 0,
-		66, 65, 1, 0, 0, 0, 66, 67, 1, 0, 0, 0, 67, 80, 1, 0, 0, 0, 68, 70, 3,
-		16, 8, 0, 69, 71, 5, 39, 0, 0, 70, 69, 1, 0, 0, 0, 70, 71, 1, 0, 0, 0,
-		71, 80, 1, 0, 0, 0, 72, 74, 3, 30, 15, 0, 73, 75, 5, 39, 0, 0, 74, 73,
-		1, 0, 0, 0, 74, 75, 1, 0, 0, 0, 75, 80, 1, 0, 0, 0, 76, 77, 3, 22, 11,
-		0, 77, 78, 5, 39, 0, 0, 78, 80, 1, 0, 0, 0, 79, 64, 1, 0, 0, 0, 79, 68,
-		1, 0, 0, 0, 79, 72, 1, 0, 0, 0, 79, 76, 1, 0, 0, 0, 80, 11, 1, 0, 0, 0,
-		81, 83, 3, 22, 11, 0, 82, 81, 1, 0, 0, 0, 83, 86, 1, 0, 0, 0, 84, 82, 1,
-		0, 0, 0, 84, 85, 1, 0, 0, 0, 85, 88, 1, 0, 0, 0, 86, 84, 1, 0, 0, 0, 87,
-		89, 5, 7, 0, 0, 88, 87, 1, 0, 0, 0, 88, 89, 1, 0, 0, 0, 89, 90, 1, 0, 0,
-		0, 90, 91, 5, 11, 0, 0, 91, 92, 3, 0, 0, 0, 92, 96, 5, 27, 0, 0, 93, 95,
-		3, 24, 12, 0, 94, 93, 1, 0, 0, 0, 95, 98, 1, 0, 0, 0, 96, 94, 1, 0, 0,
-		0, 96, 97, 1, 0, 0, 0, 97, 99, 1, 0, 0, 0, 98, 96, 1, 0, 0, 0, 99, 100,
-		5, 28, 0, 0, 100, 13, 1, 0, 0, 0, 101, 106, 3, 0, 0, 0, 102, 103, 5, 5,
-		0, 0, 103, 105, 3, 0, 0, 0, 104, 102, 1, 0, 0, 0, 105, 108, 1, 0, 0, 0,
-		106, 104, 1, 0, 0, 0, 106, 107, 1, 0, 0, 0, 107, 15, 1, 0, 0, 0, 108, 106,
-		1, 0, 0, 0, 109, 110, 5, 12, 0, 0, 110, 111, 5, 11, 0, 0, 111, 112, 3,
-		0, 0, 0, 112, 116, 5, 27, 0, 0, 113, 115, 3, 24, 12, 0, 114, 113, 1, 0,
-		0, 0, 115, 118, 1, 0, 0, 0, 116, 114, 1, 0, 0, 0, 116, 117, 1, 0, 0, 0,
-		117, 119, 1, 0, 0, 0, 118, 116, 1, 0, 0, 0, 119, 120, 5, 28, 0, 0, 120,
-		17, 1, 0, 0, 0, 121, 122, 3, 0, 0, 0, 122, 123, 5, 26, 0, 0, 123, 124,
-		5, 37, 0, 0, 124, 125, 8, 1, 0, 0, 125, 126, 5, 37, 0, 0, 126, 19, 1, 0,
-		0, 0, 127, 132, 3, 18, 9, 0, 128, 129, 5, 38, 0, 0, 129, 131, 3, 18, 9,
-		0, 130, 128, 1, 0, 0, 0, 131, 134, 1, 0, 0, 0, 132, 130, 1, 0, 0, 0, 132,
-		133, 1, 0, 0, 0, 133, 21, 1, 0, 0, 0, 134, 132, 1, 0, 0, 0, 135, 136, 5,
-		29, 0, 0, 136, 137, 3, 14, 7, 0, 137, 139, 5, 31, 0, 0, 138, 140, 3, 20,
-		10, 0, 139, 138, 1, 0, 0, 0, 139, 140, 1, 0, 0, 0, 140, 141, 1, 0, 0, 0,
-		141, 142, 5, 32, 0, 0, 142, 23, 1, 0, 0, 0, 143, 145, 3, 22, 11, 0, 144,
-		143, 1, 0, 0, 0, 145, 148, 1, 0, 0, 0, 146, 144, 1, 0, 0, 0, 146, 147,
-		1, 0, 0, 0, 147, 150, 1, 0, 0, 0, 148, 146, 1, 0, 0, 0, 149, 151, 5, 7,
-		0, 0, 150, 149, 1, 0, 0, 0, 150, 151, 1, 0, 0, 0, 151, 152, 1, 0, 0, 0,
-		152, 153, 5, 13, 0, 0, 153, 154, 3, 0, 0, 0, 154, 155, 5, 26, 0, 0, 155,
-		156, 3, 26, 13, 0, 156, 171, 1, 0, 0, 0, 157, 159, 5, 7, 0, 0, 158, 157,
-		1, 0, 0, 0, 158, 159, 1, 0, 0, 0, 159, 160, 1, 0, 0, 0, 160, 161, 5, 13,
-		0, 0, 161, 162, 3, 0, 0, 0, 162, 163, 5, 30, 0, 0, 163, 164, 3, 14, 7,
-		0, 164, 166, 5, 31, 0, 0, 165, 167, 3, 20, 10, 0, 166, 165, 1, 0, 0, 0,
-		166, 167, 1, 0, 0, 0, 167, 168, 1, 0, 0, 0, 168, 169, 5, 32, 0, 0, 169,
-		171, 1, 0, 0, 0, 170, 146, 1, 0, 0, 0, 170, 158, 1, 0, 0, 0, 171, 25, 1,
-		0, 0, 0, 172, 173, 6, 13, -1, 0, 173, 175, 5, 33, 0, 0, 174, 176, 5, 16,
-		0, 0, 175, 174, 1, 0, 0, 0, 175, 176, 1, 0, 0, 0, 176, 177, 1, 0, 0, 0,
-		177, 182, 3, 14, 7, 0, 178, 179, 5, 23, 0, 0, 179, 181, 3, 14, 7, 0, 180,
-		178, 1, 0, 0, 0, 181, 184, 1, 0, 0, 0, 182, 180, 1, 0, 0, 0, 182, 183,
-		1, 0, 0, 0, 183, 185, 1, 0, 0, 0, 184, 182, 1, 0, 0, 0, 185, 186, 5, 34,
-		0, 0, 186, 217, 1, 0, 0, 0, 187, 217, 3, 0, 0, 0, 188, 189, 3, 0, 0, 0,
-		189, 190, 5, 30, 0, 0, 190, 191, 3, 14, 7, 0, 191, 193, 5, 31, 0, 0, 192,
-		194, 3, 20, 10, 0, 193, 192, 1, 0, 0, 0, 193, 194, 1, 0, 0, 0, 194, 195,
-		1, 0, 0, 0, 195, 196, 5, 32, 0, 0, 196, 217, 1, 0, 0, 0, 197, 198, 3, 0,
-		0, 0, 198, 199, 5, 5, 0, 0, 199, 200, 3, 0, 0, 0, 200, 217, 1, 0, 0, 0,
-		201, 202, 3, 0, 0, 0, 202, 203, 5, 5, 0, 0, 203, 204, 3, 0, 0, 0, 204,
-		205, 5, 30, 0, 0, 205, 206, 3, 14, 7, 0, 206, 208, 5, 31, 0, 0, 207, 209,
-		3, 20, 10, 0, 208, 207, 1, 0, 0, 0, 208, 209, 1, 0, 0, 0, 209, 210, 1,
-		0, 0, 0, 210, 211, 5, 32, 0, 0, 211, 217, 1, 0, 0, 0, 212, 213, 5, 31,
-		0, 0, 213, 214, 3, 26, 13, 0, 214, 215, 5, 32, 0, 0, 215, 217, 1, 0, 0,
-		0, 216, 172, 1, 0, 0, 0, 216, 187, 1, 0, 0, 0, 216, 188, 1, 0, 0, 0, 216,
-		197, 1, 0, 0, 0, 216, 201, 1, 0, 0, 0, 216, 212, 1, 0, 0, 0, 217, 229,
-		1, 0, 0, 0, 218, 219, 10, 3, 0, 0, 219, 220, 5, 22, 0, 0, 220, 228, 3,
-		26, 13, 4, 221, 222, 10, 2, 0, 0, 222, 223, 5, 23, 0, 0, 223, 228, 3, 26,
-		13, 3, 224, 225, 10, 1, 0, 0, 225, 226, 5, 24, 0, 0, 226, 228, 3, 26, 13,
-		2, 227, 218, 1, 0, 0, 0, 227, 221, 1, 0, 0, 0, 227, 224, 1, 0, 0, 0, 228,
-		231, 1, 0, 0, 0, 229, 227, 1, 0, 0, 0, 229, 230, 1, 0, 0, 0, 230, 27, 1,
-		0, 0, 0, 231, 229, 1, 0, 0, 0, 232, 237, 3, 0, 0, 0, 233, 234, 5, 38, 0,
-		0, 234, 236, 3, 0, 0, 0, 235, 233, 1, 0, 0, 0, 236, 239, 1, 0, 0, 0, 237,
-		235, 1, 0, 0, 0, 237, 238, 1, 0, 0, 0, 238, 29, 1, 0, 0, 0, 239, 237, 1,
-		0, 0, 0, 240, 242, 5, 7, 0, 0, 241, 240, 1, 0, 0, 0, 241, 242, 1, 0, 0,
-		0, 242, 243, 1, 0, 0, 0, 243, 244, 5, 15, 0, 0, 244, 245, 3, 0, 0, 0, 245,
-		247, 5, 31, 0, 0, 246, 248, 3, 28, 14, 0, 247, 246, 1, 0, 0, 0, 247, 248,
-		1, 0, 0, 0, 248, 249, 1, 0, 0, 0, 249, 250, 5, 32, 0, 0, 250, 252, 5, 27,
-		0, 0, 251, 253, 3, 32, 16, 0, 252, 251, 1, 0, 0, 0, 253, 254, 1, 0, 0,
-		0, 254, 252, 1, 0, 0, 0, 254, 255, 1, 0, 0, 0, 255, 256, 1, 0, 0, 0, 256,
-		257, 5, 28, 0, 0, 257, 31, 1, 0, 0, 0, 258, 260, 5, 7, 0, 0, 259, 258,
-		1, 0, 0, 0, 259, 260, 1, 0, 0, 0, 260, 261, 1, 0, 0, 0, 261, 262, 5, 11,
-		0, 0, 262, 263, 3, 36, 18, 0, 263, 267, 5, 27, 0, 0, 264, 266, 3, 34, 17,
-		0, 265, 264, 1, 0, 0, 0, 266, 269, 1, 0, 0, 0, 267, 265, 1, 0, 0, 0, 267,
-		268, 1, 0, 0, 0, 268, 270, 1, 0, 0, 0, 269, 267, 1, 0, 0, 0, 270, 271,
-		5, 28, 0, 0, 271, 33, 1, 0, 0, 0, 272, 274, 5, 25, 0, 0, 273, 272, 1, 0,
-		0, 0, 273, 274, 1, 0, 0, 0, 274, 276, 1, 0, 0, 0, 275, 277, 5, 7, 0, 0,
-		276, 275, 1, 0, 0, 0, 276, 277, 1, 0, 0, 0, 277, 278, 1, 0, 0, 0, 278,
-		279, 5, 13, 0, 0, 279, 280, 3, 36, 18, 0, 280, 281, 5, 26, 0, 0, 281, 282,
-		3, 38, 19, 0, 282, 35, 1, 0, 0, 0, 283, 298, 3, 0, 0, 0, 284, 285, 5, 35,
-		0, 0, 285, 286, 5, 27, 0, 0, 286, 287, 3, 0, 0, 0, 287, 288, 5, 28, 0,
-		0, 288, 298, 1, 0, 0, 0, 289, 291, 5, 36, 0, 0, 290, 292, 3, 36, 18, 0,
-		291, 290, 1, 0, 0, 0, 292, 293, 1, 0, 0, 0, 293, 291, 1, 0, 0, 0, 293,
-		294, 1, 0, 0, 0, 294, 295, 1, 0, 0, 0, 295, 296, 5, 36, 0, 0, 296, 298,
-		1, 0, 0, 0, 297, 283, 1, 0, 0, 0, 297, 284, 1, 0, 0, 0, 297, 289, 1, 0,
-		0, 0, 298, 37, 1, 0, 0, 0, 299, 300, 6, 19, -1, 0, 300, 302, 5, 33, 0,
-		0, 301, 303, 5, 16, 0, 0, 302, 301, 1, 0, 0, 0, 302, 303, 1, 0, 0, 0, 303,
-		304, 1, 0, 0, 0, 304, 309, 3, 14, 7, 0, 305, 306, 5, 23, 0, 0, 306, 308,
-		3, 14, 7, 0, 307, 305, 1, 0, 0, 0, 308, 311, 1, 0, 0, 0, 309, 307, 1, 0,
-		0, 0, 309, 310, 1, 0, 0, 0, 310, 312, 1, 0, 0, 0, 311, 309, 1, 0, 0, 0,
-		312, 313, 5, 34, 0, 0, 313, 324, 1, 0, 0, 0, 314, 324, 3, 36, 18, 0, 315,
-		316, 3, 36, 18, 0, 316, 317, 5, 5, 0, 0, 317, 318, 3, 36, 18, 0, 318, 324,
-		1, 0, 0, 0, 319, 320, 5, 31, 0, 0, 320, 321, 3, 38, 19, 0, 321, 322, 5,
-		32, 0, 0, 322, 324, 1, 0, 0, 0, 323, 299, 1, 0, 0, 0, 323, 314, 1, 0, 0,
-		0, 323, 315, 1, 0, 0, 0, 323, 319, 1, 0, 0, 0, 324, 336, 1, 0, 0, 0, 325,
-		326, 10, 3, 0, 0, 326, 327, 5, 22, 0, 0, 327, 335, 3, 38, 19, 4, 328, 329,
-		10, 2, 0, 0, 329, 330, 5, 23, 0, 0, 330, 335, 3, 38, 19, 3, 331, 332, 10,
-		1, 0, 0, 332, 333, 5, 24, 0, 0, 333, 335, 3, 38, 19, 2, 334, 325, 1, 0,
-		0, 0, 334, 328, 1, 0, 0, 0, 334, 331, 1, 0, 0, 0, 335, 338, 1, 0, 0, 0,
-		336, 334, 1, 0, 0, 0, 336, 337, 1, 0, 0, 0, 337, 39, 1, 0, 0, 0, 338, 336,
-		1, 0, 0, 0, 40, 47, 53, 66, 70, 74, 79, 84, 88, 96, 106, 116, 132, 139,
-		146, 150, 158, 166, 170, 175, 182, 193, 208, 216, 227, 229, 237, 241, 247,
-		254, 259, 267, 273, 276, 293, 297, 302, 309, 323, 334, 336,
+		2, 16, 7, 16, 2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 2, 20, 7, 20, 1,
+		0, 1, 0, 1, 1, 1, 1, 1, 1, 5, 1, 48, 8, 1, 10, 1, 12, 1, 51, 9, 1, 1, 1,
+		4, 1, 54, 8, 1, 11, 1, 12, 1, 55, 1, 2, 1, 2, 1, 2, 1, 3, 1, 3, 1, 3, 1,
+		4, 1, 4, 1, 4, 1, 5, 1, 5, 3, 5, 69, 8, 5, 1, 5, 1, 5, 3, 5, 73, 8, 5,
+		1, 5, 1, 5, 3, 5, 77, 8, 5, 1, 5, 1, 5, 1, 5, 3, 5, 82, 8, 5, 1, 6, 5,
+		6, 85, 8, 6, 10, 6, 12, 6, 88, 9, 6, 1, 6, 3, 6, 91, 8, 6, 1, 6, 1, 6,
+		1, 6, 1, 6, 5, 6, 97, 8, 6, 10, 6, 12, 6, 100, 9, 6, 1, 6, 1, 6, 1, 7,
+		1, 7, 1, 7, 5, 7, 107, 8, 7, 10, 7, 12, 7, 110, 9, 7, 1, 8, 1, 8, 1, 8,
+		1, 9, 1, 9, 1, 9, 1, 9, 3, 9, 119, 8, 9, 1, 9, 1, 9, 5, 9, 123, 8, 9, 10,
+		9, 12, 9, 126, 9, 9, 1, 9, 1, 9, 1, 10, 1, 10, 1, 10, 1, 10, 1, 10, 1,
+		10, 1, 11, 1, 11, 1, 11, 5, 11, 139, 8, 11, 10, 11, 12, 11, 142, 9, 11,
+		1, 12, 1, 12, 1, 12, 1, 12, 3, 12, 148, 8, 12, 1, 12, 1, 12, 1, 13, 5,
+		13, 153, 8, 13, 10, 13, 12, 13, 156, 9, 13, 1, 13, 3, 13, 159, 8, 13, 1,
+		13, 1, 13, 1, 13, 1, 13, 1, 13, 1, 13, 3, 13, 167, 8, 13, 1, 13, 1, 13,
+		1, 13, 1, 13, 1, 13, 1, 13, 3, 13, 175, 8, 13, 1, 13, 1, 13, 3, 13, 179,
+		8, 13, 1, 14, 1, 14, 1, 14, 3, 14, 184, 8, 14, 1, 14, 1, 14, 1, 14, 5,
+		14, 189, 8, 14, 10, 14, 12, 14, 192, 9, 14, 1, 14, 1, 14, 1, 14, 1, 14,
+		1, 14, 1, 14, 1, 14, 1, 14, 3, 14, 202, 8, 14, 1, 14, 1, 14, 1, 14, 1,
+		14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 3, 14,
+		217, 8, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 3, 14, 225, 8, 14,
+		1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 1, 14, 5, 14, 236,
+		8, 14, 10, 14, 12, 14, 239, 9, 14, 1, 15, 1, 15, 1, 15, 5, 15, 244, 8,
+		15, 10, 15, 12, 15, 247, 9, 15, 1, 16, 3, 16, 250, 8, 16, 1, 16, 1, 16,
+		1, 16, 1, 16, 3, 16, 256, 8, 16, 1, 16, 1, 16, 1, 16, 4, 16, 261, 8, 16,
+		11, 16, 12, 16, 262, 1, 16, 1, 16, 1, 17, 3, 17, 268, 8, 17, 1, 17, 1,
+		17, 1, 17, 1, 17, 5, 17, 274, 8, 17, 10, 17, 12, 17, 277, 9, 17, 1, 17,
+		1, 17, 1, 18, 3, 18, 282, 8, 18, 1, 18, 3, 18, 285, 8, 18, 1, 18, 1, 18,
+		1, 18, 1, 18, 1, 18, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1, 19, 1,
+		19, 4, 19, 300, 8, 19, 11, 19, 12, 19, 301, 1, 19, 1, 19, 3, 19, 306, 8,
+		19, 1, 20, 1, 20, 1, 20, 3, 20, 311, 8, 20, 1, 20, 1, 20, 1, 20, 5, 20,
+		316, 8, 20, 10, 20, 12, 20, 319, 9, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1,
+		20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 3, 20, 332, 8, 20, 1, 20,
+		1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 1, 20, 5, 20, 343, 8,
+		20, 10, 20, 12, 20, 346, 9, 20, 1, 20, 0, 2, 28, 40, 21, 0, 2, 4, 6, 8,
+		10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 0, 2, 2,
+		0, 2, 2, 41, 41, 1, 0, 38, 38, 378, 0, 42, 1, 0, 0, 0, 2, 44, 1, 0, 0,
+		0, 4, 57, 1, 0, 0, 0, 6, 60, 1, 0, 0, 0, 8, 63, 1, 0, 0, 0, 10, 81, 1,
+		0, 0, 0, 12, 86, 1, 0, 0, 0, 14, 103, 1, 0, 0, 0, 16, 111, 1, 0, 0, 0,
+		18, 114, 1, 0, 0, 0, 20, 129, 1, 0, 0, 0, 22, 135, 1, 0, 0, 0, 24, 143,
+		1, 0, 0, 0, 26, 178, 1, 0, 0, 0, 28, 224, 1, 0, 0, 0, 30, 240, 1, 0, 0,
+		0, 32, 249, 1, 0, 0, 0, 34, 267, 1, 0, 0, 0, 36, 281, 1, 0, 0, 0, 38, 305,
+		1, 0, 0, 0, 40, 331, 1, 0, 0, 0, 42, 43, 7, 0, 0, 0, 43, 1, 1, 0, 0, 0,
+		44, 45, 3, 4, 2, 0, 45, 49, 3, 6, 3, 0, 46, 48, 3, 8, 4, 0, 47, 46, 1,
+		0, 0, 0, 48, 51, 1, 0, 0, 0, 49, 47, 1, 0, 0, 0, 49, 50, 1, 0, 0, 0, 50,
+		53, 1, 0, 0, 0, 51, 49, 1, 0, 0, 0, 52, 54, 3, 10, 5, 0, 53, 52, 1, 0,
+		0, 0, 54, 55, 1, 0, 0, 0, 55, 53, 1, 0, 0, 0, 55, 56, 1, 0, 0, 0, 56, 3,
+		1, 0, 0, 0, 57, 58, 5, 3, 0, 0, 58, 59, 5, 4, 0, 0, 59, 5, 1, 0, 0, 0,
+		60, 61, 5, 6, 0, 0, 61, 62, 3, 0, 0, 0, 62, 7, 1, 0, 0, 0, 63, 64, 5, 15,
+		0, 0, 64, 65, 3, 0, 0, 0, 65, 9, 1, 0, 0, 0, 66, 68, 3, 12, 6, 0, 67, 69,
+		5, 40, 0, 0, 68, 67, 1, 0, 0, 0, 68, 69, 1, 0, 0, 0, 69, 82, 1, 0, 0, 0,
+		70, 72, 3, 18, 9, 0, 71, 73, 5, 40, 0, 0, 72, 71, 1, 0, 0, 0, 72, 73, 1,
+		0, 0, 0, 73, 82, 1, 0, 0, 0, 74, 76, 3, 32, 16, 0, 75, 77, 5, 40, 0, 0,
+		76, 75, 1, 0, 0, 0, 76, 77, 1, 0, 0, 0, 77, 82, 1, 0, 0, 0, 78, 79, 3,
+		24, 12, 0, 79, 80, 5, 40, 0, 0, 80, 82, 1, 0, 0, 0, 81, 66, 1, 0, 0, 0,
+		81, 70, 1, 0, 0, 0, 81, 74, 1, 0, 0, 0, 81, 78, 1, 0, 0, 0, 82, 11, 1,
+		0, 0, 0, 83, 85, 3, 24, 12, 0, 84, 83, 1, 0, 0, 0, 85, 88, 1, 0, 0, 0,
+		86, 84, 1, 0, 0, 0, 86, 87, 1, 0, 0, 0, 87, 90, 1, 0, 0, 0, 88, 86, 1,
+		0, 0, 0, 89, 91, 5, 7, 0, 0, 90, 89, 1, 0, 0, 0, 90, 91, 1, 0, 0, 0, 91,
+		92, 1, 0, 0, 0, 92, 93, 5, 11, 0, 0, 93, 94, 3, 0, 0, 0, 94, 98, 5, 28,
+		0, 0, 95, 97, 3, 26, 13, 0, 96, 95, 1, 0, 0, 0, 97, 100, 1, 0, 0, 0, 98,
+		96, 1, 0, 0, 0, 98, 99, 1, 0, 0, 0, 99, 101, 1, 0, 0, 0, 100, 98, 1, 0,
+		0, 0, 101, 102, 5, 29, 0, 0, 102, 13, 1, 0, 0, 0, 103, 108, 3, 0, 0, 0,
+		104, 105, 5, 5, 0, 0, 105, 107, 3, 0, 0, 0, 106, 104, 1, 0, 0, 0, 107,
+		110, 1, 0, 0, 0, 108, 106, 1, 0, 0, 0, 108, 109, 1, 0, 0, 0, 109, 15, 1,
+		0, 0, 0, 110, 108, 1, 0, 0, 0, 111, 112, 5, 13, 0, 0, 112, 113, 3, 0, 0,
+		0, 113, 17, 1, 0, 0, 0, 114, 115, 5, 12, 0, 0, 115, 116, 5, 11, 0, 0, 116,
+		118, 3, 0, 0, 0, 117, 119, 3, 16, 8, 0, 118, 117, 1, 0, 0, 0, 118, 119,
+		1, 0, 0, 0, 119, 120, 1, 0, 0, 0, 120, 124, 5, 28, 0, 0, 121, 123, 3, 26,
+		13, 0, 122, 121, 1, 0, 0, 0, 123, 126, 1, 0, 0, 0, 124, 122, 1, 0, 0, 0,
+		124, 125, 1, 0, 0, 0, 125, 127, 1, 0, 0, 0, 126, 124, 1, 0, 0, 0, 127,
+		128, 5, 29, 0, 0, 128, 19, 1, 0, 0, 0, 129, 130, 3, 0, 0, 0, 130, 131,
+		5, 27, 0, 0, 131, 132, 5, 38, 0, 0, 132, 133, 8, 1, 0, 0, 133, 134, 5,
+		38, 0, 0, 134, 21, 1, 0, 0, 0, 135, 140, 3, 20, 10, 0, 136, 137, 5, 39,
+		0, 0, 137, 139, 3, 20, 10, 0, 138, 136, 1, 0, 0, 0, 139, 142, 1, 0, 0,
+		0, 140, 138, 1, 0, 0, 0, 140, 141, 1, 0, 0, 0, 141, 23, 1, 0, 0, 0, 142,
+		140, 1, 0, 0, 0, 143, 144, 5, 30, 0, 0, 144, 145, 3, 14, 7, 0, 145, 147,
+		5, 32, 0, 0, 146, 148, 3, 22, 11, 0, 147, 146, 1, 0, 0, 0, 147, 148, 1,
+		0, 0, 0, 148, 149, 1, 0, 0, 0, 149, 150, 5, 33, 0, 0, 150, 25, 1, 0, 0,
+		0, 151, 153, 3, 24, 12, 0, 152, 151, 1, 0, 0, 0, 153, 156, 1, 0, 0, 0,
+		154, 152, 1, 0, 0, 0, 154, 155, 1, 0, 0, 0, 155, 158, 1, 0, 0, 0, 156,
+		154, 1, 0, 0, 0, 157, 159, 5, 7, 0, 0, 158, 157, 1, 0, 0, 0, 158, 159,
+		1, 0, 0, 0, 159, 160, 1, 0, 0, 0, 160, 161, 5, 14, 0, 0, 161, 162, 3, 0,
+		0, 0, 162, 163, 5, 27, 0, 0, 163, 164, 3, 28, 14, 0, 164, 179, 1, 0, 0,
+		0, 165, 167, 5, 7, 0, 0, 166, 165, 1, 0, 0, 0, 166, 167, 1, 0, 0, 0, 167,
+		168, 1, 0, 0, 0, 168, 169, 5, 14, 0, 0, 169, 170, 3, 0, 0, 0, 170, 171,
+		5, 31, 0, 0, 171, 172, 3, 14, 7, 0, 172, 174, 5, 32, 0, 0, 173, 175, 3,
+		22, 11, 0, 174, 173, 1, 0, 0, 0, 174, 175, 1, 0, 0, 0, 175, 176, 1, 0,
+		0, 0, 176, 177, 5, 33, 0, 0, 177, 179, 1, 0, 0, 0, 178, 154, 1, 0, 0, 0,
+		178, 166, 1, 0, 0, 0, 179, 27, 1, 0, 0, 0, 180, 181, 6, 14, -1, 0, 181,
+		183, 5, 34, 0, 0, 182, 184, 5, 17, 0, 0, 183, 182, 1, 0, 0, 0, 183, 184,
+		1, 0, 0, 0, 184, 185, 1, 0, 0, 0, 185, 190, 3, 14, 7, 0, 186, 187, 5, 24,
+		0, 0, 187, 189, 3, 14, 7, 0, 188, 186, 1, 0, 0, 0, 189, 192, 1, 0, 0, 0,
+		190, 188, 1, 0, 0, 0, 190, 191, 1, 0, 0, 0, 191, 193, 1, 0, 0, 0, 192,
+		190, 1, 0, 0, 0, 193, 194, 5, 35, 0, 0, 194, 225, 1, 0, 0, 0, 195, 225,
+		3, 0, 0, 0, 196, 197, 3, 0, 0, 0, 197, 198, 5, 31, 0, 0, 198, 199, 3, 14,
+		7, 0, 199, 201, 5, 32, 0, 0, 200, 202, 3, 22, 11, 0, 201, 200, 1, 0, 0,
+		0, 201, 202, 1, 0, 0, 0, 202, 203, 1, 0, 0, 0, 203, 204, 5, 33, 0, 0, 204,
+		225, 1, 0, 0, 0, 205, 206, 3, 0, 0, 0, 206, 207, 5, 5, 0, 0, 207, 208,
+		3, 0, 0, 0, 208, 225, 1, 0, 0, 0, 209, 210, 3, 0, 0, 0, 210, 211, 5, 5,
+		0, 0, 211, 212, 3, 0, 0, 0, 212, 213, 5, 31, 0, 0, 213, 214, 3, 14, 7,
+		0, 214, 216, 5, 32, 0, 0, 215, 217, 3, 22, 11, 0, 216, 215, 1, 0, 0, 0,
+		216, 217, 1, 0, 0, 0, 217, 218, 1, 0, 0, 0, 218, 219, 5, 33, 0, 0, 219,
+		225, 1, 0, 0, 0, 220, 221, 5, 32, 0, 0, 221, 222, 3, 28, 14, 0, 222, 223,
+		5, 33, 0, 0, 223, 225, 1, 0, 0, 0, 224, 180, 1, 0, 0, 0, 224, 195, 1, 0,
+		0, 0, 224, 196, 1, 0, 0, 0, 224, 205, 1, 0, 0, 0, 224, 209, 1, 0, 0, 0,
+		224, 220, 1, 0, 0, 0, 225, 237, 1, 0, 0, 0, 226, 227, 10, 3, 0, 0, 227,
+		228, 5, 23, 0, 0, 228, 236, 3, 28, 14, 4, 229, 230, 10, 2, 0, 0, 230, 231,
+		5, 24, 0, 0, 231, 236, 3, 28, 14, 3, 232, 233, 10, 1, 0, 0, 233, 234, 5,
+		25, 0, 0, 234, 236, 3, 28, 14, 2, 235, 226, 1, 0, 0, 0, 235, 229, 1, 0,
+		0, 0, 235, 232, 1, 0, 0, 0, 236, 239, 1, 0, 0, 0, 237, 235, 1, 0, 0, 0,
+		237, 238, 1, 0, 0, 0, 238, 29, 1, 0, 0, 0, 239, 237, 1, 0, 0, 0, 240, 245,
+		3, 0, 0, 0, 241, 242, 5, 39, 0, 0, 242, 244, 3, 0, 0, 0, 243, 241, 1, 0,
+		0, 0, 244, 247, 1, 0, 0, 0, 245, 243, 1, 0, 0, 0, 245, 246, 1, 0, 0, 0,
+		246, 31, 1, 0, 0, 0, 247, 245, 1, 0, 0, 0, 248, 250, 5, 7, 0, 0, 249, 248,
+		1, 0, 0, 0, 249, 250, 1, 0, 0, 0, 250, 251, 1, 0, 0, 0, 251, 252, 5, 16,
+		0, 0, 252, 253, 3, 0, 0, 0, 253, 255, 5, 32, 0, 0, 254, 256, 3, 30, 15,
+		0, 255, 254, 1, 0, 0, 0, 255, 256, 1, 0, 0, 0, 256, 257, 1, 0, 0, 0, 257,
+		258, 5, 33, 0, 0, 258, 260, 5, 28, 0, 0, 259, 261, 3, 34, 17, 0, 260, 259,
+		1, 0, 0, 0, 261, 262, 1, 0, 0, 0, 262, 260, 1, 0, 0, 0, 262, 263, 1, 0,
+		0, 0, 263, 264, 1, 0, 0, 0, 264, 265, 5, 29, 0, 0, 265, 33, 1, 0, 0, 0,
+		266, 268, 5, 7, 0, 0, 267, 266, 1, 0, 0, 0, 267, 268, 1, 0, 0, 0, 268,
+		269, 1, 0, 0, 0, 269, 270, 5, 11, 0, 0, 270, 271, 3, 38, 19, 0, 271, 275,
+		5, 28, 0, 0, 272, 274, 3, 36, 18, 0, 273, 272, 1, 0, 0, 0, 274, 277, 1,
+		0, 0, 0, 275, 273, 1, 0, 0, 0, 275, 276, 1, 0, 0, 0, 276, 278, 1, 0, 0,
+		0, 277, 275, 1, 0, 0, 0, 278, 279, 5, 29, 0, 0, 279, 35, 1, 0, 0, 0, 280,
+		282, 5, 26, 0, 0, 281, 280, 1, 0, 0, 0, 281, 282, 1, 0, 0, 0, 282, 284,
+		1, 0, 0, 0, 283, 285, 5, 7, 0, 0, 284, 283, 1, 0, 0, 0, 284, 285, 1, 0,
+		0, 0, 285, 286, 1, 0, 0, 0, 286, 287, 5, 14, 0, 0, 287, 288, 3, 38, 19,
+		0, 288, 289, 5, 27, 0, 0, 289, 290, 3, 40, 20, 0, 290, 37, 1, 0, 0, 0,
+		291, 306, 3, 0, 0, 0, 292, 293, 5, 36, 0, 0, 293, 294, 5, 28, 0, 0, 294,
+		295, 3, 0, 0, 0, 295, 296, 5, 29, 0, 0, 296, 306, 1, 0, 0, 0, 297, 299,
+		5, 37, 0, 0, 298, 300, 3, 38, 19, 0, 299, 298, 1, 0, 0, 0, 300, 301, 1,
+		0, 0, 0, 301, 299, 1, 0, 0, 0, 301, 302, 1, 0, 0, 0, 302, 303, 1, 0, 0,
+		0, 303, 304, 5, 37, 0, 0, 304, 306, 1, 0, 0, 0, 305, 291, 1, 0, 0, 0, 305,
+		292, 1, 0, 0, 0, 305, 297, 1, 0, 0, 0, 306, 39, 1, 0, 0, 0, 307, 308, 6,
+		20, -1, 0, 308, 310, 5, 34, 0, 0, 309, 311, 5, 17, 0, 0, 310, 309, 1, 0,
+		0, 0, 310, 311, 1, 0, 0, 0, 311, 312, 1, 0, 0, 0, 312, 317, 3, 14, 7, 0,
+		313, 314, 5, 24, 0, 0, 314, 316, 3, 14, 7, 0, 315, 313, 1, 0, 0, 0, 316,
+		319, 1, 0, 0, 0, 317, 315, 1, 0, 0, 0, 317, 318, 1, 0, 0, 0, 318, 320,
+		1, 0, 0, 0, 319, 317, 1, 0, 0, 0, 320, 321, 5, 35, 0, 0, 321, 332, 1, 0,
+		0, 0, 322, 332, 3, 38, 19, 0, 323, 324, 3, 38, 19, 0, 324, 325, 5, 5, 0,
+		0, 325, 326, 3, 38, 19, 0, 326, 332, 1, 0, 0, 0, 327, 328, 5, 32, 0, 0,
+		328, 329, 3, 40, 20, 0, 329, 330, 5, 33, 0, 0, 330, 332, 1, 0, 0, 0, 331,
+		307, 1, 0, 0, 0, 331, 322, 1, 0, 0, 0, 331, 323, 1, 0, 0, 0, 331, 327,
+		1, 0, 0, 0, 332, 344, 1, 0, 0, 0, 333, 334, 10, 3, 0, 0, 334, 335, 5, 23,
+		0, 0, 335, 343, 3, 40, 20, 4, 336, 337, 10, 2, 0, 0, 337, 338, 5, 24, 0,
+		0, 338, 343, 3, 40, 20, 3, 339, 340, 10, 1, 0, 0, 340, 341, 5, 25, 0, 0,
+		341, 343, 3, 40, 20, 2, 342, 333, 1, 0, 0, 0, 342, 336, 1, 0, 0, 0, 342,
+		339, 1, 0, 0, 0, 343, 346, 1, 0, 0, 0, 344, 342, 1, 0, 0, 0, 344, 345,
+		1, 0, 0, 0, 345, 41, 1, 0, 0, 0, 346, 344, 1, 0, 0, 0, 41, 49, 55, 68,
+		72, 76, 81, 86, 90, 98, 108, 118, 124, 140, 147, 154, 158, 166, 174, 178,
+		183, 190, 201, 216, 224, 235, 237, 245, 249, 255, 262, 267, 275, 281, 284,
+		301, 305, 310, 317, 331, 342, 344,
 	}
 	deserializer := antlr.NewATNDeserializer(nil)
 	staticData.atn = deserializer.Deserialize(staticData.serializedATN)
@@ -259,60 +264,62 @@ const (
 	kslParserPRIVATE               = 10
 	kslParserTYPE                  = 11
 	kslParserEXTEND                = 12
-	kslParserRELATION              = 13
-	kslParserIMPORT                = 14
-	kslParserEXTENSION             = 15
-	kslParserCARDINALITY           = 16
-	kslParserATMOSTONE             = 17
-	kslParserEXACTLYONE            = 18
-	kslParserATLEASTONE            = 19
-	kslParserANY                   = 20
-	kslParserAS                    = 21
-	kslParserAND                   = 22
-	kslParserOR                    = 23
-	kslParserUNLESS                = 24
-	kslParserALLOW_DUPLICATES      = 25
-	kslParserEXPAND                = 26
-	kslParserLBRACE                = 27
-	kslParserRBRACE                = 28
-	kslParserEXTENSION_CALL        = 29
-	kslParserIN_REL_EXTENSION_CALL = 30
-	kslParserLPAREN                = 31
-	kslParserRPAREN                = 32
-	kslParserLSQUARE               = 33
-	kslParserRSQARE                = 34
-	kslParserVARREF                = 35
-	kslParserTEMPLATE_DELIM        = 36
-	kslParserSTRING_DELIM          = 37
-	kslParserARG_DELIM             = 38
-	kslParserDECL_END              = 39
-	kslParserNAME                  = 40
-	kslParserCOMMENT               = 41
-	kslParserWS                    = 42
+	kslParserFROM                  = 13
+	kslParserRELATION              = 14
+	kslParserIMPORT                = 15
+	kslParserEXTENSION             = 16
+	kslParserCARDINALITY           = 17
+	kslParserATMOSTONE             = 18
+	kslParserEXACTLYONE            = 19
+	kslParserATLEASTONE            = 20
+	kslParserANY                   = 21
+	kslParserAS                    = 22
+	kslParserAND                   = 23
+	kslParserOR                    = 24
+	kslParserUNLESS                = 25
+	kslParserALLOW_DUPLICATES      = 26
+	kslParserEXPAND                = 27
+	kslParserLBRACE                = 28
+	kslParserRBRACE                = 29
+	kslParserEXTENSION_CALL        = 30
+	kslParserIN_REL_EXTENSION_CALL = 31
+	kslParserLPAREN                = 32
+	kslParserRPAREN                = 33
+	kslParserLSQUARE               = 34
+	kslParserRSQARE                = 35
+	kslParserVARREF                = 36
+	kslParserTEMPLATE_DELIM        = 37
+	kslParserSTRING_DELIM          = 38
+	kslParserARG_DELIM             = 39
+	kslParserDECL_END              = 40
+	kslParserNAME                  = 41
+	kslParserCOMMENT               = 42
+	kslParserWS                    = 43
 )
 
 // kslParser rules.
 const (
-	kslParserRULE_name               = 0
-	kslParserRULE_file               = 1
-	kslParserRULE_version            = 2
-	kslParserRULE_namespace          = 3
-	kslParserRULE_import_stmt        = 4
-	kslParserRULE_declaration        = 5
-	kslParserRULE_typeExpr           = 6
-	kslParserRULE_typeReference      = 7
-	kslParserRULE_extendTypeExpr     = 8
-	kslParserRULE_extensionParam     = 9
-	kslParserRULE_extensionParams    = 10
-	kslParserRULE_extensionReference = 11
-	kslParserRULE_relation           = 12
-	kslParserRULE_relationBody       = 13
-	kslParserRULE_paramNames         = 14
-	kslParserRULE_extension          = 15
-	kslParserRULE_dynamicType        = 16
-	kslParserRULE_dynamicRelation    = 17
-	kslParserRULE_dynamicName        = 18
-	kslParserRULE_dynamicBody        = 19
+	kslParserRULE_name                = 0
+	kslParserRULE_file                = 1
+	kslParserRULE_version             = 2
+	kslParserRULE_namespace           = 3
+	kslParserRULE_import_stmt         = 4
+	kslParserRULE_declaration         = 5
+	kslParserRULE_typeExpr            = 6
+	kslParserRULE_typeReference       = 7
+	kslParserRULE_namespaceExtendExpr = 8
+	kslParserRULE_extendTypeExpr      = 9
+	kslParserRULE_extensionParam      = 10
+	kslParserRULE_extensionParams     = 11
+	kslParserRULE_extensionReference  = 12
+	kslParserRULE_relation            = 13
+	kslParserRULE_relationBody        = 14
+	kslParserRULE_paramNames          = 15
+	kslParserRULE_extension           = 16
+	kslParserRULE_dynamicType         = 17
+	kslParserRULE_dynamicRelation     = 18
+	kslParserRULE_dynamicName         = 19
+	kslParserRULE_dynamicBody         = 20
 )
 
 // INameContext is an interface to support dynamic dispatch.
@@ -407,7 +414,7 @@ func (p *kslParser) Name() (localctx INameContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(40)
+		p.SetState(42)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == kslParserFORCED_NAME || _la == kslParserNAME) {
@@ -633,14 +640,14 @@ func (p *kslParser) File() (localctx IFileContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(42)
+		p.SetState(44)
 		p.Version()
 	}
 	{
-		p.SetState(43)
+		p.SetState(45)
 		p.Namespace()
 	}
-	p.SetState(47)
+	p.SetState(49)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -649,31 +656,31 @@ func (p *kslParser) File() (localctx IFileContext) {
 
 	for _la == kslParserIMPORT {
 		{
-			p.SetState(44)
+			p.SetState(46)
 			p.Import_stmt()
 		}
 
-		p.SetState(49)
+		p.SetState(51)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
 	}
-	p.SetState(51)
+	p.SetState(53)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
-	for ok := true; ok; ok = ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&536909952) != 0) {
+	for ok := true; ok; ok = ((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&1073813632) != 0) {
 		{
-			p.SetState(50)
+			p.SetState(52)
 			p.Declaration()
 		}
 
-		p.SetState(53)
+		p.SetState(55)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -784,7 +791,7 @@ func (p *kslParser) Version() (localctx IVersionContext) {
 	p.EnterRule(localctx, 4, kslParserRULE_version)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(55)
+		p.SetState(57)
 		p.Match(kslParserVERSION)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -792,7 +799,7 @@ func (p *kslParser) Version() (localctx IVersionContext) {
 		}
 	}
 	{
-		p.SetState(56)
+		p.SetState(58)
 		p.Match(kslParserVERSIONNUM)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -915,7 +922,7 @@ func (p *kslParser) Namespace() (localctx INamespaceContext) {
 	p.EnterRule(localctx, 6, kslParserRULE_namespace)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(58)
+		p.SetState(60)
 		p.Match(kslParserNAMESPACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -923,7 +930,7 @@ func (p *kslParser) Namespace() (localctx INamespaceContext) {
 		}
 	}
 	{
-		p.SetState(59)
+		p.SetState(61)
 		p.Name()
 	}
 
@@ -1042,7 +1049,7 @@ func (p *kslParser) Import_stmt() (localctx IImport_stmtContext) {
 	p.EnterRule(localctx, 8, kslParserRULE_import_stmt)
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(61)
+		p.SetState(63)
 		p.Match(kslParserIMPORT)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1050,7 +1057,7 @@ func (p *kslParser) Import_stmt() (localctx IImport_stmtContext) {
 		}
 	}
 	{
-		p.SetState(62)
+		p.SetState(64)
 		p.Name()
 	}
 
@@ -1220,7 +1227,7 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 	p.EnterRule(localctx, 10, kslParserRULE_declaration)
 	var _la int
 
-	p.SetState(79)
+	p.SetState(81)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -1230,10 +1237,10 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 	case 1:
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(64)
+			p.SetState(66)
 			p.TypeExpr()
 		}
-		p.SetState(66)
+		p.SetState(68)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -1242,7 +1249,7 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 
 		if _la == kslParserDECL_END {
 			{
-				p.SetState(65)
+				p.SetState(67)
 				p.Match(kslParserDECL_END)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -1255,10 +1262,10 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 	case 2:
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(68)
+			p.SetState(70)
 			p.ExtendTypeExpr()
 		}
-		p.SetState(70)
+		p.SetState(72)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -1267,7 +1274,7 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 
 		if _la == kslParserDECL_END {
 			{
-				p.SetState(69)
+				p.SetState(71)
 				p.Match(kslParserDECL_END)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -1280,10 +1287,10 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 	case 3:
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(72)
+			p.SetState(74)
 			p.Extension()
 		}
-		p.SetState(74)
+		p.SetState(76)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -1292,7 +1299,7 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 
 		if _la == kslParserDECL_END {
 			{
-				p.SetState(73)
+				p.SetState(75)
 				p.Match(kslParserDECL_END)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -1305,11 +1312,11 @@ func (p *kslParser) Declaration() (localctx IDeclarationContext) {
 	case 4:
 		p.EnterOuterAlt(localctx, 4)
 		{
-			p.SetState(76)
+			p.SetState(78)
 			p.ExtensionReference()
 		}
 		{
-			p.SetState(77)
+			p.SetState(79)
 			p.Match(kslParserDECL_END)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1538,7 +1545,7 @@ func (p *kslParser) TypeExpr() (localctx ITypeExprContext) {
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(84)
+	p.SetState(86)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -1547,18 +1554,18 @@ func (p *kslParser) TypeExpr() (localctx ITypeExprContext) {
 
 	for _la == kslParserEXTENSION_CALL {
 		{
-			p.SetState(81)
+			p.SetState(83)
 			p.ExtensionReference()
 		}
 
-		p.SetState(86)
+		p.SetState(88)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
 	}
-	p.SetState(88)
+	p.SetState(90)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -1567,7 +1574,7 @@ func (p *kslParser) TypeExpr() (localctx ITypeExprContext) {
 
 	if _la == kslParserACCESS {
 		{
-			p.SetState(87)
+			p.SetState(89)
 			p.Match(kslParserACCESS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1577,7 +1584,7 @@ func (p *kslParser) TypeExpr() (localctx ITypeExprContext) {
 
 	}
 	{
-		p.SetState(90)
+		p.SetState(92)
 		p.Match(kslParserTYPE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1585,31 +1592,31 @@ func (p *kslParser) TypeExpr() (localctx ITypeExprContext) {
 		}
 	}
 	{
-		p.SetState(91)
+		p.SetState(93)
 		p.Name()
 	}
 	{
-		p.SetState(92)
+		p.SetState(94)
 		p.Match(kslParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(96)
+	p.SetState(98)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
-	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&536879232) != 0 {
+	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&1073758336) != 0 {
 		{
-			p.SetState(93)
+			p.SetState(95)
 			p.Relation()
 		}
 
-		p.SetState(98)
+		p.SetState(100)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -1617,7 +1624,7 @@ func (p *kslParser) TypeExpr() (localctx ITypeExprContext) {
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(99)
+		p.SetState(101)
 		p.Match(kslParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1773,10 +1780,10 @@ func (p *kslParser) TypeReference() (localctx ITypeReferenceContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(101)
+		p.SetState(103)
 		p.Name()
 	}
-	p.SetState(106)
+	p.SetState(108)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -1785,7 +1792,7 @@ func (p *kslParser) TypeReference() (localctx ITypeReferenceContext) {
 
 	for _la == kslParserRESOLVE {
 		{
-			p.SetState(102)
+			p.SetState(104)
 			p.Match(kslParserRESOLVE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -1793,16 +1800,143 @@ func (p *kslParser) TypeReference() (localctx ITypeReferenceContext) {
 			}
 		}
 		{
-			p.SetState(103)
+			p.SetState(105)
 			p.Name()
 		}
 
-		p.SetState(108)
+		p.SetState(110)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
 		_la = p.GetTokenStream().LA(1)
+	}
+
+errorExit:
+	if p.HasError() {
+		v := p.GetError()
+		localctx.SetException(v)
+		p.GetErrorHandler().ReportError(p, v)
+		p.GetErrorHandler().Recover(p, v)
+		p.SetError(nil)
+	}
+	p.ExitRule()
+	return localctx
+	goto errorExit // Trick to prevent compiler error if the label is not used
+}
+
+// INamespaceExtendExprContext is an interface to support dynamic dispatch.
+type INamespaceExtendExprContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// Getter signatures
+	FROM() antlr.TerminalNode
+	Name() INameContext
+
+	// IsNamespaceExtendExprContext differentiates from other interfaces.
+	IsNamespaceExtendExprContext()
+}
+
+type NamespaceExtendExprContext struct {
+	antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyNamespaceExtendExprContext() *NamespaceExtendExprContext {
+	var p = new(NamespaceExtendExprContext)
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = kslParserRULE_namespaceExtendExpr
+	return p
+}
+
+func InitEmptyNamespaceExtendExprContext(p *NamespaceExtendExprContext) {
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, nil, -1)
+	p.RuleIndex = kslParserRULE_namespaceExtendExpr
+}
+
+func (*NamespaceExtendExprContext) IsNamespaceExtendExprContext() {}
+
+func NewNamespaceExtendExprContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *NamespaceExtendExprContext {
+	var p = new(NamespaceExtendExprContext)
+
+	antlr.InitBaseParserRuleContext(&p.BaseParserRuleContext, parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = kslParserRULE_namespaceExtendExpr
+
+	return p
+}
+
+func (s *NamespaceExtendExprContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *NamespaceExtendExprContext) FROM() antlr.TerminalNode {
+	return s.GetToken(kslParserFROM, 0)
+}
+
+func (s *NamespaceExtendExprContext) Name() INameContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(INameContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(INameContext)
+}
+
+func (s *NamespaceExtendExprContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *NamespaceExtendExprContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *NamespaceExtendExprContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(kslListener); ok {
+		listenerT.EnterNamespaceExtendExpr(s)
+	}
+}
+
+func (s *NamespaceExtendExprContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(kslListener); ok {
+		listenerT.ExitNamespaceExtendExpr(s)
+	}
+}
+
+func (s *NamespaceExtendExprContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case kslVisitor:
+		return t.VisitNamespaceExtendExpr(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *kslParser) NamespaceExtendExpr() (localctx INamespaceExtendExprContext) {
+	localctx = NewNamespaceExtendExprContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 16, kslParserRULE_namespaceExtendExpr)
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(111)
+		p.Match(kslParserFROM)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+	{
+		p.SetState(112)
+		p.Name()
 	}
 
 errorExit:
@@ -1831,6 +1965,7 @@ type IExtendTypeExprContext interface {
 	Name() INameContext
 	LBRACE() antlr.TerminalNode
 	RBRACE() antlr.TerminalNode
+	NamespaceExtendExpr() INamespaceExtendExprContext
 	AllRelation() []IRelationContext
 	Relation(i int) IRelationContext
 
@@ -1900,6 +2035,22 @@ func (s *ExtendTypeExprContext) LBRACE() antlr.TerminalNode {
 
 func (s *ExtendTypeExprContext) RBRACE() antlr.TerminalNode {
 	return s.GetToken(kslParserRBRACE, 0)
+}
+
+func (s *ExtendTypeExprContext) NamespaceExtendExpr() INamespaceExtendExprContext {
+	var t antlr.RuleContext
+	for _, ctx := range s.GetChildren() {
+		if _, ok := ctx.(INamespaceExtendExprContext); ok {
+			t = ctx.(antlr.RuleContext)
+			break
+		}
+	}
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(INamespaceExtendExprContext)
 }
 
 func (s *ExtendTypeExprContext) AllRelation() []IRelationContext {
@@ -1975,12 +2126,12 @@ func (s *ExtendTypeExprContext) Accept(visitor antlr.ParseTreeVisitor) interface
 
 func (p *kslParser) ExtendTypeExpr() (localctx IExtendTypeExprContext) {
 	localctx = NewExtendTypeExprContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 16, kslParserRULE_extendTypeExpr)
+	p.EnterRule(localctx, 18, kslParserRULE_extendTypeExpr)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(109)
+		p.SetState(114)
 		p.Match(kslParserEXTEND)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1988,7 +2139,7 @@ func (p *kslParser) ExtendTypeExpr() (localctx IExtendTypeExprContext) {
 		}
 	}
 	{
-		p.SetState(110)
+		p.SetState(115)
 		p.Match(kslParserTYPE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -1996,31 +2147,45 @@ func (p *kslParser) ExtendTypeExpr() (localctx IExtendTypeExprContext) {
 		}
 	}
 	{
-		p.SetState(111)
+		p.SetState(116)
 		p.Name()
 	}
-	{
-		p.SetState(112)
-		p.Match(kslParserLBRACE)
-		if p.HasError() {
-			// Recognition error - abort rule
-			goto errorExit
-		}
-	}
-	p.SetState(116)
+	p.SetState(118)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
-	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&536879232) != 0 {
+	if _la == kslParserFROM {
 		{
-			p.SetState(113)
+			p.SetState(117)
+			p.NamespaceExtendExpr()
+		}
+
+	}
+	{
+		p.SetState(120)
+		p.Match(kslParserLBRACE)
+		if p.HasError() {
+			// Recognition error - abort rule
+			goto errorExit
+		}
+	}
+	p.SetState(124)
+	p.GetErrorHandler().Sync(p)
+	if p.HasError() {
+		goto errorExit
+	}
+	_la = p.GetTokenStream().LA(1)
+
+	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&1073758336) != 0 {
+		{
+			p.SetState(121)
 			p.Relation()
 		}
 
-		p.SetState(118)
+		p.SetState(126)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -2028,7 +2193,7 @@ func (p *kslParser) ExtendTypeExpr() (localctx IExtendTypeExprContext) {
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(119)
+		p.SetState(127)
 		p.Match(kslParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2169,16 +2334,16 @@ func (s *ExtensionParamContext) Accept(visitor antlr.ParseTreeVisitor) interface
 
 func (p *kslParser) ExtensionParam() (localctx IExtensionParamContext) {
 	localctx = NewExtensionParamContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 18, kslParserRULE_extensionParam)
+	p.EnterRule(localctx, 20, kslParserRULE_extensionParam)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(121)
+		p.SetState(129)
 		p.Name()
 	}
 	{
-		p.SetState(122)
+		p.SetState(130)
 		p.Match(kslParserEXPAND)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2186,7 +2351,7 @@ func (p *kslParser) ExtensionParam() (localctx IExtensionParamContext) {
 		}
 	}
 	{
-		p.SetState(123)
+		p.SetState(131)
 		p.Match(kslParserSTRING_DELIM)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2194,7 +2359,7 @@ func (p *kslParser) ExtensionParam() (localctx IExtensionParamContext) {
 		}
 	}
 	{
-		p.SetState(124)
+		p.SetState(132)
 
 		var _lt = p.GetTokenStream().LT(1)
 
@@ -2212,7 +2377,7 @@ func (p *kslParser) ExtensionParam() (localctx IExtensionParamContext) {
 		}
 	}
 	{
-		p.SetState(125)
+		p.SetState(133)
 		p.Match(kslParserSTRING_DELIM)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2363,15 +2528,15 @@ func (s *ExtensionParamsContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 
 func (p *kslParser) ExtensionParams() (localctx IExtensionParamsContext) {
 	localctx = NewExtensionParamsContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 20, kslParserRULE_extensionParams)
+	p.EnterRule(localctx, 22, kslParserRULE_extensionParams)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(127)
+		p.SetState(135)
 		p.ExtensionParam()
 	}
-	p.SetState(132)
+	p.SetState(140)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -2380,7 +2545,7 @@ func (p *kslParser) ExtensionParams() (localctx IExtensionParamsContext) {
 
 	for _la == kslParserARG_DELIM {
 		{
-			p.SetState(128)
+			p.SetState(136)
 			p.Match(kslParserARG_DELIM)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -2388,11 +2553,11 @@ func (p *kslParser) ExtensionParams() (localctx IExtensionParamsContext) {
 			}
 		}
 		{
-			p.SetState(129)
+			p.SetState(137)
 			p.ExtensionParam()
 		}
 
-		p.SetState(134)
+		p.SetState(142)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -2539,12 +2704,12 @@ func (s *ExtensionReferenceContext) Accept(visitor antlr.ParseTreeVisitor) inter
 
 func (p *kslParser) ExtensionReference() (localctx IExtensionReferenceContext) {
 	localctx = NewExtensionReferenceContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 22, kslParserRULE_extensionReference)
+	p.EnterRule(localctx, 24, kslParserRULE_extensionReference)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(135)
+		p.SetState(143)
 		p.Match(kslParserEXTENSION_CALL)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2552,18 +2717,18 @@ func (p *kslParser) ExtensionReference() (localctx IExtensionReferenceContext) {
 		}
 	}
 	{
-		p.SetState(136)
+		p.SetState(144)
 		p.TypeReference()
 	}
 	{
-		p.SetState(137)
+		p.SetState(145)
 		p.Match(kslParserLPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(139)
+	p.SetState(147)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -2572,13 +2737,13 @@ func (p *kslParser) ExtensionReference() (localctx IExtensionReferenceContext) {
 
 	if _la == kslParserFORCED_NAME || _la == kslParserNAME {
 		{
-			p.SetState(138)
+			p.SetState(146)
 			p.ExtensionParams()
 		}
 
 	}
 	{
-		p.SetState(141)
+		p.SetState(149)
 		p.Match(kslParserRPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -2888,20 +3053,20 @@ func (s *RegularRelationContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 
 func (p *kslParser) Relation() (localctx IRelationContext) {
 	localctx = NewRelationContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 24, kslParserRULE_relation)
+	p.EnterRule(localctx, 26, kslParserRULE_relation)
 	var _la int
 
-	p.SetState(170)
+	p.SetState(178)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 17, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 18, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewRegularRelationContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
-		p.SetState(146)
+		p.SetState(154)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -2910,63 +3075,17 @@ func (p *kslParser) Relation() (localctx IRelationContext) {
 
 		for _la == kslParserEXTENSION_CALL {
 			{
-				p.SetState(143)
+				p.SetState(151)
 				p.ExtensionReference()
 			}
 
-			p.SetState(148)
+			p.SetState(156)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
 			}
 			_la = p.GetTokenStream().LA(1)
 		}
-		p.SetState(150)
-		p.GetErrorHandler().Sync(p)
-		if p.HasError() {
-			goto errorExit
-		}
-		_la = p.GetTokenStream().LA(1)
-
-		if _la == kslParserACCESS {
-			{
-				p.SetState(149)
-				p.Match(kslParserACCESS)
-				if p.HasError() {
-					// Recognition error - abort rule
-					goto errorExit
-				}
-			}
-
-		}
-		{
-			p.SetState(152)
-			p.Match(kslParserRELATION)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
-			}
-		}
-		{
-			p.SetState(153)
-			p.Name()
-		}
-		{
-			p.SetState(154)
-			p.Match(kslParserEXPAND)
-			if p.HasError() {
-				// Recognition error - abort rule
-				goto errorExit
-			}
-		}
-		{
-			p.SetState(155)
-			p.relationBody(0)
-		}
-
-	case 2:
-		localctx = NewRelationDefinedWithExtensionContext(p, localctx)
-		p.EnterOuterAlt(localctx, 2)
 		p.SetState(158)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
@@ -2999,7 +3118,7 @@ func (p *kslParser) Relation() (localctx IRelationContext) {
 		}
 		{
 			p.SetState(162)
-			p.Match(kslParserIN_REL_EXTENSION_CALL)
+			p.Match(kslParserEXPAND)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
@@ -3007,17 +3126,63 @@ func (p *kslParser) Relation() (localctx IRelationContext) {
 		}
 		{
 			p.SetState(163)
+			p.relationBody(0)
+		}
+
+	case 2:
+		localctx = NewRelationDefinedWithExtensionContext(p, localctx)
+		p.EnterOuterAlt(localctx, 2)
+		p.SetState(166)
+		p.GetErrorHandler().Sync(p)
+		if p.HasError() {
+			goto errorExit
+		}
+		_la = p.GetTokenStream().LA(1)
+
+		if _la == kslParserACCESS {
+			{
+				p.SetState(165)
+				p.Match(kslParserACCESS)
+				if p.HasError() {
+					// Recognition error - abort rule
+					goto errorExit
+				}
+			}
+
+		}
+		{
+			p.SetState(168)
+			p.Match(kslParserRELATION)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(169)
+			p.Name()
+		}
+		{
+			p.SetState(170)
+			p.Match(kslParserIN_REL_EXTENSION_CALL)
+			if p.HasError() {
+				// Recognition error - abort rule
+				goto errorExit
+			}
+		}
+		{
+			p.SetState(171)
 			p.TypeReference()
 		}
 		{
-			p.SetState(164)
+			p.SetState(172)
 			p.Match(kslParserLPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(166)
+		p.SetState(174)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -3026,13 +3191,13 @@ func (p *kslParser) Relation() (localctx IRelationContext) {
 
 		if _la == kslParserFORCED_NAME || _la == kslParserNAME {
 			{
-				p.SetState(165)
+				p.SetState(173)
 				p.ExtensionParams()
 			}
 
 		}
 		{
-			p.SetState(168)
+			p.SetState(176)
 			p.Match(kslParserRPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -3932,34 +4097,34 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 	localctx = NewRelationBodyContext(p, p.GetParserRuleContext(), _parentState)
 	var _prevctx IRelationBodyContext = localctx
 	var _ antlr.ParserRuleContext = _prevctx // TODO: To prevent unused variable warning.
-	_startState := 26
-	p.EnterRecursionRule(localctx, 26, kslParserRULE_relationBody, _p)
+	_startState := 28
+	p.EnterRecursionRule(localctx, 28, kslParserRULE_relationBody, _p)
 	var _la int
 
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(216)
+	p.SetState(224)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 22, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 23, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewSelfContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 
 		{
-			p.SetState(173)
+			p.SetState(181)
 			p.Match(kslParserLSQUARE)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(175)
+		p.SetState(183)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -3968,7 +4133,7 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 
 		if _la == kslParserCARDINALITY {
 			{
-				p.SetState(174)
+				p.SetState(182)
 				p.Match(kslParserCARDINALITY)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -3978,10 +4143,10 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 
 		}
 		{
-			p.SetState(177)
+			p.SetState(185)
 			p.TypeReference()
 		}
-		p.SetState(182)
+		p.SetState(190)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -3990,7 +4155,7 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 
 		for _la == kslParserOR {
 			{
-				p.SetState(178)
+				p.SetState(186)
 				p.Match(kslParserOR)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -3998,11 +4163,11 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 				}
 			}
 			{
-				p.SetState(179)
+				p.SetState(187)
 				p.TypeReference()
 			}
 
-			p.SetState(184)
+			p.SetState(192)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -4010,7 +4175,7 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 			_la = p.GetTokenStream().LA(1)
 		}
 		{
-			p.SetState(185)
+			p.SetState(193)
 			p.Match(kslParserRSQARE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4023,7 +4188,7 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(187)
+			p.SetState(195)
 			p.Name()
 		}
 
@@ -4032,11 +4197,11 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(188)
+			p.SetState(196)
 			p.Name()
 		}
 		{
-			p.SetState(189)
+			p.SetState(197)
 			p.Match(kslParserIN_REL_EXTENSION_CALL)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4044,18 +4209,18 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 			}
 		}
 		{
-			p.SetState(190)
+			p.SetState(198)
 			p.TypeReference()
 		}
 		{
-			p.SetState(191)
+			p.SetState(199)
 			p.Match(kslParserLPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(193)
+		p.SetState(201)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -4064,13 +4229,13 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 
 		if _la == kslParserFORCED_NAME || _la == kslParserNAME {
 			{
-				p.SetState(192)
+				p.SetState(200)
 				p.ExtensionParams()
 			}
 
 		}
 		{
-			p.SetState(195)
+			p.SetState(203)
 			p.Match(kslParserRPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4083,14 +4248,14 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(197)
+			p.SetState(205)
 
 			var _x = p.Name()
 
 			localctx.(*SubRelationContext).relationName = _x
 		}
 		{
-			p.SetState(198)
+			p.SetState(206)
 			p.Match(kslParserRESOLVE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4098,7 +4263,7 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 			}
 		}
 		{
-			p.SetState(199)
+			p.SetState(207)
 
 			var _x = p.Name()
 
@@ -4110,14 +4275,14 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(201)
+			p.SetState(209)
 
 			var _x = p.Name()
 
 			localctx.(*SubRelationWithExtensionContext).relationName = _x
 		}
 		{
-			p.SetState(202)
+			p.SetState(210)
 			p.Match(kslParserRESOLVE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4125,14 +4290,14 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 			}
 		}
 		{
-			p.SetState(203)
+			p.SetState(211)
 
 			var _x = p.Name()
 
 			localctx.(*SubRelationWithExtensionContext).subrelationName = _x
 		}
 		{
-			p.SetState(204)
+			p.SetState(212)
 			p.Match(kslParserIN_REL_EXTENSION_CALL)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4140,18 +4305,18 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 			}
 		}
 		{
-			p.SetState(205)
+			p.SetState(213)
 			p.TypeReference()
 		}
 		{
-			p.SetState(206)
+			p.SetState(214)
 			p.Match(kslParserLPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(208)
+		p.SetState(216)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -4160,13 +4325,13 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 
 		if _la == kslParserFORCED_NAME || _la == kslParserNAME {
 			{
-				p.SetState(207)
+				p.SetState(215)
 				p.ExtensionParams()
 			}
 
 		}
 		{
-			p.SetState(210)
+			p.SetState(218)
 			p.Match(kslParserRPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4179,7 +4344,7 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(212)
+			p.SetState(220)
 			p.Match(kslParserLPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4187,11 +4352,11 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 			}
 		}
 		{
-			p.SetState(213)
+			p.SetState(221)
 			p.relationBody(0)
 		}
 		{
-			p.SetState(214)
+			p.SetState(222)
 			p.Match(kslParserRPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4203,12 +4368,12 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(229)
+	p.SetState(237)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
-	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 24, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 25, p.GetParserRuleContext())
 	if p.HasError() {
 		goto errorExit
 	}
@@ -4218,24 +4383,24 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(227)
+			p.SetState(235)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
 			}
 
-			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 23, p.GetParserRuleContext()) {
+			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 24, p.GetParserRuleContext()) {
 			case 1:
 				localctx = NewAndContext(p, NewRelationBodyContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, kslParserRULE_relationBody)
-				p.SetState(218)
+				p.SetState(226)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 3)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 3)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(219)
+					p.SetState(227)
 					p.Match(kslParserAND)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -4243,21 +4408,21 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 					}
 				}
 				{
-					p.SetState(220)
+					p.SetState(228)
 					p.relationBody(4)
 				}
 
 			case 2:
 				localctx = NewORContext(p, NewRelationBodyContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, kslParserRULE_relationBody)
-				p.SetState(221)
+				p.SetState(229)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 2)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 2)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(222)
+					p.SetState(230)
 					p.Match(kslParserOR)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -4265,21 +4430,21 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 					}
 				}
 				{
-					p.SetState(223)
+					p.SetState(231)
 					p.relationBody(3)
 				}
 
 			case 3:
 				localctx = NewUnlessContext(p, NewRelationBodyContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, kslParserRULE_relationBody)
-				p.SetState(224)
+				p.SetState(232)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 1)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 1)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(225)
+					p.SetState(233)
 					p.Match(kslParserUNLESS)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -4287,7 +4452,7 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 					}
 				}
 				{
-					p.SetState(226)
+					p.SetState(234)
 					p.relationBody(2)
 				}
 
@@ -4296,12 +4461,12 @@ func (p *kslParser) relationBody(_p int) (localctx IRelationBodyContext) {
 			}
 
 		}
-		p.SetState(231)
+		p.SetState(239)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 24, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 25, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
@@ -4450,15 +4615,15 @@ func (s *ParamNamesContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *kslParser) ParamNames() (localctx IParamNamesContext) {
 	localctx = NewParamNamesContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 28, kslParserRULE_paramNames)
+	p.EnterRule(localctx, 30, kslParserRULE_paramNames)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(232)
+		p.SetState(240)
 		p.Name()
 	}
-	p.SetState(237)
+	p.SetState(245)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4467,7 +4632,7 @@ func (p *kslParser) ParamNames() (localctx IParamNamesContext) {
 
 	for _la == kslParserARG_DELIM {
 		{
-			p.SetState(233)
+			p.SetState(241)
 			p.Match(kslParserARG_DELIM)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4475,11 +4640,11 @@ func (p *kslParser) ParamNames() (localctx IParamNamesContext) {
 			}
 		}
 		{
-			p.SetState(234)
+			p.SetState(242)
 			p.Name()
 		}
 
-		p.SetState(239)
+		p.SetState(247)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -4684,11 +4849,11 @@ func (s *ExtensionContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *kslParser) Extension() (localctx IExtensionContext) {
 	localctx = NewExtensionContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 30, kslParserRULE_extension)
+	p.EnterRule(localctx, 32, kslParserRULE_extension)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(241)
+	p.SetState(249)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4697,7 +4862,7 @@ func (p *kslParser) Extension() (localctx IExtensionContext) {
 
 	if _la == kslParserACCESS {
 		{
-			p.SetState(240)
+			p.SetState(248)
 			p.Match(kslParserACCESS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4707,7 +4872,7 @@ func (p *kslParser) Extension() (localctx IExtensionContext) {
 
 	}
 	{
-		p.SetState(243)
+		p.SetState(251)
 		p.Match(kslParserEXTENSION)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4715,18 +4880,18 @@ func (p *kslParser) Extension() (localctx IExtensionContext) {
 		}
 	}
 	{
-		p.SetState(244)
+		p.SetState(252)
 		p.Name()
 	}
 	{
-		p.SetState(245)
+		p.SetState(253)
 		p.Match(kslParserLPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(247)
+	p.SetState(255)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4735,13 +4900,13 @@ func (p *kslParser) Extension() (localctx IExtensionContext) {
 
 	if _la == kslParserFORCED_NAME || _la == kslParserNAME {
 		{
-			p.SetState(246)
+			p.SetState(254)
 			p.ParamNames()
 		}
 
 	}
 	{
-		p.SetState(249)
+		p.SetState(257)
 		p.Match(kslParserRPAREN)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4749,14 +4914,14 @@ func (p *kslParser) Extension() (localctx IExtensionContext) {
 		}
 	}
 	{
-		p.SetState(250)
+		p.SetState(258)
 		p.Match(kslParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(252)
+	p.SetState(260)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4765,11 +4930,11 @@ func (p *kslParser) Extension() (localctx IExtensionContext) {
 
 	for ok := true; ok; ok = _la == kslParserACCESS || _la == kslParserTYPE {
 		{
-			p.SetState(251)
+			p.SetState(259)
 			p.DynamicType()
 		}
 
-		p.SetState(254)
+		p.SetState(262)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -4777,7 +4942,7 @@ func (p *kslParser) Extension() (localctx IExtensionContext) {
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(256)
+		p.SetState(264)
 		p.Match(kslParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4955,11 +5120,11 @@ func (s *DynamicTypeContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 
 func (p *kslParser) DynamicType() (localctx IDynamicTypeContext) {
 	localctx = NewDynamicTypeContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 32, kslParserRULE_dynamicType)
+	p.EnterRule(localctx, 34, kslParserRULE_dynamicType)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(259)
+	p.SetState(267)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -4968,7 +5133,7 @@ func (p *kslParser) DynamicType() (localctx IDynamicTypeContext) {
 
 	if _la == kslParserACCESS {
 		{
-			p.SetState(258)
+			p.SetState(266)
 			p.Match(kslParserACCESS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -4978,7 +5143,7 @@ func (p *kslParser) DynamicType() (localctx IDynamicTypeContext) {
 
 	}
 	{
-		p.SetState(261)
+		p.SetState(269)
 		p.Match(kslParserTYPE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -4986,31 +5151,31 @@ func (p *kslParser) DynamicType() (localctx IDynamicTypeContext) {
 		}
 	}
 	{
-		p.SetState(262)
+		p.SetState(270)
 		p.DynamicName()
 	}
 	{
-		p.SetState(263)
+		p.SetState(271)
 		p.Match(kslParserLBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
 			goto errorExit
 		}
 	}
-	p.SetState(267)
+	p.SetState(275)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 	_la = p.GetTokenStream().LA(1)
 
-	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&33562752) != 0 {
+	for (int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&67125376) != 0 {
 		{
-			p.SetState(264)
+			p.SetState(272)
 			p.DynamicRelation()
 		}
 
-		p.SetState(269)
+		p.SetState(277)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -5018,7 +5183,7 @@ func (p *kslParser) DynamicType() (localctx IDynamicTypeContext) {
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(270)
+		p.SetState(278)
 		p.Match(kslParserRBRACE)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5170,11 +5335,11 @@ func (s *DynamicRelationContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 
 func (p *kslParser) DynamicRelation() (localctx IDynamicRelationContext) {
 	localctx = NewDynamicRelationContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 34, kslParserRULE_dynamicRelation)
+	p.EnterRule(localctx, 36, kslParserRULE_dynamicRelation)
 	var _la int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(273)
+	p.SetState(281)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -5183,7 +5348,7 @@ func (p *kslParser) DynamicRelation() (localctx IDynamicRelationContext) {
 
 	if _la == kslParserALLOW_DUPLICATES {
 		{
-			p.SetState(272)
+			p.SetState(280)
 			p.Match(kslParserALLOW_DUPLICATES)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5192,7 +5357,7 @@ func (p *kslParser) DynamicRelation() (localctx IDynamicRelationContext) {
 		}
 
 	}
-	p.SetState(276)
+	p.SetState(284)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -5201,7 +5366,7 @@ func (p *kslParser) DynamicRelation() (localctx IDynamicRelationContext) {
 
 	if _la == kslParserACCESS {
 		{
-			p.SetState(275)
+			p.SetState(283)
 			p.Match(kslParserACCESS)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5211,7 +5376,7 @@ func (p *kslParser) DynamicRelation() (localctx IDynamicRelationContext) {
 
 	}
 	{
-		p.SetState(278)
+		p.SetState(286)
 		p.Match(kslParserRELATION)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5219,11 +5384,11 @@ func (p *kslParser) DynamicRelation() (localctx IDynamicRelationContext) {
 		}
 	}
 	{
-		p.SetState(279)
+		p.SetState(287)
 		p.DynamicName()
 	}
 	{
-		p.SetState(280)
+		p.SetState(288)
 		p.Match(kslParserEXPAND)
 		if p.HasError() {
 			// Recognition error - abort rule
@@ -5231,7 +5396,7 @@ func (p *kslParser) DynamicRelation() (localctx IDynamicRelationContext) {
 		}
 	}
 	{
-		p.SetState(281)
+		p.SetState(289)
 		p.dynamicBody(0)
 	}
 
@@ -5517,10 +5682,10 @@ func (s *TemplateContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 	localctx = NewDynamicNameContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 36, kslParserRULE_dynamicName)
+	p.EnterRule(localctx, 38, kslParserRULE_dynamicName)
 	var _alt int
 
-	p.SetState(297)
+	p.SetState(305)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
@@ -5531,7 +5696,7 @@ func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 		localctx = NewLiteralContext(p, localctx)
 		p.EnterOuterAlt(localctx, 1)
 		{
-			p.SetState(283)
+			p.SetState(291)
 			p.Name()
 		}
 
@@ -5539,7 +5704,7 @@ func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 		localctx = NewVariableContext(p, localctx)
 		p.EnterOuterAlt(localctx, 2)
 		{
-			p.SetState(284)
+			p.SetState(292)
 			p.Match(kslParserVARREF)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5547,7 +5712,7 @@ func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 			}
 		}
 		{
-			p.SetState(285)
+			p.SetState(293)
 			p.Match(kslParserLBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5555,11 +5720,11 @@ func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 			}
 		}
 		{
-			p.SetState(286)
+			p.SetState(294)
 			p.Name()
 		}
 		{
-			p.SetState(287)
+			p.SetState(295)
 			p.Match(kslParserRBRACE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -5571,14 +5736,14 @@ func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 		localctx = NewTemplateContext(p, localctx)
 		p.EnterOuterAlt(localctx, 3)
 		{
-			p.SetState(289)
+			p.SetState(297)
 			p.Match(kslParserTEMPLATE_DELIM)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(291)
+		p.SetState(299)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -5588,7 +5753,7 @@ func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 			switch _alt {
 			case 1:
 				{
-					p.SetState(290)
+					p.SetState(298)
 					p.DynamicName()
 				}
 
@@ -5597,15 +5762,15 @@ func (p *kslParser) DynamicName() (localctx IDynamicNameContext) {
 				goto errorExit
 			}
 
-			p.SetState(293)
+			p.SetState(301)
 			p.GetErrorHandler().Sync(p)
-			_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 33, p.GetParserRuleContext())
+			_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 34, p.GetParserRuleContext())
 			if p.HasError() {
 				goto errorExit
 			}
 		}
 		{
-			p.SetState(295)
+			p.SetState(303)
 			p.Match(kslParserTEMPLATE_DELIM)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -6257,34 +6422,34 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 	localctx = NewDynamicBodyContext(p, p.GetParserRuleContext(), _parentState)
 	var _prevctx IDynamicBodyContext = localctx
 	var _ antlr.ParserRuleContext = _prevctx // TODO: To prevent unused variable warning.
-	_startState := 38
-	p.EnterRecursionRule(localctx, 38, kslParserRULE_dynamicBody, _p)
+	_startState := 40
+	p.EnterRecursionRule(localctx, 40, kslParserRULE_dynamicBody, _p)
 	var _la int
 
 	var _alt int
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(323)
+	p.SetState(331)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
 
-	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 37, p.GetParserRuleContext()) {
+	switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 38, p.GetParserRuleContext()) {
 	case 1:
 		localctx = NewDynamicSelfContext(p, localctx)
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 
 		{
-			p.SetState(300)
+			p.SetState(308)
 			p.Match(kslParserLSQUARE)
 			if p.HasError() {
 				// Recognition error - abort rule
 				goto errorExit
 			}
 		}
-		p.SetState(302)
+		p.SetState(310)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -6293,7 +6458,7 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 
 		if _la == kslParserCARDINALITY {
 			{
-				p.SetState(301)
+				p.SetState(309)
 				p.Match(kslParserCARDINALITY)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -6303,10 +6468,10 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 
 		}
 		{
-			p.SetState(304)
+			p.SetState(312)
 			p.TypeReference()
 		}
-		p.SetState(309)
+		p.SetState(317)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
@@ -6315,7 +6480,7 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 
 		for _la == kslParserOR {
 			{
-				p.SetState(305)
+				p.SetState(313)
 				p.Match(kslParserOR)
 				if p.HasError() {
 					// Recognition error - abort rule
@@ -6323,11 +6488,11 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 				}
 			}
 			{
-				p.SetState(306)
+				p.SetState(314)
 				p.TypeReference()
 			}
 
-			p.SetState(311)
+			p.SetState(319)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
@@ -6335,7 +6500,7 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 			_la = p.GetTokenStream().LA(1)
 		}
 		{
-			p.SetState(312)
+			p.SetState(320)
 			p.Match(kslParserRSQARE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -6348,7 +6513,7 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(314)
+			p.SetState(322)
 			p.DynamicName()
 		}
 
@@ -6357,11 +6522,11 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(315)
+			p.SetState(323)
 			p.DynamicName()
 		}
 		{
-			p.SetState(316)
+			p.SetState(324)
 			p.Match(kslParserRESOLVE)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -6369,7 +6534,7 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 			}
 		}
 		{
-			p.SetState(317)
+			p.SetState(325)
 			p.DynamicName()
 		}
 
@@ -6378,7 +6543,7 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 		p.SetParserRuleContext(localctx)
 		_prevctx = localctx
 		{
-			p.SetState(319)
+			p.SetState(327)
 			p.Match(kslParserLPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -6386,11 +6551,11 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 			}
 		}
 		{
-			p.SetState(320)
+			p.SetState(328)
 			p.dynamicBody(0)
 		}
 		{
-			p.SetState(321)
+			p.SetState(329)
 			p.Match(kslParserRPAREN)
 			if p.HasError() {
 				// Recognition error - abort rule
@@ -6402,12 +6567,12 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 		goto errorExit
 	}
 	p.GetParserRuleContext().SetStop(p.GetTokenStream().LT(-1))
-	p.SetState(336)
+	p.SetState(344)
 	p.GetErrorHandler().Sync(p)
 	if p.HasError() {
 		goto errorExit
 	}
-	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 39, p.GetParserRuleContext())
+	_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 40, p.GetParserRuleContext())
 	if p.HasError() {
 		goto errorExit
 	}
@@ -6417,24 +6582,24 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 				p.TriggerExitRuleEvent()
 			}
 			_prevctx = localctx
-			p.SetState(334)
+			p.SetState(342)
 			p.GetErrorHandler().Sync(p)
 			if p.HasError() {
 				goto errorExit
 			}
 
-			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 38, p.GetParserRuleContext()) {
+			switch p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 39, p.GetParserRuleContext()) {
 			case 1:
 				localctx = NewDynamicAndContext(p, NewDynamicBodyContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, kslParserRULE_dynamicBody)
-				p.SetState(325)
+				p.SetState(333)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 3)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 3)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(326)
+					p.SetState(334)
 					p.Match(kslParserAND)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -6442,21 +6607,21 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 					}
 				}
 				{
-					p.SetState(327)
+					p.SetState(335)
 					p.dynamicBody(4)
 				}
 
 			case 2:
 				localctx = NewDynamicORContext(p, NewDynamicBodyContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, kslParserRULE_dynamicBody)
-				p.SetState(328)
+				p.SetState(336)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 2)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 2)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(329)
+					p.SetState(337)
 					p.Match(kslParserOR)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -6464,21 +6629,21 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 					}
 				}
 				{
-					p.SetState(330)
+					p.SetState(338)
 					p.dynamicBody(3)
 				}
 
 			case 3:
 				localctx = NewDynamicUnlessContext(p, NewDynamicBodyContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, kslParserRULE_dynamicBody)
-				p.SetState(331)
+				p.SetState(339)
 
 				if !(p.Precpred(p.GetParserRuleContext(), 1)) {
 					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 1)", ""))
 					goto errorExit
 				}
 				{
-					p.SetState(332)
+					p.SetState(340)
 					p.Match(kslParserUNLESS)
 					if p.HasError() {
 						// Recognition error - abort rule
@@ -6486,7 +6651,7 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 					}
 				}
 				{
-					p.SetState(333)
+					p.SetState(341)
 					p.dynamicBody(2)
 				}
 
@@ -6495,12 +6660,12 @@ func (p *kslParser) dynamicBody(_p int) (localctx IDynamicBodyContext) {
 			}
 
 		}
-		p.SetState(338)
+		p.SetState(346)
 		p.GetErrorHandler().Sync(p)
 		if p.HasError() {
 			goto errorExit
 		}
-		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 39, p.GetParserRuleContext())
+		_alt = p.GetInterpreter().AdaptivePredict(p.BaseParser, p.GetTokenStream(), 40, p.GetParserRuleContext())
 		if p.HasError() {
 			goto errorExit
 		}
@@ -6521,14 +6686,14 @@ errorExit:
 
 func (p *kslParser) Sempred(localctx antlr.RuleContext, ruleIndex, predIndex int) bool {
 	switch ruleIndex {
-	case 13:
+	case 14:
 		var t *RelationBodyContext = nil
 		if localctx != nil {
 			t = localctx.(*RelationBodyContext)
 		}
 		return p.RelationBody_Sempred(t, predIndex)
 
-	case 19:
+	case 20:
 		var t *DynamicBodyContext = nil
 		if localctx != nil {
 			t = localctx.(*DynamicBodyContext)
