@@ -93,11 +93,19 @@ func (s *BasekslListener) EnterExtensionReference(ctx *ExtensionReferenceContext
 // ExitExtensionReference is called when production extensionReference is exited.
 func (s *BasekslListener) ExitExtensionReference(ctx *ExtensionReferenceContext) {}
 
-// EnterRelation is called when production relation is entered.
-func (s *BasekslListener) EnterRelation(ctx *RelationContext) {}
+// EnterRegularRelation is called when production RegularRelation is entered.
+func (s *BasekslListener) EnterRegularRelation(ctx *RegularRelationContext) {}
 
-// ExitRelation is called when production relation is exited.
-func (s *BasekslListener) ExitRelation(ctx *RelationContext) {}
+// ExitRegularRelation is called when production RegularRelation is exited.
+func (s *BasekslListener) ExitRegularRelation(ctx *RegularRelationContext) {}
+
+// EnterRelationDefinedWithExtension is called when production RelationDefinedWithExtension is entered.
+func (s *BasekslListener) EnterRelationDefinedWithExtension(ctx *RelationDefinedWithExtensionContext) {
+}
+
+// ExitRelationDefinedWithExtension is called when production RelationDefinedWithExtension is exited.
+func (s *BasekslListener) ExitRelationDefinedWithExtension(ctx *RelationDefinedWithExtensionContext) {
+}
 
 // EnterOR is called when production OR is entered.
 func (s *BasekslListener) EnterOR(ctx *ORContext) {}

@@ -56,7 +56,11 @@ func (v *BasekslVisitor) VisitExtensionReference(ctx *ExtensionReferenceContext)
 	return v.VisitChildren(ctx)
 }
 
-func (v *BasekslVisitor) VisitRelation(ctx *RelationContext) interface{} {
+func (v *BasekslVisitor) VisitRegularRelation(ctx *RegularRelationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BasekslVisitor) VisitRelationDefinedWithExtension(ctx *RelationDefinedWithExtensionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

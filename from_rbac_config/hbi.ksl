@@ -4,12 +4,12 @@ namespace hbi
 import rbac
 
 extend type workspace {
-    relation staleness_staleness_view: staleness_staleness_view with rbac.inherited(app:'staleness', resource:'staleness', verb:'read')
-    relation staleness_staleness_update: staleness_staleness_update with rbac.inherited(app:'staleness', resource:'staleness', verb:'write')
-    relation inventory_host_view: inventory_host_view with rbac.inherited(app:'inventory', resource:'hosts', verb:'read')
-    relation inventory_host_update: inventory_host_update with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
-    relation inventory_host_delete: inventory_host_delete with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
-    relation inventory_host_move: inventory_host_move with rbac.inherited(app:'inventory', resource:'groups', verb:'write')
+    relation staleness_staleness_view with rbac.inherited(app:'staleness', resource:'staleness', verb:'read')
+    relation staleness_staleness_update with rbac.inherited(app:'staleness', resource:'staleness', verb:'write')
+    relation inventory_host_view with rbac.inherited(app:'inventory', resource:'hosts', verb:'read')
+    relation inventory_host_update with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
+    relation inventory_host_delete with rbac.inherited(app:'inventory', resource:'hosts', verb:'write')
+    relation inventory_host_move with rbac.inherited(app:'inventory', resource:'groups', verb:'write')
 }
 
 public type host {

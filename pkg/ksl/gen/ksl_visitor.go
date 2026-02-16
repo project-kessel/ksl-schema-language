@@ -44,8 +44,11 @@ type kslVisitor interface {
 	// Visit a parse tree produced by kslParser#extensionReference.
 	VisitExtensionReference(ctx *ExtensionReferenceContext) interface{}
 
-	// Visit a parse tree produced by kslParser#relation.
-	VisitRelation(ctx *RelationContext) interface{}
+	// Visit a parse tree produced by kslParser#RegularRelation.
+	VisitRegularRelation(ctx *RegularRelationContext) interface{}
+
+	// Visit a parse tree produced by kslParser#RelationDefinedWithExtension.
+	VisitRelationDefinedWithExtension(ctx *RelationDefinedWithExtensionContext) interface{}
 
 	// Visit a parse tree produced by kslParser#OR.
 	VisitOR(ctx *ORContext) interface{}

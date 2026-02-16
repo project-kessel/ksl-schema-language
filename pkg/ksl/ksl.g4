@@ -61,7 +61,8 @@ extendTypeExpr: EXTEND TYPE name LBRACE relation* RBRACE;
 extensionParam: name EXPAND STRING_DELIM value=~STRING_DELIM STRING_DELIM;
 extensionParams: extensionParam (ARG_DELIM extensionParam)*;
 extensionReference: EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN;
-relation: extensionReference* ACCESS? RELATION name EXPAND relationBody;
+relation: extensionReference* ACCESS? RELATION name EXPAND relationBody #RegularRelation
+    | ACCESS? RELATION name IN_REL_EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN #RelationDefinedWithExtension;
 relationBody: LSQUARE CARDINALITY? typeReference (OR typeReference)* RSQARE #Self
     | name #Reference
     | name IN_REL_EXTENSION_CALL typeReference LPAREN extensionParams? RPAREN #ReferenceWithExtension

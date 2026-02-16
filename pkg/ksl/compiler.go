@@ -126,9 +126,15 @@ func (c *converter) fileToNamespace(f parser.IFileContext) (*intermediate.Namesp
 
 func appendRelationExtensionRefs(extensionRefs []*intermediate.ExtensionReference, relations []*intermediate.Relation) []*intermediate.ExtensionReference {
 	for _, r := range relations {
-		if r.Body.ExtensionReference != nil {
-			ref := r.Body.ExtensionReference
-			extensionRefs = append(extensionRefs, ref)
+		if r.Body != nil {
+			if r.Body.ExtensionReference != nil {
+				ref := r.Body.ExtensionReference
+				extensionRefs = append(extensionRefs, ref)
+			}
+		} else {
+			for _, e := range r.Extensions {
+				extensionRefs = append(extensionRefs, e)
+			}
 		}
 	}
 
@@ -177,22 +183,54 @@ func (c *converter) extendedTypeExprToExtendedType(t parser.IExtendTypeExprConte
 }
 
 func (c *converter) relationExprToRelation(r parser.IRelationContext) (*intermediate.Relation, error) {
-	name := getStrippedName(r.Name())
-	access := "public"
-	if accessExpr := r.ACCESS(); accessExpr != nil {
-		access = accessExpr.GetText()
+	switch rel := r.(type) {
+	case *parser.RegularRelationContext:
+		name := getStrippedName(rel.Name())
+		access := "public"
+		if accessExpr := rel.ACCESS(); accessExpr != nil {
+			access = accessExpr.GetText()
+		}
+
+		body := c.relationBodyExprToRelation(rel.RelationBody())
+
+		extensionRefs := []*intermediate.ExtensionReference{}
+		for _, extensionRefExpr := range rel.AllExtensionReference() {
+			extensionRef := c.extensionRefExprToExtensionRef(extensionRefExpr)
+
+			extensionRefs = append(extensionRefs, extensionRef)
+		}
+
+		return &intermediate.Relation{Name: name, Visibility: access, Body: body, Extensions: extensionRefs}, nil
+	case *parser.RelationDefinedWithExtensionContext:
+		name := getStrippedName(rel.Name())
+		access := "public"
+		if accessExpr := rel.ACCESS(); accessExpr != nil {
+			access = accessExpr.GetText()
+		}
+
+		extensionRefs := []*intermediate.ExtensionReference{}
+		extParams := c.relationExtensionParamsToExtensionParams(name, rel.ExtensionParams())
+		// refer to bad code smell comment, below
+		typeRef := strings.Split(rel.TypeReference().GetText(), ".")
+		var namespace string
+		var baseType string
+		if len(typeRef) != 2 {
+			namespace = ""
+			baseType = typeRef[0]
+		} else {
+			namespace = typeRef[0]
+			baseType = typeRef[1]
+		}
+		extensionRefs = append(extensionRefs, &intermediate.ExtensionReference{
+			Name:      baseType,
+			Namespace: namespace,
+			Params:    extParams,
+		})
+
+		return &intermediate.Relation{Name: name, Visibility: access, Body: nil, Extensions: extensionRefs}, nil
 	}
 
-	body := c.relationBodyExprToRelation(r.RelationBody())
-
-	extensionRefs := []*intermediate.ExtensionReference{}
-	for _, extensionRefExpr := range r.AllExtensionReference() {
-		extensionRef := c.extensionRefExprToExtensionRef(extensionRefExpr)
-
-		extensionRefs = append(extensionRefs, extensionRef)
-	}
-
-	return &intermediate.Relation{Name: name, Visibility: access, Body: body, Extensions: extensionRefs}, nil
+	return nil, nil
 }
 
 func (c *converter) relationBodyExprToRelation(r parser.IRelationBodyContext) *intermediate.RelationBody {

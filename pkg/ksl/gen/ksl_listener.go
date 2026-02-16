@@ -44,8 +44,11 @@ type kslListener interface {
 	// EnterExtensionReference is called when entering the extensionReference production.
 	EnterExtensionReference(c *ExtensionReferenceContext)
 
-	// EnterRelation is called when entering the relation production.
-	EnterRelation(c *RelationContext)
+	// EnterRegularRelation is called when entering the RegularRelation production.
+	EnterRegularRelation(c *RegularRelationContext)
+
+	// EnterRelationDefinedWithExtension is called when entering the RelationDefinedWithExtension production.
+	EnterRelationDefinedWithExtension(c *RelationDefinedWithExtensionContext)
 
 	// EnterOR is called when entering the OR production.
 	EnterOR(c *ORContext)
@@ -152,8 +155,11 @@ type kslListener interface {
 	// ExitExtensionReference is called when exiting the extensionReference production.
 	ExitExtensionReference(c *ExtensionReferenceContext)
 
-	// ExitRelation is called when exiting the relation production.
-	ExitRelation(c *RelationContext)
+	// ExitRegularRelation is called when exiting the RegularRelation production.
+	ExitRegularRelation(c *RegularRelationContext)
+
+	// ExitRelationDefinedWithExtension is called when exiting the RelationDefinedWithExtension production.
+	ExitRelationDefinedWithExtension(c *RelationDefinedWithExtensionContext)
 
 	// ExitOR is called when exiting the OR production.
 	ExitOR(c *ORContext)
