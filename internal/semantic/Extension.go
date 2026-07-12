@@ -1,5 +1,7 @@
 package semantic
 
+import "fmt"
+
 type Extension struct {
 	name       string
 	visibility Visibility
@@ -22,14 +24,23 @@ func (e *Extension) Apply(fromNS *Namespace, fromType *Type, fromRelation *Relat
 	}
 
 	for _, t := range e.types {
-		generated, err := t.ToType(e.namespace, params)
+		namespace := e.namespace // get type-specific namespace if specified
+		if t.Namespace != nil {
+			var found bool
+			namespace, found = e.namespace.schema.namespaces.Get(*t.Namespace)
+			if !found {
+				return fmt.Errorf("Namespace %s.%s: %w", e.namespace.name, *t.Namespace, ErrSymbolNotFound)
+			}
+		}
+
+		generated, err := t.ToType(namespace, params)
 		if err != nil {
 			return err
 		}
 
-		existing, found := e.namespace.types.Get(generated.name)
+		existing, found := namespace.types.Get(generated.name)
 		if !found {
-			err = e.namespace.AddType(generated)
+			err = namespace.AddType(generated)
 			if err != nil {
 				return err
 			}
@@ -51,6 +62,7 @@ func (e *Extension) Apply(fromNS *Namespace, fromType *Type, fromRelation *Relat
 
 type DynamicType struct {
 	Name       Name
+	Namespace  *string
 	Visibility Visibility
 	Relations  []*DynamicRelation
 }

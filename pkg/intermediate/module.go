@@ -62,6 +62,7 @@ type ExtensionDefinition struct {
 
 type DynamicType struct {
 	Name       *DynamicName       `json:"name"`
+	Namespace  *string            `json:"namespace,omitempty"`
 	Visibility string             `json:"visibility"`
 	Relations  []*DynamicRelation `json:"relations"`
 }
@@ -275,7 +276,7 @@ func (dt *DynamicType) ToSemantic() (*semantic.DynamicType, error) {
 		relations = append(relations, sr)
 	}
 
-	return &semantic.DynamicType{Name: name, Visibility: visibility, Relations: relations}, nil
+	return &semantic.DynamicType{Name: name, Namespace: dt.Namespace, Visibility: visibility, Relations: relations}, nil
 }
 
 func (dr *DynamicRelation) ToSemantic() (*semantic.DynamicRelation, error) {
