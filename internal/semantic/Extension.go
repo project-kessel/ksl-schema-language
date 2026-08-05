@@ -1,5 +1,7 @@
 package semantic
 
+import "fmt"
+
 type Extension struct {
 	name       string
 	visibility Visibility
@@ -22,18 +24,32 @@ func (e *Extension) Apply(fromNS *Namespace, fromType *Type, fromRelation *Relat
 	}
 
 	for _, t := range e.types {
-		generated, err := t.ToType(e.namespace, params)
+		namespace := e.namespace // get type-specific namespace if specified
+		if t.Namespace != nil {
+			var found bool
+			namespace, found = e.namespace.schema.namespaces.Get(*t.Namespace)
+			if !found {
+				return fmt.Errorf("Namespace %s.%s: %w", e.namespace.name, *t.Namespace, ErrSymbolNotFound)
+			}
+		}
+
+		generated, err := t.ToType(namespace, params)
 		if err != nil {
 			return err
 		}
 
-		existing, found := e.namespace.types.Get(generated.name)
+		existing, found := namespace.types.Get(generated.name)
 		if !found {
-			err = e.namespace.AddType(generated)
+			err = namespace.AddType(generated)
 			if err != nil {
 				return err
 			}
 		} else {
+			if existing.namespace != e.namespace { //The type to extend is in a different namespace than the existension
+				if !existing.visibility.SchemaVisible { //..and it's not visible schema-wide
+					return fmt.Errorf("extension %s.%s attemping to extend type %s.%s: %w", e.namespace.name, e.name, existing.namespace.name, existing.name, ErrSymbolNotAccessible)
+				}
+			}
 			err = generated.relations.Iterate(func(s string, relation *Relation) error {
 				if _, ok := existing.relations.Get(relation.name); ok && relation.generatedFrom.IgnoreDuplicates {
 					return nil
@@ -51,6 +67,7 @@ func (e *Extension) Apply(fromNS *Namespace, fromType *Type, fromRelation *Relat
 
 type DynamicType struct {
 	Name       Name
+	Namespace  *string
 	Visibility Visibility
 	Relations  []*DynamicRelation
 }

@@ -1,0 +1,226 @@
+{
+    "name": "features",
+    "types": [
+        {
+            "name": "billing_account",
+            "visibility": "public",
+            "relations": [
+                {
+                    "name": "services",
+                    "visibility": "public",
+                    "body": {
+                        "kind": "self",
+                        "types": [
+                            {
+                                "name": "service"
+                            }
+                        ],
+                        "cardinality": "Any"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "service",
+            "visibility": "public",
+            "relations": [
+                {
+                    "name": "parent",
+                    "visibility": "public",
+                    "body": {
+                        "kind": "self",
+                        "types": [
+                            {
+                                "name": "service"
+                            }
+                        ],
+                        "cardinality": "AtMostOne"
+                    }
+                },
+                {
+                    "name": "ancestors",
+                    "visibility": "public",
+                    "body": {
+                        "kind": "union",
+                        "types": null,
+                        "left": {
+                            "kind": "reference",
+                            "types": null,
+                            "relation": "parent"
+                        },
+                        "right": {
+                            "kind": "nested_reference",
+                            "types": null,
+                            "relation": "parent",
+                            "sub_relation": "ancestors"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "defined_extensions": [{
+        "name": "features_workspace",
+        "visibility": "public",
+        "types": [
+            {
+                "namespace": "rbac",
+                "name": {
+                    "kind": "literal",
+                    "value": "workspace"
+                },
+                "visibility": "public",
+                "relations": [
+                    {
+                        "name": {
+                            "kind": "literal",
+                            "value": "features_workspace_direct_billing_accounts"
+                        },
+                        "visibility": "public",
+                        "body": {
+                            "kind": "self",
+                            "types": [
+                                {
+                                    "namespace": "features",
+                                    "name": "billing_account"
+                                }
+                            ],
+                            "cardinality": "Any"
+                        }
+                    },
+                    {
+                        "name": {
+                            "kind": "literal",
+                            "value": "features_workspace_direct_service_preference"
+                        },
+                        "visibility": "public",
+                        "body": {
+                            "kind": "self",
+                            "types": [
+                                {
+                                    "namespace": "features",
+                                    "name": "service"
+                                }
+                            ],
+                            "cardinality": "Any"
+                        }
+                    },
+                    {
+                        "name": {
+                            "kind": "literal",
+                            "value": "features_workspace__paid_services"
+                        },
+                        "visibility": "public",
+                        "body": {
+                            "kind": "union",
+                            "types": null,
+                            "left": {
+                                "kind": "nested_reference",
+                                "types": null,
+                                "relation": {
+                                    "kind": "literal",
+                                    "value": "features_workspace_direct_billing_accounts"
+                                },
+                                "sub_relation": {
+                                    "kind": "literal",
+                                    "value": "services"
+                                }
+                            },
+                            "right": {
+                                "kind": "nested_reference",
+                                "types": null,
+                                "relation": {
+                                    "kind": "literal",
+                                    "value": "parent"
+                                },
+                                "sub_relation": {
+                                    "kind": "literal",
+                                    "value": "features_workspace__paid_services"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": {
+                            "kind": "literal",
+                            "value": "features_workspace__desired_services"
+                        },
+                        "visibility": "public",
+                        "body": {
+                            "kind": "union",
+                            "types": null,
+                            "left": {
+                                "kind": "union",
+                                "types": null,
+                                "left": {
+                                    "kind": "reference",
+                                    "types": null,
+                                    "relation": {
+                                        "kind": "literal",
+                                        "value": "features_workspace_direct_service_preference"
+                                    }
+                                },
+                                "right": {
+                                    "kind": "nested_reference",
+                                    "types": null,
+                                    "relation": {
+                                        "kind": "literal",
+                                        "value": "features_workspace_direct_service_preference"
+                                    },
+                                    "sub_relation": {
+                                        "kind": "literal",
+                                        "value": "ancestors"
+                                    }
+                                }
+                            },
+                            "right": {
+                                "kind": "nested_reference",
+                                "types": null,
+                                "relation": {
+                                    "kind": "literal",
+                                    "value": "parent"
+                                },
+                                "sub_relation": {
+                                    "kind": "literal",
+                                    "value": "features_workspace__desired_services"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": {
+                            "kind": "literal",
+                            "value": "enabled_services"
+                        },
+                        "visibility": "public",
+                        "body": {
+                            "kind": "intersect",
+                            "types": null,
+                            "left": {
+                                "kind": "reference",
+                                "types": null,
+                                "relation": {
+                                    "kind": "literal",
+                                    "value": "features_workspace__desired_services"
+                                }
+                            },
+                            "right": {
+                                "kind": "reference",
+                                "types": null,
+                                "relation": {
+                                    "kind": "literal",
+                                    "value": "features_workspace__paid_services"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        ]
+    }],
+    "extension_references": [
+        {
+            "name": "features_workspace"
+        }
+    ]
+}

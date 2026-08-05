@@ -2,7 +2,7 @@ version 0.1
 namespace rbac
 
 internal type group {
-    relation member: [Any principal] or [Any group.member]
+    relation member: [Any principal or group.member]
 }
 
 internal type principal {
