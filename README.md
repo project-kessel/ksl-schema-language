@@ -45,6 +45,10 @@ The `ksl` tool can be used to:
 - `-c <file>`: Compile a KSL source file to intermediate representation
 - `-o <file>`: Specify the output file (defaults to `schema.zed` for builds or `<input>.json` for compilation)
 
+## Documentation
+
+New to KSL? The [beginner's guide](docs/beginners-guide.md) covers the core concepts, syntax, and how KSL compiles to SpiceDB schemas — a good starting point before reading the examples.
+
 ## Examples
 
 See the `samples/` and `demo/` directories for example KSL files and usage patterns.
