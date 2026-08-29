@@ -57,6 +57,99 @@ func Compile(r io.Reader) (*intermediate.Namespace, error) {
 	return converter.fileToNamespace(file)
 }
 
+func GetNextTokens(r io.Reader) ([]TokenCandidate, string, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, "", err
+	}
+
+	source := antlr.NewInputStream(string(data))
+	lexer := parser.NewkslLexer(source)
+	tokens := antlr.NewCommonTokenStream(lexer, antlr.LexerDefaultTokenChannel)
+	interpreter := parser.NewkslParser(tokens)
+	interpreter.BuildParseTrees = true
+	l := &autoCompleteErrorListener{}
+	interpreter.RemoveErrorListeners()
+	interpreter.AddErrorListener(l)
+
+	interpreter.File()
+
+	var expectedTokenIntervals *antlr.IntervalSet
+	var activeRule string
+	if l.hasOtherErrors {
+		return nil, "", nil
+	}
+
+	if l.hasExpectedTokensAtEOF {
+		expectedTokenIntervals = l.expectedTokens
+		activeRule = l.ruleAtEOF
+	} else {
+		//Do nothing for now- interacting with the parser at EOF causes a panic
+		//expectedTokenIntervals = interpreter.GetExpectedTokensWithinCurrentRule()
+		//activeRule = interpreter.GetRuleNames()[interpreter.GetParserRuleContext().GetRuleIndex()]
+		return nil, "", nil
+	}
+
+	expectedTokens := []TokenCandidate{}
+	names := interpreter.SymbolicNames
+	values := interpreter.LiteralNames
+	for _, interval := range expectedTokenIntervals.GetIntervals() {
+		for tokenType := interval.Start; tokenType < interval.Stop; tokenType++ {
+			var text string
+			name := names[tokenType]
+
+			if tokenType >= 0 && tokenType < len(values) {
+				text = values[tokenType]
+			}
+
+			candidate := TokenCandidate{Name: name}
+
+			if text != "" {
+				text = strings.Trim(text, "'")
+				candidate.Literal = &text
+			}
+
+			expectedTokens = append(expectedTokens, candidate)
+		}
+	}
+	return expectedTokens, activeRule, nil //Gets symbolic names that are valid next, including optional ones. Doesn't break down composites like access and cardinality.
+	//Literals are available for keywords, but composites don't have one
+
+}
+
+type TokenCandidate struct {
+	Name    string
+	Literal *string
+}
+
+type autoCompleteErrorListener struct {
+	*antlr.DefaultErrorListener
+	hasExpectedTokensAtEOF bool
+	hasOtherErrors         bool
+	expectedTokens         *antlr.IntervalSet
+	ruleAtEOF              string
+}
+
+func (l *autoCompleteErrorListener) SyntaxError(
+	recognizer antlr.Recognizer,
+	offendingSymbol interface{},
+	line, column int,
+	msg string,
+	e antlr.RecognitionException,
+) {
+	token := offendingSymbol.(antlr.Token)
+	parser := recognizer.(antlr.Parser)
+
+	if token.GetTokenType() == antlr.TokenEOF {
+		l.expectedTokens = parser.GetExpectedTokens()
+		ctx := parser.GetParserRuleContext()
+		l.ruleAtEOF = parser.GetRuleNames()[ctx.GetRuleIndex()]
+		l.hasExpectedTokensAtEOF = true
+	} else {
+		l.hasOtherErrors = true
+	}
+}
+
 type converter struct {
 	imports []string
 }

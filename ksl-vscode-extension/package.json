@@ -1,0 +1,49 @@
+{
+    "name": "ksl-syntax",
+    "displayName": "Language Support for KSL",
+    "description": "Custom language syntax for KSL.",
+    "icon": "assets/ksl-icon.png",
+    "version": "0.0.1",
+    "publisher": "project-kessel",
+    "main": "./out/extension.js",
+    "activationEvents": [
+        "workspaceContains:**/*.ksl"
+    ],
+    "engines": {
+        "vscode": "^1.75.0"
+    },
+    "dependencies": {
+        "glob": "^11.0.0",
+        "vscode-languageclient": "^9.0.1"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.75.0",
+        "@vscode/test-electron": "^2.3.9"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/project-kessel/ksl-schema-language"
+    },
+    "contributes": {
+        "languages": [
+            {
+                "id": "ksl",
+                "aliases": [
+                    "KSL",
+                    "ksl"
+                ],
+                "extensions": [
+                    ".ksl"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ksl",
+                "scopeName": "source.ksl",
+                "path": "./syntaxes/ksl.tmLanguage.json"
+            }
+        ]
+    }
+}
