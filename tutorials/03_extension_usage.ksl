@@ -1,0 +1,17 @@
+version 0.1
+namespace inventory
+import rbac
+
+public type server {
+    private relation workspace: [ExactlyOne rbac.workspace]
+
+    // Using the extension with @ syntax
+    @rbac.workspace_permission(permission_name:'servers_read')
+    public relation can_read: workspace.servers_read
+
+    @rbac.workspace_permission(permission_name:'servers_write')
+    public relation can_write: workspace.servers_write
+
+    @rbac.workspace_permission(permission_name:'servers_delete')
+    public relation can_delete: workspace.servers_delete
+}

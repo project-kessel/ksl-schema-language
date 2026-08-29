@@ -1,0 +1,28 @@
+version 0.1
+namespace organization
+
+public type user {
+
+}
+
+public type team {
+    relation member: [Any user]
+    relation manager: [ExactlyOne user]
+
+    // Permission derived from relations
+    relation can_manage: manager
+}
+
+public type project {
+    relation owner_team: [ExactlyOne team]
+    relation collaborator_teams: [Any team]
+
+    // Nested relation access - access team's members through the relation
+    relation team_members: owner_team.member or collaborator_teams.member
+
+    // Nested relation with specific sub-relation
+    relation managers: owner_team.manager
+
+    // Complex nested permissions
+    relation can_manage: owner_team.can_manage or owner_team.member
+}

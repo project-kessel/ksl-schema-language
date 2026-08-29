@@ -1,0 +1,56 @@
+version 0.1
+namespace enterprise
+import rbac
+
+// Complete real-world example using EVERY KSL feature
+public type application {
+    // Cross-namespace import
+    private relation workspace: [ExactlyOne rbac.workspace]
+
+    // All cardinality types
+    relation owner: [ExactlyOne rbac.user]          // ExactlyOne
+    relation developers: [Any rbac.user]            // Any
+    relation tech_lead: [AtMostOne rbac.user]       // AtMostOne
+    relation stakeholders: [AtLeastOne rbac.user]   // AtLeastOne
+
+    // All visibility types
+    public relation can_deploy: owner or tech_lead
+    internal relation can_debug: developers or tech_lead
+    private relation admin_access: owner
+
+    // Complex relation expressions
+    relation can_read: owner or developers or stakeholders
+    relation can_write: (owner or tech_lead) and developers
+    relation can_manage: owner unless tech_lead
+    relation emergency_access: (owner or tech_lead) and stakeholders
+
+    // Cross-namespace nested relations
+    relation workspace_access: workspace.user_grant
+
+    // Extensions usage
+    @rbac.workspace_permission(permission_name:'app_deploy')
+    public relation deploy_permission: workspace.app_deploy
+
+    @rbac.workspace_permission(permission_name:'app_monitor')
+    public relation monitor_permission: workspace.app_monitor
+}
+
+// Demonstrating complex hierarchies
+public type environment {
+    relation application: [ExactlyOne application]
+    relation environment_manager: [ExactlyOne rbac.user]
+
+    // Inherit from application with additional restrictions
+    relation can_deploy: environment_manager and application.can_deploy
+    relation can_read: environment_manager or application.can_read
+
+    // Self-referencing hierarchy
+    relation parent_env: [AtMostOne environment]
+    relation inherited_access: parent_env.can_read or parent_env.can_deploy
+}
+
+// Using reserved keyword with escape
+public type database {
+    relation #version: [ExactlyOne rbac.user]  // Using # to escape reserved word
+    relation backup_access: [Any rbac.user]
+}

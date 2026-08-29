@@ -1,0 +1,55 @@
+version 0.1
+namespace learning
+
+// Basic type with no relations
+public type user {
+
+}
+
+// Type demonstrating ALL cardinality constraints
+public type document {
+    // ExactlyOne - must have exactly one
+    relation owner: [ExactlyOne user]
+
+    // Any - can have zero, one, or unlimited
+    relation editor: [Any user]
+
+    // AtMostOne - can have zero or one
+    relation reviewer: [AtMostOne user]
+
+    // AtLeastOne - must have one or more
+    relation approver: [AtLeastOne user]
+
+    // Basic permission - direct reference
+    relation can_read: owner
+
+    // Union (OR) - multiple ways to get permission
+    relation can_edit: owner or editor
+
+    // Complex union - three ways to get permission
+    relation can_view: owner or editor or reviewer
+
+    // Intersection (AND) - must satisfy both conditions
+    relation can_approve: approver and owner
+
+    // Exclusion (UNLESS) - first condition unless second is true
+    relation can_delete: owner unless reviewer
+
+    // Grouping with parentheses for complex logic
+    relation can_publish: (owner or editor) and approver
+}
+
+// Demonstrating ALL visibility modifiers
+public type project {
+    // Public - accessible from other namespaces
+    public relation owner: [ExactlyOne user]
+
+    // Internal - accessible within this namespace only
+    internal relation team_member: [Any user]
+
+    // Private - accessible within this type only
+    private relation secret_info: [Any user]
+
+    // Default visibility (public if not specified)
+    relation contributor: [Any user]
+}

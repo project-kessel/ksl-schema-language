@@ -1,0 +1,50 @@
+definition inventory/server {
+	permission can_delete = t_workspace->servers_delete
+	permission can_read = t_workspace->servers_read
+	permission can_write = t_workspace->servers_write
+	permission workspace = t_workspace
+	relation t_workspace: rbac/workspace
+}
+
+definition rbac/principal {}
+
+definition rbac/role {
+	permission global_all_permissions = t_global_all_permissions
+	relation t_global_all_permissions: rbac/principal:*
+	permission mod_inventory_all_rel_can_delete = t_mod_inventory_all_rel_can_delete
+	relation t_mod_inventory_all_rel_can_delete: rbac/principal:*
+	permission mod_inventory_all_rel_can_read = t_mod_inventory_all_rel_can_read
+	relation t_mod_inventory_all_rel_can_read: rbac/principal:*
+	permission mod_inventory_all_rel_can_write = t_mod_inventory_all_rel_can_write
+	relation t_mod_inventory_all_rel_can_write: rbac/principal:*
+	permission mod_inventory_type_server_all = t_mod_inventory_type_server_all
+	relation t_mod_inventory_type_server_all: rbac/principal:*
+	permission servers_delete = t_servers_delete
+	relation t_servers_delete: rbac/principal:*
+	permission servers_read = t_servers_read
+	relation t_servers_read: rbac/principal:*
+	permission servers_write = t_servers_write
+	relation t_servers_write: rbac/principal:*
+}
+
+definition rbac/role_binding {
+	permission granted = t_granted
+	relation t_granted: rbac/role
+	permission servers_delete = (subject & t_granted->servers_delete + t_granted->global_all_permissions + t_granted->mod_inventory_type_server_all + t_granted->mod_inventory_all_rel_can_delete)
+	permission servers_read = (subject & t_granted->servers_read + t_granted->global_all_permissions + t_granted->mod_inventory_type_server_all + t_granted->mod_inventory_all_rel_can_read)
+	permission servers_write = (subject & t_granted->servers_write + t_granted->global_all_permissions + t_granted->mod_inventory_type_server_all + t_granted->mod_inventory_all_rel_can_write)
+	permission subject = t_subject
+	relation t_subject: rbac/user
+}
+
+definition rbac/user {}
+
+definition rbac/workspace {
+	permission parent = t_parent
+	relation t_parent: rbac/workspace
+	permission servers_delete = t_user_grant->servers_delete + t_parent->servers_delete
+	permission servers_read = t_user_grant->servers_read + t_parent->servers_read
+	permission servers_write = t_user_grant->servers_write + t_parent->servers_write
+	permission user_grant = t_user_grant
+	relation t_user_grant: rbac/role_binding
+}

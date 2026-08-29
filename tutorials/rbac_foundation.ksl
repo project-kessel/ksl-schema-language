@@ -1,0 +1,54 @@
+version 0.1
+namespace rbac
+
+// Required for [bool] type
+public type principal {
+
+}
+
+public type user {
+
+}
+
+public type role {
+
+}
+
+public type role_binding {
+    relation subject: [ExactlyOne user]
+    relation granted: [AtLeastOne role]
+}
+
+public type workspace {
+    relation parent: [AtMostOne workspace]
+    relation user_grant: [Any role_binding]
+}
+
+// Extension with parameters - the most powerful KSL feature
+public extension workspace_permission(permission_name) {
+    // Template variable: ${permission_name} gets replaced with parameter value
+    type role {
+        // Dynamic relation name using parameter
+        relation ${permission_name}: [bool]
+
+        // Template with built-in variables: MODULE, TYPE, RELATION
+        allow_duplicates relation global_all_permissions: [bool]
+        allow_duplicates relation `mod_${NAMESPACE}_type_${TYPE}_all`: [bool]
+        allow_duplicates relation `mod_${NAMESPACE}_all_rel_${RELATION}`: [bool]
+    }
+
+    // Complex templated logic
+    type role_binding {
+        relation ${permission_name}: subject and (
+            granted.${permission_name} or
+            granted.global_all_permissions or
+            granted.`mod_${NAMESPACE}_type_${TYPE}_all` or
+            granted.`mod_${NAMESPACE}_all_rel_${RELATION}`
+        )
+    }
+
+    // Inheritance through workspace hierarchy
+    type workspace {
+        public relation ${permission_name}: user_grant.${permission_name} or parent.${permission_name}
+    }
+}

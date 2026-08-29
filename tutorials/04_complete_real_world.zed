@@ -1,0 +1,78 @@
+definition enterprise/application {
+	permission admin_access = owner
+	permission can_debug = developers + tech_lead
+	permission can_deploy = owner + tech_lead
+	permission can_manage = (owner - tech_lead)
+	permission can_read = owner + developers + stakeholders
+	permission can_write = (owner + tech_lead & developers)
+	permission deploy_permission = t_workspace->app_deploy
+	permission developers = t_developers
+	relation t_developers: rbac/user
+	permission emergency_access = (owner + tech_lead & stakeholders)
+	permission monitor_permission = t_workspace->app_monitor
+	permission owner = t_owner
+	relation t_owner: rbac/user
+	permission stakeholders = t_stakeholders
+	relation t_stakeholders: rbac/user
+	permission tech_lead = t_tech_lead
+	relation t_tech_lead: rbac/user
+	permission workspace = t_workspace
+	relation t_workspace: rbac/workspace
+	permission workspace_access = t_workspace->user_grant
+}
+
+definition enterprise/database {
+	permission backup_access = t_backup_access
+	relation t_backup_access: rbac/user
+	permission version = t_version
+	relation t_version: rbac/user
+}
+
+definition enterprise/environment {
+	permission application = t_application
+	relation t_application: enterprise/application
+	permission can_deploy = (environment_manager & t_application->can_deploy)
+	permission can_read = environment_manager + t_application->can_read
+	permission environment_manager = t_environment_manager
+	relation t_environment_manager: rbac/user
+	permission inherited_access = t_parent_env->can_read + t_parent_env->can_deploy
+	permission parent_env = t_parent_env
+	relation t_parent_env: enterprise/environment
+}
+
+definition rbac/principal {}
+
+definition rbac/role {
+	permission app_deploy = t_app_deploy
+	relation t_app_deploy: rbac/principal:*
+	permission app_monitor = t_app_monitor
+	relation t_app_monitor: rbac/principal:*
+	permission global_all_permissions = t_global_all_permissions
+	relation t_global_all_permissions: rbac/principal:*
+	permission mod_enterprise_all_rel_deploy_permission = t_mod_enterprise_all_rel_deploy_permission
+	relation t_mod_enterprise_all_rel_deploy_permission: rbac/principal:*
+	permission mod_enterprise_all_rel_monitor_permission = t_mod_enterprise_all_rel_monitor_permission
+	relation t_mod_enterprise_all_rel_monitor_permission: rbac/principal:*
+	permission mod_enterprise_type_application_all = t_mod_enterprise_type_application_all
+	relation t_mod_enterprise_type_application_all: rbac/principal:*
+}
+
+definition rbac/role_binding {
+	permission app_deploy = (subject & t_granted->app_deploy + t_granted->global_all_permissions + t_granted->mod_enterprise_type_application_all + t_granted->mod_enterprise_all_rel_deploy_permission)
+	permission app_monitor = (subject & t_granted->app_monitor + t_granted->global_all_permissions + t_granted->mod_enterprise_type_application_all + t_granted->mod_enterprise_all_rel_monitor_permission)
+	permission granted = t_granted
+	relation t_granted: rbac/role
+	permission subject = t_subject
+	relation t_subject: rbac/user
+}
+
+definition rbac/user {}
+
+definition rbac/workspace {
+	permission app_deploy = t_user_grant->app_deploy + t_parent->app_deploy
+	permission app_monitor = t_user_grant->app_monitor + t_parent->app_monitor
+	permission parent = t_parent
+	relation t_parent: rbac/workspace
+	permission user_grant = t_user_grant
+	relation t_user_grant: rbac/role_binding
+}

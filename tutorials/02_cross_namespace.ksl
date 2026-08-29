@@ -1,0 +1,28 @@
+version 0.1
+namespace files
+import organization
+
+public type folder {
+    // Cross-namespace type reference
+    relation owner: [ExactlyOne organization.user]
+    relation parent: [AtMostOne folder]
+    relation project: [AtMostOne organization.project]
+
+    // Cross-namespace nested relations
+    relation can_read: owner or project.team_members or parent.can_read
+
+    // Complex cross-namespace permissions
+    relation can_manage: owner or project.can_manage
+}
+
+public type document {
+    relation folder: [ExactlyOne folder]
+    relation author: [ExactlyOne organization.user]
+
+    // Inherit permissions from folder
+    relation can_read: author or folder.can_read
+    relation can_write: author or folder.can_manage
+
+    // Self-referencing with cross-namespace
+    relation shared_with: [Any organization.team.member]
+}

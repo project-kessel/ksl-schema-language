@@ -1,0 +1,41 @@
+definition files/document {
+	permission author = t_author
+	relation t_author: organization/user
+	permission can_read = author + t_folder->can_read
+	permission can_write = author + t_folder->can_manage
+	permission folder = t_folder
+	relation t_folder: files/folder
+	permission shared_with = t_shared_with
+	relation t_shared_with: organization/team#member
+}
+
+definition files/folder {
+	permission can_manage = owner + t_project->can_manage
+	permission can_read = owner + t_project->team_members + t_parent->can_read
+	permission owner = t_owner
+	relation t_owner: organization/user
+	permission parent = t_parent
+	relation t_parent: files/folder
+	permission project = t_project
+	relation t_project: organization/project
+}
+
+definition organization/project {
+	permission can_manage = t_owner_team->can_manage + t_owner_team->member
+	permission collaborator_teams = t_collaborator_teams
+	relation t_collaborator_teams: organization/team
+	permission managers = t_owner_team->manager
+	permission owner_team = t_owner_team
+	relation t_owner_team: organization/team
+	permission team_members = t_owner_team->member + t_collaborator_teams->member
+}
+
+definition organization/team {
+	permission can_manage = manager
+	permission manager = t_manager
+	relation t_manager: organization/user
+	permission member = t_member
+	relation t_member: organization/user
+}
+
+definition organization/user {}
